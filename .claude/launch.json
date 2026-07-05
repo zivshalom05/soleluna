@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "shalom-studio",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 3000,
+      "env": {
+        "ADMIN_PASS": "luna2026",
+        "ALLOW_DEMO_CHECKOUT": "true"
+      }
+    }
+  ]
+}

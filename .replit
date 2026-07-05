@@ -1,0 +1,19 @@
+run = "npm install && npm start"
+entrypoint = "server.js"
+
+# Replit Secrets (lock icon) — required for production:
+#   GROW_USER_ID, GROW_PAGE_CODE, GROW_API_KEY, GROW_ENV=production
+#   ADMIN_PASS=your-strong-password
+#   NODE_ENV=production
+#   ALLOW_DEMO_CHECKOUT=false
+
+[nix]
+channel = "stable-24_05"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[deployment]
+run = ["sh", "-c", "npm install && npm start"]
+deploymentTarget = "autoscale"

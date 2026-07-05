@@ -1,0 +1,316 @@
+{
+  "products": {
+    "w-shirt-01": 320,
+    "w-shirt-02": 360,
+    "w-shirt-03": 340,
+    "w-pants-01": 410,
+    "w-pants-02": 430,
+    "w-pants-03": 460,
+    "m-shirt-01": 340,
+    "m-shirt-02": 360,
+    "m-shirt-03": 330,
+    "m-pants-01": 440,
+    "m-pants-02": 420,
+    "m-pants-03": 480,
+    "w-shirt-04": 290,
+    "w-shirt-05": 280,
+    "w-pants-04": 380,
+    "w-pants-05": 260,
+    "m-shirt-04": 390,
+    "m-shirt-05": 300,
+    "m-pants-04": 280,
+    "m-pants-05": 450
+  },
+  "coupons": {
+    "SOLELUNA10": 0.1,
+    "RESORT15": 0.15,
+    "WELCOME": 0.1
+  },
+  "freeShipOver": 400,
+  "shippingCost": 30,
+  "maxQtyPerLine": 10,
+  "maxCartLines": 20,
+  "items": [
+    {
+      "id": "w-shirt-01",
+      "name": "Aria · אווירה",
+      "gender": "women",
+      "type": "shirt",
+      "fit": "relaxed",
+      "price": 320,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ],
+      "tag": "רב מכר"
+    },
+    {
+      "id": "w-shirt-02",
+      "name": "Luna · ירח",
+      "gender": "women",
+      "type": "shirt",
+      "fit": "slim",
+      "price": 360,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    {
+      "id": "w-shirt-03",
+      "name": "Riva · חוף",
+      "gender": "women",
+      "type": "shirt",
+      "fit": "relaxed",
+      "price": 340,
+      "sizes": [
+        "XS",
+        "S",
+        "M"
+      ],
+      "tag": "חדש"
+    },
+    {
+      "id": "w-pants-01",
+      "name": "Onda · גל",
+      "gender": "women",
+      "type": "pants",
+      "fit": "relaxed",
+      "price": 410,
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ]
+    },
+    {
+      "id": "w-pants-02",
+      "name": "Alta · רקיע",
+      "gender": "women",
+      "type": "pants",
+      "fit": "straight",
+      "price": 430,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    {
+      "id": "w-pants-03",
+      "name": "Notte · לילה",
+      "gender": "women",
+      "type": "pants",
+      "fit": "slim",
+      "price": 460,
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "tag": "מהדורה מוגבלת"
+    },
+    {
+      "id": "m-shirt-01",
+      "name": "Sole · שמש",
+      "gender": "men",
+      "type": "shirt",
+      "fit": "straight",
+      "price": 340,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "tag": "רב מכר"
+    },
+    {
+      "id": "m-shirt-02",
+      "name": "Vento · רוח",
+      "gender": "men",
+      "type": "shirt",
+      "fit": "relaxed",
+      "price": 360,
+      "sizes": [
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    {
+      "id": "m-shirt-03",
+      "name": "Porto · נמל",
+      "gender": "men",
+      "type": "shirt",
+      "fit": "slim",
+      "price": 330,
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "tag": "חדש"
+    },
+    {
+      "id": "m-pants-01",
+      "name": "Sabbia · חול",
+      "gender": "men",
+      "type": "pants",
+      "fit": "straight",
+      "price": 440,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    {
+      "id": "m-pants-02",
+      "name": "Calma · רוגע",
+      "gender": "men",
+      "type": "pants",
+      "fit": "relaxed",
+      "price": 420,
+      "sizes": [
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    {
+      "id": "m-pants-03",
+      "name": "Sera · ערב",
+      "gender": "men",
+      "type": "pants",
+      "fit": "slim",
+      "price": 480,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "tag": "מהדורה מוגבלת"
+    },
+    {
+      "id": "w-shirt-04",
+      "name": "Nube · ענן",
+      "gender": "women",
+      "type": "shirt",
+      "fit": "relaxed",
+      "price": 290,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "tag": "חדש"
+    },
+    {
+      "id": "w-shirt-05",
+      "name": "Brezza · בריזה",
+      "gender": "women",
+      "type": "shirt",
+      "fit": "slim",
+      "price": 280,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ]
+    },
+    {
+      "id": "w-pants-04",
+      "name": "Duna · דיונה",
+      "gender": "women",
+      "type": "pants",
+      "fit": "straight",
+      "price": 380,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ]
+    },
+    {
+      "id": "w-pants-05",
+      "name": "Isola · אי",
+      "gender": "women",
+      "type": "pants",
+      "fit": "relaxed",
+      "price": 260,
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "tag": "חדש"
+    },
+    {
+      "id": "m-shirt-04",
+      "name": "Terra · אדמה",
+      "gender": "men",
+      "type": "shirt",
+      "fit": "relaxed",
+      "price": 390,
+      "sizes": [
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    {
+      "id": "m-shirt-05",
+      "name": "Marea · גאות",
+      "gender": "men",
+      "type": "shirt",
+      "fit": "straight",
+      "price": 300,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "tag": "חדש"
+    },
+    {
+      "id": "m-pants-04",
+      "name": "Golfo · מפרץ",
+      "gender": "men",
+      "type": "pants",
+      "fit": "relaxed",
+      "price": 280,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    {
+      "id": "m-pants-05",
+      "name": "Sarto · חיוט",
+      "gender": "men",
+      "type": "pants",
+      "fit": "slim",
+      "price": 450,
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ]
+    }
+  ]
+}

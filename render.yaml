@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: soleluna
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/config
+    envVars:
+      - key: ADMIN_PASS
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: ALLOW_DEMO_CHECKOUT
+        value: "true"
+      - key: GROW_USER_ID
+        sync: false
+      - key: GROW_PAGE_CODE
+        sync: false
+      - key: GROW_API_KEY
+        sync: false
+      - key: GROW_ENV
+        value: sandbox

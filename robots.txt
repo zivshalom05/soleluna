@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://soleluna.co.il/sitemap.xml

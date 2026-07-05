@@ -1,0 +1,42 @@
+sole&luna — RUNWAY GEN-4 PROMPTS
+============================
+How to use: In Runway, create a clip → paste ONE prompt below → (recommended) upload the
+matching Start Image → set 16:9, 5s → Generate. Repeat for each scene.
+Keep the SAME seed across all 4 scenes for a consistent look.
+
+GLOBAL STYLE (already baked into each prompt): warm sun-bleached Mediterranean light,
+soft film grain, shallow depth of field, linen-lyocell clothing in olive / sage / bone tones.
+
+
+------------------------------------------------------------
+SCENE 1 — BEACH / RESORT (sunset)   ·   Start image: video/scene1-beach-frame.png
+------------------------------------------------------------
+A man in an olive linen-lyocell shirt walks slowly along a sunlit Mediterranean beach, soft morning light, gentle ocean breeze moving the loose fabric, calm turquoise sea behind him. Cinematic, warm film grain, shallow depth of field. Camera: slow dolly-in following him, natural handheld micro-movement.
+
+
+------------------------------------------------------------
+SCENE 2 — COCKTAIL BAR (golden hour)   ·   Start image: a couple at a sunset rooftop bar
+------------------------------------------------------------
+A stylish couple sits at a sunset rooftop cocktail bar overlooking the sea, wearing breezy linen-lyocell outfits in sage and bone tones. Golden hour light, warm bokeh of string lights behind them, a light breeze. They smile and raise their glasses. Cinematic, soft film grain, warm color grade. Camera: slow push-in with subtle rack focus.
+
+
+------------------------------------------------------------
+SCENE 3 — CAMPUS / EVERYDAY (midday)   ·   Start image: woman crossing a stone courtyard
+------------------------------------------------------------
+A young woman walks confidently across a sunlit stone campus courtyard at midday, wearing a relaxed airy linen-lyocell shirt and tailored trousers, a canvas bag on her shoulder, hair moving lightly in the wind. Bright natural daylight, soft shadows, effortless and modern. Cinematic, light film grain. Camera: side tracking glide alongside her.
+
+
+------------------------------------------------------------
+SCENE 4 — OFFICE / BOARDROOM (morning)   ·   Start image: man by a tall office window
+------------------------------------------------------------
+A man in a tailored linen-lyocell shirt stands by a floor-to-ceiling window in a bright modern office, morning light streaming in, city skyline softly blurred behind him. He turns slightly toward camera, composed and elegant. Clean minimal interior, warm neutral palette. Cinematic, subtle film grain. Camera: slow orbit around him, shallow depth of field.
+
+
+------------------------------------------------------------
+EDIT ORDER (after all 4 clips are ready)
+------------------------------------------------------------
+Sequence: Scene 4 (office/morning) -> Scene 3 (campus/midday) -> Scene 2 (bar/evening) -> Scene 1 (beach/sunset)
+Transitions: soft 0.4s dissolves between scenes (no hard cuts).
+End card: bone background -> sole&luna logo -> tagline "בד אחד. כל הרגעים שלכם." -> sole&luna.com
+Music: warm acoustic / bossa-nova, light and bright.
+Grade: lift warmth slightly, lower saturation a touch, add subtle film grain to match the website.
