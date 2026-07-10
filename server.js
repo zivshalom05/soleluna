@@ -369,14 +369,18 @@ const server = http.createServer(async (req, res) => {
   secure(res);
   pruneMaps();
 
-  if (req.headers["x-forwarded-proto"] === "http" && IS_PRODUCTION) {
+  const ip = clientIp(req);
+  const isApi = u.pathname.startsWith("/api/");
+
+  // Force HTTPS for browser navigation only. Never redirect API calls or the
+  // platform health check (/api/config) — those must answer 2xx directly, or
+  // the host marks the deploy unhealthy.
+  if (!isApi && req.headers["x-forwarded-proto"] === "http" && IS_PRODUCTION) {
     res.writeHead(301, { Location: "https://" + req.headers.host + req.url });
     res.end();
     return;
   }
 
-  const ip = clientIp(req);
-  const isApi = u.pathname.startsWith("/api/");
   if (isApi && !rateLimit(ip)) {
     json(res, 429, { error: "יותר מדי בקשות — נסו שוב בעוד דקה" });
     return;
