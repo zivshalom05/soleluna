@@ -21,6 +21,17 @@ services:
         sync: false
       - key: GROW_ENV
         value: sandbox
+      # ---- Watchtower monitoring ----
+      - key: NOTIFY_EMAIL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CRON_KEY
+        generateValue: true
+      - key: REPORT_INTERVAL_HOURS
+        value: "12"
+      - key: LOW_STOCK_THRESHOLD
+        value: "3"
     # להזמנות שנשמרות לתמיד (SQLite): שדרגו ל-plan: starter והסירו את ההערה —
     # בתוכנית free הדיסק זמני וההזמנות נמחקות בכל deploy.
     # disk:
