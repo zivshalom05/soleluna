@@ -21,7 +21,7 @@
 הדו״ח נשלח דרך **Resend**. שני דברים דרושים:
 
 1. **נמען + מפתח שליחה** — ב-Render → Environment:
-   - `NOTIFY_EMAIL` = המייל שאליו יגיע הדו״ח (למשל `zivshalom05@gmail.com`).
+   - `NOTIFY_EMAIL` = המייל שאליו יגיע הדו״ח (מוגדר כברירת מחדל ל-`solelunabsns@gmail.com`).
    - `RESEND_API_KEY` = מפתח מ-[resend.com](https://resend.com) (חינם עד 3,000 מיילים/חודש). בלעדיו — הדו״ח רק נרשם ללוג ולא נשלח.
    - `FROM_EMAIL` = כתובת שולח מדומיין מאומת ב-Resend (למשל `orders@soleluna.co.il`).
 

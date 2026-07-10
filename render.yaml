@@ -23,7 +23,7 @@ services:
         value: sandbox
       # ---- Watchtower monitoring ----
       - key: NOTIFY_EMAIL
-        sync: false
+        value: solelunabsns@gmail.com
       - key: RESEND_API_KEY
         sync: false
       - key: CRON_KEY

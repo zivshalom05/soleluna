@@ -36,7 +36,7 @@ const ALLOW_DEMO_CHECKOUT = process.env.ALLOW_DEMO_CHECKOUT === "true" ||
 const STARTED_AT = Date.now();
 const REPORT_INTERVAL_HOURS = Math.max(1, Number(process.env.REPORT_INTERVAL_HOURS) || 12);
 const LOW_STOCK_THRESHOLD = Number(process.env.LOW_STOCK_THRESHOLD);
-const MONITOR_EMAIL = process.env.NOTIFY_EMAIL || process.env.ORDER_EMAIL || "";
+const MONITOR_EMAIL = process.env.NOTIFY_EMAIL || process.env.ORDER_EMAIL || "solelunabsns@gmail.com";
 const CRON_KEY = process.env.CRON_KEY || "";
 
 const MIME = {

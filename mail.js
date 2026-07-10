@@ -1,5 +1,5 @@
 /* sole&luna — optional order / contact notifications (no extra npm deps) */
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || process.env.ORDER_EMAIL || "";
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || process.env.ORDER_EMAIL || "solelunabsns@gmail.com";
 const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
 const FROM_EMAIL = process.env.FROM_EMAIL || "orders@soleluna.co.il";
 
