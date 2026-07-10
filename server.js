@@ -36,6 +36,7 @@ const MIME = {
   ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp",
   ".svg": "image/svg+xml", ".txt": "text/plain; charset=utf-8", ".ico": "image/x-icon",
   ".woff": "font/woff", ".woff2": "font/woff2",
+  ".mp4": "video/mp4", ".webm": "video/webm", ".xml": "application/xml; charset=utf-8",
 };
 
 const { db, catalog: CATALOG } = openDb();
@@ -320,15 +321,46 @@ async function parseJson(req) {
   return JSON.parse(raw);
 }
 
-function serveStatic(u, res) {
+function serveStatic(req, u, res) {
   let pathname = decodeURIComponent(u.pathname);
   if (pathname === "/") pathname = "/index.html";
   const filePath = path.join(ROOT, path.normalize(pathname));
   if (!filePath.startsWith(ROOT)) { res.writeHead(403); res.end("Forbidden"); return; }
-  fs.readFile(filePath, (err, data) => {
-    if (err) { res.writeHead(404); res.end("Not found"); return; }
-    res.writeHead(200, { "Content-Type": MIME[path.extname(filePath).toLowerCase()] || "application/octet-stream" });
-    res.end(data);
+  fs.stat(filePath, (err, stat) => {
+    if (err || !stat.isFile()) { res.writeHead(404); res.end("Not found"); return; }
+    const ext = path.extname(filePath).toLowerCase();
+    const type = MIME[ext] || "application/octet-stream";
+    const cache = ext === ".html"
+      ? "no-cache"
+      : (ext === ".png" || ext === ".jpg" || ext === ".jpeg" || ext === ".webp" ||
+         ext === ".mp4" || ext === ".webm" || ext === ".woff" || ext === ".woff2")
+        ? "public, max-age=604800, immutable"
+        : "public, max-age=300";
+    const headers = { "Content-Type": type, "Cache-Control": cache, "Accept-Ranges": "bytes" };
+
+    const range = req.headers.range;
+    const m = range && /^bytes=(\d*)-(\d*)$/.exec(range);
+    if (m && (m[1] || m[2])) {
+      let start = m[1] ? parseInt(m[1], 10) : stat.size - parseInt(m[2], 10);
+      let end = m[1] && m[2] ? parseInt(m[2], 10) : stat.size - 1;
+      if (Number.isNaN(start) || start < 0) start = 0;
+      if (Number.isNaN(end) || end >= stat.size) end = stat.size - 1;
+      if (start > end || start >= stat.size) {
+        res.writeHead(416, { "Content-Range": `bytes */${stat.size}` });
+        res.end();
+        return;
+      }
+      res.writeHead(206, {
+        ...headers,
+        "Content-Range": `bytes ${start}-${end}/${stat.size}`,
+        "Content-Length": end - start + 1,
+      });
+      fs.createReadStream(filePath, { start, end }).pipe(res);
+      return;
+    }
+
+    res.writeHead(200, { ...headers, "Content-Length": stat.size });
+    fs.createReadStream(filePath).pipe(res);
   });
 }
 
@@ -646,7 +678,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    serveStatic(u, res);
+    serveStatic(req, u, res);
   } catch (e) {
     const code = e.message === "body_too_large" ? 413 : (e instanceof SyntaxError ? 400 : 500);
     json(res, code, { error: code === 500 ? "שגיאת שרת" : "בקשה לא תקינה" });
