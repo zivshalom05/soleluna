@@ -1627,6 +1627,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         <p id="accountEmail" style="color:var(--olive);font-size:.9rem;margin-bottom:.4rem;"></p>
         <p style="font-family:var(--mark);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:1.4rem;">חבר/ת מועדון sole&luna</p>
         <button class="btn btn--block btn--ghost" id="logoutBtn"><span>התנתקות</span></button>
+        <button type="button" id="deleteAccountBtn" style="margin-top:1rem;background:none;border:0;color:var(--olive);font-size:.78rem;text-decoration:underline;cursor:pointer;opacity:.75;">מחיקת החשבון שלי</button>
       </div>
     </div>
   </div>
@@ -2591,6 +2592,23 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   });
 
   $("#logoutBtn").addEventListener("click", () => logoutUser());
+
+  async function deleteAccount() {
+    if (!confirm("למחוק את החשבון לצמיתות? הפעולה אינה הפיכה. היסטוריית ההזמנות נשמרת אצלנו לצרכים חשבונאיים בלבד.")) return;
+    try {
+      await api("/api/auth/delete", { method: "DELETE" });
+      toast("החשבון נמחק");
+    } catch (e) {
+      toast("לא ניתן למחוק כרגע — נסו שוב");
+      return;
+    }
+    state.user = null; save("soleluna_user", null);
+    state.orders = [];
+    renderUserUI();
+    closeAll();
+  }
+  const delBtn = $("#deleteAccountBtn");
+  if (delBtn) delBtn.addEventListener("click", deleteAccount);
 
   /* ===========================================================
      NEWSLETTER + COUPON COPY
