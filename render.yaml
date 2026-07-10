@@ -27,7 +27,7 @@ services:
       - key: RESEND_API_KEY
         sync: false
       - key: CRON_KEY
-        generateValue: true
+        value: sl_wt_7hq3k9zt2p_report_trigger
       - key: REPORT_INTERVAL_HOURS
         value: "12"
       - key: LOW_STOCK_THRESHOLD
