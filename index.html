@@ -2942,7 +2942,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   /* ---------- LENIS — premium smooth scroll ---------- */
   let lenis = null;
   if (window.Lenis && !reduce) {
-    lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.8, smoothWheel: true, syncTouch: true, touchMultiplier: 1.4 });
+    // touch devices keep native OS scrolling (the speed users already know) —
+    // Lenis only smooths wheel input (desktop mouse/trackpad).
+    lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.8, smoothWheel: true, syncTouch: false });
     const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
     lenis.on("scroll", (e) => {
