@@ -374,9 +374,14 @@ function serveStatic(req, u, res) {
       ? "no-cache"
       : (ext === ".png" || ext === ".jpg" || ext === ".jpeg" || ext === ".webp" ||
          ext === ".mp4" || ext === ".webm" || ext === ".woff" || ext === ".woff2")
-        ? "public, max-age=604800, immutable"
+        // cached hard, but NOT immutable: browsers revalidate with the ETag, so a
+        // replaced photo reaches visitors immediately instead of a week later
+        ? "public, max-age=86400, must-revalidate"
         : "public, max-age=300";
-    const headers = { "Content-Type": type, "Cache-Control": cache, "Accept-Ranges": "bytes" };
+    // content version from size+mtime — changes the moment a file is replaced
+    const etag = `"${stat.size.toString(36)}-${stat.mtimeMs.toString(36)}"`;
+    if (req.headers["if-none-match"] === etag) { res.writeHead(304, { ETag: etag, "Cache-Control": cache }); res.end(); return; }
+    const headers = { "Content-Type": type, "Cache-Control": cache, ETag: etag, "Accept-Ranges": "bytes" };
 
     const range = req.headers.range;
     const m = range && /^bytes=(\d*)-(\d*)$/.exec(range);
