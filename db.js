@@ -116,9 +116,59 @@ function initSchema(db) {
       created_at INTEGER NOT NULL
     );
 
+    -- Watchtower: health/security/audit events (errors, account deletions, report sends)
+    CREATE TABLE IF NOT EXISTS system_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL,
+      detail TEXT,
+      created_at INTEGER NOT NULL
+    );
+
+    -- key/value store for scheduler bookkeeping (e.g. last report timestamp)
+    CREATE TABLE IF NOT EXISTS meta (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    );
+
     CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
     CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+    CREATE INDEX IF NOT EXISTS idx_events_type_time ON system_events(type, created_at);
+    CREATE INDEX IF NOT EXISTS idx_orders_paid_at ON orders(paid_at);
   `);
+}
+
+// Idempotent column additions for databases created before Watchtower.
+// SQLite has no "ADD COLUMN IF NOT EXISTS", so we check table_info first.
+function migrateSchema(db) {
+  const hasColumn = (table, col) =>
+    db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === col);
+  if (!hasColumn("orders", "shipped_at")) {
+    db.exec("ALTER TABLE orders ADD COLUMN shipped_at INTEGER");
+  }
+  if (!hasColumn("users", "deleted_at")) {
+    db.exec("ALTER TABLE users ADD COLUMN deleted_at INTEGER");
+  }
+}
+
+function logEvent(db, type, detail) {
+  try {
+    db.prepare("INSERT INTO system_events (type, detail, created_at) VALUES (?, ?, ?)")
+      .run(String(type), detail == null ? null : String(detail).slice(0, 500), Date.now());
+  } catch (e) {
+    // Never let telemetry break a request.
+    console.error("[events] log failed:", e.message);
+  }
+}
+
+function getMeta(db, key) {
+  const row = db.prepare("SELECT value FROM meta WHERE key = ?").get(key);
+  return row ? row.value : null;
+}
+
+function setMeta(db, key, value) {
+  db.prepare(
+    "INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+  ).run(key, value == null ? null : String(value));
 }
 
 function seedProducts(db, catalog) {
@@ -172,6 +222,7 @@ function openDb() {
   ensureDataDir();
   const db = new Database(DB_PATH);
   initSchema(db);
+  migrateSchema(db);
   const catalog = loadCatalog();
   seedProducts(db, catalog);
   return { db, catalog };
@@ -251,6 +302,9 @@ module.exports = {
   getStock,
   decrementStock,
   newOrderNum,
+  logEvent,
+  getMeta,
+  setMeta,
   DB_PATH,
   DATA_DIR,
 };

@@ -11,8 +11,10 @@ const { URL, URLSearchParams } = require("url");
 const bcrypt = require("bcryptjs");
 const {
   openDb, getAllProducts, getProduct, getStock, decrementStock, newOrderNum,
+  logEvent, getMeta, setMeta,
 } = require("./db");
-const { notifyOrderPaid } = require("./mail");
+const { notifyOrderPaid, sendEmail } = require("./mail");
+const { buildReport, renderReportEmail } = require("./monitor");
 
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
@@ -30,12 +32,20 @@ const PAYMENTS_CONFIGURED = !!(process.env.GROW_USER_ID && process.env.GROW_PAGE
 const ALLOW_DEMO_CHECKOUT = process.env.ALLOW_DEMO_CHECKOUT === "true" ||
   (!PAYMENTS_CONFIGURED && !IS_PRODUCTION);
 
+/* ---- Watchtower monitoring ---- */
+const STARTED_AT = Date.now();
+const REPORT_INTERVAL_HOURS = Math.max(1, Number(process.env.REPORT_INTERVAL_HOURS) || 12);
+const LOW_STOCK_THRESHOLD = Number(process.env.LOW_STOCK_THRESHOLD);
+const MONITOR_EMAIL = process.env.NOTIFY_EMAIL || process.env.ORDER_EMAIL || "solelunabsns@gmail.com";
+const CRON_KEY = process.env.CRON_KEY || "";
+
 const MIME = {
   ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8",
   ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp",
   ".svg": "image/svg+xml", ".txt": "text/plain; charset=utf-8", ".ico": "image/x-icon",
   ".woff": "font/woff", ".woff2": "font/woff2",
+  ".mp4": "video/mp4", ".webm": "video/webm", ".xml": "application/xml; charset=utf-8",
 };
 
 const { db, catalog: CATALOG } = openDb();
@@ -52,6 +62,37 @@ const GROW = {
 const rateBuckets = new Map();
 const pendingPayments = new Map();
 const verifyTokens = new Map();
+
+function monitorCtx() {
+  return {
+    startedAt: STARTED_AT,
+    dataDir: require("./db").DATA_DIR,
+    windowHours: REPORT_INTERVAL_HOURS,
+    lowStockThreshold: Number.isFinite(LOW_STOCK_THRESHOLD) ? LOW_STOCK_THRESHOLD : 3,
+    paymentsConfigured: PAYMENTS_CONFIGURED,
+    isProduction: IS_PRODUCTION,
+    allowDemoCheckout: ALLOW_DEMO_CHECKOUT,
+  };
+}
+
+// Build the report and email it to the owner. Guarded so it never sends more
+// than once per (interval - 5min), whichever trigger fires first (timer or cron).
+async function sendReport(reason) {
+  const last = Number(getMeta(db, "last_report_at") || 0);
+  const minGap = (REPORT_INTERVAL_HOURS * 3600_000) - 5 * 60_000;
+  if (Date.now() - last < minGap) {
+    return { sent: false, skipped: "too_soon", nextInMs: minGap - (Date.now() - last) };
+  }
+  const report = buildReport(db, monitorCtx());
+  setMeta(db, "last_report_at", Date.now());
+  logEvent(db, "report", `sent (${reason}) — ${report.overall}`);
+  if (!MONITOR_EMAIL) {
+    return { sent: false, skipped: "no_recipient", overall: report.overall };
+  }
+  const { subject, text, html } = renderReportEmail(report);
+  const r = await sendEmail({ to: MONITOR_EMAIL, subject, text, html });
+  return { sent: !!r.ok, mail: r, overall: report.overall };
+}
 
 function clientIp(req) {
   const fwd = req.headers["x-forwarded-for"];
@@ -126,7 +167,7 @@ function getSession(req) {
   }
   let user = null;
   if (row.user_id) {
-    user = db.prepare("SELECT id, email, name, phone, created_at FROM users WHERE id = ?").get(row.user_id);
+    user = db.prepare("SELECT id, email, name, phone, created_at FROM users WHERE id = ? AND deleted_at IS NULL").get(row.user_id);
   }
   return { token, isAdmin: !!row.is_admin, user };
 }
@@ -320,15 +361,46 @@ async function parseJson(req) {
   return JSON.parse(raw);
 }
 
-function serveStatic(u, res) {
+function serveStatic(req, u, res) {
   let pathname = decodeURIComponent(u.pathname);
   if (pathname === "/") pathname = "/index.html";
   const filePath = path.join(ROOT, path.normalize(pathname));
   if (!filePath.startsWith(ROOT)) { res.writeHead(403); res.end("Forbidden"); return; }
-  fs.readFile(filePath, (err, data) => {
-    if (err) { res.writeHead(404); res.end("Not found"); return; }
-    res.writeHead(200, { "Content-Type": MIME[path.extname(filePath).toLowerCase()] || "application/octet-stream" });
-    res.end(data);
+  fs.stat(filePath, (err, stat) => {
+    if (err || !stat.isFile()) { res.writeHead(404); res.end("Not found"); return; }
+    const ext = path.extname(filePath).toLowerCase();
+    const type = MIME[ext] || "application/octet-stream";
+    const cache = ext === ".html"
+      ? "no-cache"
+      : (ext === ".png" || ext === ".jpg" || ext === ".jpeg" || ext === ".webp" ||
+         ext === ".mp4" || ext === ".webm" || ext === ".woff" || ext === ".woff2")
+        ? "public, max-age=604800, immutable"
+        : "public, max-age=300";
+    const headers = { "Content-Type": type, "Cache-Control": cache, "Accept-Ranges": "bytes" };
+
+    const range = req.headers.range;
+    const m = range && /^bytes=(\d*)-(\d*)$/.exec(range);
+    if (m && (m[1] || m[2])) {
+      let start = m[1] ? parseInt(m[1], 10) : stat.size - parseInt(m[2], 10);
+      let end = m[1] && m[2] ? parseInt(m[2], 10) : stat.size - 1;
+      if (Number.isNaN(start) || start < 0) start = 0;
+      if (Number.isNaN(end) || end >= stat.size) end = stat.size - 1;
+      if (start > end || start >= stat.size) {
+        res.writeHead(416, { "Content-Range": `bytes */${stat.size}` });
+        res.end();
+        return;
+      }
+      res.writeHead(206, {
+        ...headers,
+        "Content-Range": `bytes ${start}-${end}/${stat.size}`,
+        "Content-Length": end - start + 1,
+      });
+      fs.createReadStream(filePath, { start, end }).pipe(res);
+      return;
+    }
+
+    res.writeHead(200, { ...headers, "Content-Length": stat.size });
+    fs.createReadStream(filePath).pipe(res);
   });
 }
 
@@ -337,14 +409,18 @@ const server = http.createServer(async (req, res) => {
   secure(res);
   pruneMaps();
 
-  if (req.headers["x-forwarded-proto"] === "http" && IS_PRODUCTION) {
+  const ip = clientIp(req);
+  const isApi = u.pathname.startsWith("/api/");
+
+  // Force HTTPS for browser navigation only. Never redirect API calls or the
+  // platform health check (/api/config) — those must answer 2xx directly, or
+  // the host marks the deploy unhealthy.
+  if (!isApi && req.headers["x-forwarded-proto"] === "http" && IS_PRODUCTION) {
     res.writeHead(301, { Location: "https://" + req.headers.host + req.url });
     res.end();
     return;
   }
 
-  const ip = clientIp(req);
-  const isApi = u.pathname.startsWith("/api/");
   if (isApi && !rateLimit(ip)) {
     json(res, 429, { error: "יותר מדי בקשות — נסו שוב בעוד דקה" });
     return;
@@ -399,7 +475,7 @@ const server = http.createServer(async (req, res) => {
       const body = await parseJson(req);
       const email = String(body.email || "").trim().toLowerCase();
       const password = String(body.password || "");
-      const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+      const user = db.prepare("SELECT * FROM users WHERE email = ? AND deleted_at IS NULL").get(email);
       if (!user || !bcrypt.compareSync(password, user.password_hash)) {
         json(res, 401, { error: "אימייל או סיסמה שגויים" }); return;
       }
@@ -432,6 +508,20 @@ const server = http.createServer(async (req, res) => {
       const phone = String(body.phone != null ? body.phone : session.user.phone || "").trim().slice(0, 32);
       db.prepare("UPDATE users SET name = ?, phone = ? WHERE id = ?").run(name, phone, session.user.id);
       json(res, 200, { ok: true, user: { ...session.user, name, phone } });
+      return;
+    }
+
+    if ((req.method === "DELETE" || req.method === "POST") && u.pathname === "/api/auth/delete") {
+      if (!session || !session.user) { json(res, 401, { error: "לא מחובר" }); return; }
+      const uid = session.user.id;
+      // Soft-delete: mark deleted, release the unique email, and neutralize the
+      // login. Orders keep their history (user_id → SET NULL via FK) for reports.
+      const scrambled = `deleted+${uid}.${Date.now()}@soleluna.invalid`;
+      db.prepare("UPDATE users SET deleted_at = ?, email = ?, password_hash = '', name = NULL, phone = NULL WHERE id = ?")
+        .run(Date.now(), scrambled, uid);
+      logEvent(db, "account_deleted", `user #${uid}`);
+      destroySession(req, res);
+      json(res, 200, { ok: true });
       return;
     }
 
@@ -520,6 +610,38 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "POST" && u.pathname === "/api/admin/inventory") {
       if (!requireAdmin(session)) { json(res, 403, { error: "אין הרשאה" }); return; }
       json(res, 200, { products: getAllProducts(db) });
+      return;
+    }
+
+    /* ---- Watchtower: live monitoring report (admin) ---- */
+    if ((req.method === "GET" || req.method === "POST") && u.pathname === "/api/admin/monitor") {
+      if (!requireAdmin(session)) { json(res, 403, { error: "אין הרשאה" }); return; }
+      json(res, 200, buildReport(db, monitorCtx()));
+      return;
+    }
+
+    /* ---- Watchtower: mark an order as shipped (admin) ---- */
+    if (req.method === "POST" && u.pathname === "/api/admin/orders/ship") {
+      if (!requireAdmin(session)) { json(res, 403, { error: "אין הרשאה" }); return; }
+      const body = await parseJson(req);
+      const orderNum = String(body.orderNum || "").trim();
+      const shipped = body.shipped === false ? null : Date.now();
+      const info = db.prepare("UPDATE orders SET shipped_at = ? WHERE order_num = ? AND status = 'paid'")
+        .run(shipped, orderNum);
+      if (!info.changes) { json(res, 404, { error: "הזמנה לא נמצאה או לא שולמה" }); return; }
+      logEvent(db, "shipment", `${orderNum} ${shipped ? "shipped" : "unmarked"}`);
+      json(res, 200, { ok: true, orderNum, shipped: !!shipped });
+      return;
+    }
+
+    /* ---- Watchtower: cron-triggered 12h report (external scheduler) ---- */
+    if ((req.method === "GET" || req.method === "POST") && u.pathname === "/api/cron/report") {
+      const key = u.searchParams.get("key") || (await parseJson(req).catch(() => ({}))).key || "";
+      if (!CRON_KEY || key !== CRON_KEY) { json(res, 403, { error: "forbidden" }); return; }
+      const force = u.searchParams.get("force") === "1";
+      if (force) setMeta(db, "last_report_at", "0");
+      const out = await sendReport("cron");
+      json(res, 200, { ok: true, ...out });
       return;
     }
 
@@ -646,15 +768,48 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    serveStatic(u, res);
+    /* ---- clean URL for the live monitoring dashboard ---- */
+    if (u.pathname === "/monitor" || u.pathname === "/monitor/") {
+      serveStatic(req, new URL("/monitor.html", "http://" + req.headers.host), res);
+      return;
+    }
+
+    serveStatic(req, u, res);
   } catch (e) {
     const code = e.message === "body_too_large" ? 413 : (e instanceof SyntaxError ? 400 : 500);
+    if (code === 500) {
+      console.error("[server]", req.method, u.pathname, "→", e.stack || e.message);
+      logEvent(db, "error", `${req.method} ${u.pathname} — ${e.message}`);
+    }
     json(res, code, { error: code === 500 ? "שגיאת שרת" : "בקשה לא תקינה" });
   }
 });
 
+// Never let an unexpected throw take the whole site down silently — record it
+// so it surfaces in the next Watchtower report, then keep serving.
+process.on("uncaughtException", (e) => {
+  console.error("[uncaught]", e.stack || e.message);
+  try { logEvent(db, "error", "uncaughtException — " + e.message); } catch {}
+});
+process.on("unhandledRejection", (e) => {
+  const msg = e && e.message ? e.message : String(e);
+  console.error("[unhandledRejection]", msg);
+  try { logEvent(db, "error", "unhandledRejection — " + msg); } catch {}
+});
+
+// In-process scheduler: while the instance is awake, fire the report once the
+// interval has elapsed. The /api/cron/report endpoint is the reliable path on
+// hosts that sleep idle instances — both are guarded against double-send.
+const SCHED_TICK_MS = 15 * 60_000;
+setInterval(() => {
+  sendReport("timer").then((out) => {
+    if (out.sent) console.log("[watchtower] 12h report sent —", out.overall);
+  }).catch((e) => console.error("[watchtower] report failed:", e.message));
+}, SCHED_TICK_MS).unref();
+
 server.listen(PORT, () => {
   console.log("sole&luna running on http://localhost:" + PORT);
+  console.log(`[watchtower] active · report every ${REPORT_INTERVAL_HOURS}h · recipient: ${MONITOR_EMAIL || "(not set)"} · cron: ${CRON_KEY ? "enabled" : "disabled"}`);
   if (IS_PRODUCTION && ALLOW_DEMO_CHECKOUT) {
     console.warn("WARNING: ALLOW_DEMO_CHECKOUT is enabled in production — disable before launch.");
   }
