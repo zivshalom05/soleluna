@@ -309,13 +309,19 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   display: flex; align-items: flex-end;
   overflow: hidden; background: var(--ink);
 }
-.hero__bg, .hero__bg picture, .hero__bg img, .hero__bg video {
+.hero__bg, .hero__bg img, .hero__bg video {
   position: absolute; inset: 0; width: 100%; height: 100%;
 }
 .hero__bg img, .hero__bg video { object-fit: cover; object-position: center 30%; transform: scale(1.04); will-change: transform; }
 /* the campaign film fades in over the poster once it can actually play */
 .hero__film { opacity: 0; transition: opacity 1.6s var(--ease); z-index: 0; }
 .hero__film.is-live { opacity: 1; }
+/* portrait screens: a shorter stage lets the 16:9 film keep horse and both
+   figures in frame instead of cropping into a single body */
+@media (max-width: 700px) {
+  .hero { min-height: 74svh; }
+  .hero__bg img, .hero__bg video { object-position: center center; transform: none; }
+}
 .hero__scrim {
   position: absolute; inset: 0; z-index: 1;
   background:
@@ -1114,11 +1120,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <!-- ============ HERO — full-bleed editorial (maison style) ============ -->
   <section class="hero">
     <div class="hero__bg" aria-hidden="true">
-      <picture>
-        <source media="(max-width: 700px)" srcset="img/hero-card.png" />
-        <img class="hero__media" src="img/hero-beach.png" alt="" fetchpriority="high" />
-      </picture>
-      <!-- campaign film — loaded only on wide screens; image above is the poster & fallback -->
+      <!-- poster = the film's own first frame, so the swap to video is invisible -->
+      <img class="hero__media" src="img/hero-beach.png" alt="" fetchpriority="high" />
+      <!-- campaign film — every device; the image above stays as poster & fallback -->
       <video id="heroFilm" class="hero__media hero__film" muted loop playsinline preload="none"></video>
     </div>
     <div class="hero__scrim" aria-hidden="true"></div>
@@ -3242,23 +3246,34 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   /* native cursor — 3D presence stays in the silk and the tilt, not the pointer */
 
   /* ----------------------------------------------------------
-     3 · HERO CAMPAIGN FILM — silent, wide screens only,
-     poster image is the permanent fallback
+     3 · HERO CAMPAIGN FILM — silent, every device.
+     The poster frame is the film's own first frame, so the
+     swap is invisible and the image is always a valid fallback.
      ---------------------------------------------------------- */
   (function heroFilm() {
     const v = document.getElementById("heroFilm");
     if (!v) return;
-    const wide = matchMedia("(min-width: 701px)").matches;
-    if (reduce || !wide) { v.remove(); return; }
+    // respect reduced-motion and explicit data-saver / very slow links only
+    const net = navigator.connection || {};
+    const tooSlow = net.saveData === true || /^(slow-2g|2g)$/.test(net.effectiveType || "");
+    if (reduce || tooSlow) { v.remove(); return; }
+
     v.src = "video/hero-film.mp4";
     v.addEventListener("canplay", () => { v.classList.add("is-live"); }, { once: true });
     v.addEventListener("error", () => { v.remove(); }, { once: true });
-    v.play().catch(() => { /* poster stays — autoplay refused or file missing */ });
-    // battery care: pause when the hero is off screen
+
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+    // iOS/Safari can refuse autoplay until the first interaction — retry once, quietly
+    ["touchstart", "pointerdown"].forEach((ev) =>
+      window.addEventListener(ev, tryPlay, { once: true, passive: true })
+    );
+
+    // battery care: play only while the hero is on screen
     if (window.IntersectionObserver) {
       new IntersectionObserver((ents) => {
         if (!v.isConnected) return;
-        ents[0].isIntersecting ? v.play().catch(() => {}) : v.pause();
+        ents[0].isIntersecting ? tryPlay() : v.pause();
       }, { threshold: 0.05 }).observe(v);
     }
   })();
