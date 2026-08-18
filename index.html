@@ -594,6 +594,25 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .card.is-sold .card__price { color: var(--olive); text-decoration: line-through; }
 .card__fav { position: absolute; top: .7rem; inset-inline-end: .7rem; z-index: 3; width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--bone) 75%, transparent); display: grid; place-items: center; color: var(--ink); transition: background .3s, color .3s; }
 .card__fav:hover, .card__fav.is-on { background: var(--forest); color: var(--bone); }
+
+/* image color arrows — card, quick-view modal, lightbox */
+.img-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+  width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--bone) 70%, transparent); color: var(--ink);
+  backdrop-filter: blur(4px); transition: background .25s, opacity .25s;
+  font-size: 1.1rem; line-height: 1; opacity: .0;
+}
+.card__media:hover .img-nav, .img-nav:focus-visible { opacity: 1; }
+.img-nav:hover { background: var(--bone); }
+.img-nav--prev { left: .6rem; }
+.img-nav--next { right: .6rem; }
+.pmodal__media .img-nav, .lightbox .img-nav { opacity: 1; width: 42px; height: 42px; font-size: 1.4rem; }
+.pmodal__media .img-nav--prev, .lightbox .img-nav--prev { left: .8rem; }
+.pmodal__media .img-nav--next, .lightbox .img-nav--next { right: .8rem; }
+.lightbox .img-nav { background: rgba(255,255,255,.14); color: var(--bone); }
+.lightbox .img-nav:hover { background: rgba(255,255,255,.26); }
+@media (hover: none) { .img-nav { opacity: 1; } }
 .card__add {
   position: absolute; inset-inline: .7rem; bottom: .7rem; z-index: 3;
   opacity: 0; transform: translateY(8px); transition: opacity .4s var(--ease), transform .4s var(--ease);
@@ -1703,6 +1722,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         <button class="pmodal__zoom" id="pmZoom" aria-label="הגדלת תמונה">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
         </button>
+        <button class="img-nav img-nav--prev" id="pmPrevColor" aria-label="צבע קודם">‹</button>
+        <button class="img-nav img-nav--next" id="pmNextColor" aria-label="צבע הבא">›</button>
       </div>
       <div class="pmodal__info">
         <span class="pmodal__tag" id="pmTag" hidden></span>
@@ -1756,6 +1777,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     <button class="lightbox__close" id="lightboxClose" aria-label="סגור">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
+    <button class="img-nav img-nav--prev" id="lbPrevColor" aria-label="צבע קודם">‹</button>
+    <button class="img-nav img-nav--next" id="lbNextColor" aria-label="צבע הבא">›</button>
     <img id="lightboxImg" src="" alt="" />
     <div class="lightbox__colors" id="lbColors" aria-label="בחירת צבע"></div>
   </div>
@@ -1930,6 +1953,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       const fav = state.fav.has(p.id) ? "is-on" : "";
       const tag = p.tag ? `<span class="card__tag">${p.tag}</span>` : "";
       const inStock = productInStock(p.id);
+      const multiColor = invColors(p.id).length > 1;
+      const navArrows = multiColor
+        ? `<button class="img-nav img-nav--prev" data-imgnav="${p.id}" data-dir="prev" aria-label="צבע קודם">‹</button>
+           <button class="img-nav img-nav--next" data-imgnav="${p.id}" data-dir="next" aria-label="צבע הבא">›</button>`
+        : "";
       const addArea = inStock
         ? `<div class="card__add"><button class="btn btn--sm btn--block" data-view="${p.id}"><span>בחירת מידה</span></button></div>`
         : `<div class="card__add"><button class="btn btn--sm btn--block btn--ghost" disabled><span>אזל מהמלאי</span></button></div>`;
@@ -1942,6 +1970,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
             <svg width="15" height="15" viewBox="0 0 24 24" fill="${fav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10z"/></svg>
           </button>
           <img class="photo" src="${imgForColor(p, defaultColor(p.id))}" alt="${p.name}" loading="lazy" data-photo="${p.id}">
+          ${navArrows}
           ${addArea}
         </div>
         <div class="card__info">
@@ -1964,6 +1993,13 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   const COLOR_SUFFIX = { "לבן": "white", "נייבי": "navy", "זית": "sage", "חום": "brown", "בז'": "beige" };
   const imgForColor = (p, cname) => { const s = COLOR_SUFFIX[cname]; return s ? ("img/products/" + p.id + "-" + s + ".png") : imgFor(p); };
   const defaultColor = (id) => { const cs = invColors(id); return (cs.find((c) => colorInStock(id, c.name)) || cs[0] || { name: "" }).name; };
+  // next/previous color name in the product's color list, wrapping around
+  function neighborColor(id, currentName, dir) {
+    const cs = invColors(id);
+    if (cs.length < 2) return currentName;
+    const i = Math.max(0, cs.findIndex((c) => c.name === currentName));
+    return cs[(i + dir + cs.length) % cs.length].name;
+  }
 
   function invColors(id) { return (INV[id] && INV[id].colors) || []; }
   function invPrice(id) { return (INV[id] && INV[id].price != null) ? INV[id].price : (product(id) && product(id).price) || 0; }
@@ -2130,6 +2166,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     const add = e.target.closest("[data-add]");
     const fav = e.target.closest("[data-fav]");
     const cardsw = e.target.closest("[data-cardsw]");
+    const navBtn = e.target.closest("[data-imgnav]");
     if (add) { addToCart(add.dataset.add); return; }
     if (fav) { toggleFav(fav.dataset.fav, fav); return; }
     if (cardsw) {
@@ -2137,6 +2174,16 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       const img = grid.querySelector(`img.photo[data-photo="${id}"]`);
       if (img) img.src = imgForColor(product(id), cname);
       cardsw.parentElement.querySelectorAll(".card-sw").forEach((b) => b.classList.toggle("is-active", b === cardsw));
+      return;
+    }
+    if (navBtn) {
+      const id = navBtn.dataset.imgnav;
+      const activeSw = grid.querySelector(`.card[data-id="${id}"] .card-sw.is-active`);
+      const current = activeSw ? activeSw.dataset.color : defaultColor(id);
+      const next = neighborColor(id, current, navBtn.dataset.dir === "next" ? 1 : -1);
+      const img = grid.querySelector(`img.photo[data-photo="${id}"]`);
+      if (img) img.src = imgForColor(product(id), next);
+      grid.querySelectorAll(`.card[data-id="${id}"] .card-sw`).forEach((b) => b.classList.toggle("is-active", b.dataset.color === next));
       return;
     }
     const card = e.target.closest(".card");
@@ -2203,6 +2250,19 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     span.textContent = ok ? "הוספה לסל" : "אזל מהמלאי";
   }
 
+  // move to the next (dir=1) or previous (dir=-1) color, updating every place the image shows
+  function stepPmColor(dir) {
+    if (!pmCurrent) return;
+    const next = neighborColor(pmCurrent, pmColor, dir);
+    if (next === pmColor) return;
+    pmColor = next;
+    pmSize = product(pmCurrent).sizes.find((s) => invStock(pmCurrent, pmColor, s) > 0) || null;
+    const src = imgForColor(product(pmCurrent), pmColor);
+    $("#pmImg").src = src;
+    if (lightbox.classList.contains("is-open")) $("#lightboxImg").src = src;
+    renderPmColors(); renderPmSizes(); updatePmAdd();
+  }
+
   function openProduct(id) {
     const p = product(id);
     if (!p) return;
@@ -2219,6 +2279,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     $("#pmFit").textContent = fitLabel(p.fit);
     $("#pmDesc").textContent = productDesc(p);
     const meas = $("#pmMeasures"); if (meas) meas.innerHTML = measurementsFor(p);
+    const showNav = colors.length > 1;
+    $("#pmPrevColor").hidden = $("#pmNextColor").hidden = $("#lbPrevColor").hidden = $("#lbNextColor").hidden = !showNav;
     renderPmColors();
     renderPmSizes();
     updatePmAdd();
@@ -2267,6 +2329,22 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   });
   $("#lightboxImg").addEventListener("click", (e) => e.stopPropagation());  // don't close when interacting with image
   lightbox.addEventListener("click", () => lightbox.classList.remove("is-open"));
+
+  // color arrows on the quick-view image and the lightbox
+  $("#pmPrevColor").addEventListener("click", (e) => { e.stopPropagation(); stepPmColor(-1); });
+  $("#pmNextColor").addEventListener("click", (e) => { e.stopPropagation(); stepPmColor(1); });
+  $("#lbPrevColor").addEventListener("click", (e) => { e.stopPropagation(); stepPmColor(-1); });
+  $("#lbNextColor").addEventListener("click", (e) => { e.stopPropagation(); stepPmColor(1); });
+
+  // ← → keys cycle colors while the quick-view or lightbox is open
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    if (!productModal.classList.contains("is-open") && !lightbox.classList.contains("is-open")) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || "";
+    if (tag === "INPUT" || tag === "TEXTAREA") return;
+    e.preventDefault();
+    stepPmColor(e.key === "ArrowRight" ? 1 : -1);
+  });
 
   cartBody.addEventListener("click", (e) => {
     const inc = e.target.closest("[data-inc]");
