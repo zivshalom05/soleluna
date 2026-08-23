@@ -2,7 +2,7 @@ services:
   - type: web
     name: soleluna
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /api/config
@@ -32,9 +32,9 @@ services:
         value: "12"
       - key: LOW_STOCK_THRESHOLD
         value: "3"
-    # דיסק קבוע (זמין רק מ-plan: starter ומעלה) — כך שקובץ ה-SQLite,
-    # ובו ההזמנות והמלאי, שורד בין deploy ל-deploy במקום להתאפס.
-    disk:
-      name: soleluna-data
-      mountPath: /opt/render/project/src/data
-      sizeGB: 1
+    # להזמנות שנשמרות לתמיד (SQLite): שדרגו ל-plan: starter והסירו את ההערה —
+    # בתוכנית free הדיסק זמני וההזמנות נמחקות בכל deploy.
+    # disk:
+    #   name: soleluna-data
+    #   mountPath: /opt/render/project/src/data
+    #   sizeGB: 1
