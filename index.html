@@ -1149,12 +1149,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 
     <div class="hero__content container">
       <span class="hero__eyebrow" data-reveal>הקולקציה הראשונה · קיץ 2026</span>
-      <h1 class="hero__title" data-reveal aria-label="הנוחות, נארגת מחדש">
+      <h1 class="hero__title" data-reveal aria-label="הנוחות, הופכת לסטייל">
         <span class="ln"><span>הנוחות,</span></span>
-        <span class="ln"><span>נארגת מחדש.</span></span>
+        <span class="ln"><span>הופכת לסטייל.</span></span>
       </h1>
       <p class="hero__copy" data-reveal data-reveal-delay="2">
-        לייוסל ופשתן, נטוויים לבגדים שנושמים איתכם — מהבוקר במשרד ועד ערב מול הים.
+        לייוסל ופשתן טבעיים, שנושמים איתכם ומחמיאים לכל קו גוף — מהבוקר במשרד ועד ערב מול הים.
       </p>
       <div class="hero__cta" data-reveal data-reveal-delay="3">
         <a href="#shop" class="btn btn--hero"><span>לגילוי הקולקציה</span></a>
@@ -1166,7 +1166,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <!-- ============ VALUE MARQUEE ============ -->
   <div class="valuestrip" aria-hidden="true">
     <div class="valuestrip__track">
-      <span>נושם</span><span>מחויט</span><span>קליל</span><span>טבעי</span><span>מווסת חום</span><span>אלגנטי</span>
+      <span>נושם</span><span>מחויט</span><span>קליל</span><span>טבעי</span><span>מווסת חום</span><span>מחמיא לגוף</span><span>אלגנטי</span><span>בר-קיימא</span>
     </div>
   </div>
 
@@ -1252,7 +1252,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
           <div class="feat">
             <svg class="feat__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10z"/><path d="M9 11l2 2 4-4"/></svg>
             <h3>טבעי ואחראי</h3>
-            <p>סיבים ממקור צמחי, רכים על העור וידידותיים יותר לסביבה.</p>
+            <p>סיבים ממקור צמחי, עדינים על העור, בריאים לגוף וידידותיים יותר לסביבה.</p>
           </div>
         </div>
       </div>
@@ -1521,7 +1521,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <div class="footer__top">
         <div class="footer__brand">
           <span class="brand__mark">sole&luna</span>
-          <p>בדים שנארגים מתוך תשוקה לנוחות ולסטייל. הנוחות, נארגת מחדש.</p>
+          <p>בדים טבעיים ובני-קיימא, מתוך תשוקה לנוחות ולסטייל. הנוחות, הופכת לסטייל.</p>
           <p style="margin-top:.8rem;"><a href="mailto:solelunabsns@gmail.com" class="link-underline" style="color:var(--bone);">solelunabsns@gmail.com</a></p>
           <div class="footer__social">
             <a href="https://www.instagram.com/solelunaofficiall" target="_blank" rel="noopener" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
@@ -2197,8 +2197,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 
   function productDesc(p) {
     const t = p.type === "shirt" ? "חולצה" : "מכנסיים";
-    const fitTxt = { relaxed: "גזרה רפויה ונופלת לתחושת חופש מלאה", straight: "גזרה ישרה ונקייה שמחמיאה לכל מבנה גוף", slim: "גזרה מחויטת ואלגנטית למראה מוקפד" }[p.fit] || "";
-    return `${t} מבד לייוסל 70% ופשתן 30% — נושם, קליל ונעים על העור. ${fitTxt}. מהמשרד ועד הריזורט.`;
+    const fitTxt = {
+      relaxed: "גזרה רפויה ונופלת לתחושת חופש מלאה, שמחמיאה לכל קו גוף",
+      straight: "גזרה ישרה ונקייה שמחמיאה לכל מבנה גוף",
+      slim: "גזרה מחויטת שמדגישה את קווי הגוף למראה מוקפד ואלגנטי",
+    }[p.fit] || "";
+    return `${t} מבד טבעי לייוסל 70% ופשתן 30% — נושם, קליל ורך על העור. ${fitTxt}. הסטייל שעובר איתכם מהמשרד ועד הריזורט, בלי להתפשר על נוחות.`;
   }
 
   /* garment measurements (cm) — deterministic per type + fit + size */
