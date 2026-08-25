@@ -631,6 +631,51 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === "POST" && u.pathname === "/api/admin/customers") {
+      if (!requireAdmin(session)) { json(res, 403, { error: "אין הרשאה" }); return; }
+      const customers = db.prepare(`
+        SELECT u.id, u.email, u.name, u.phone, u.created_at,
+          (SELECT COUNT(*) FROM orders o WHERE o.user_id = u.id) AS orderCount,
+          (SELECT COALESCE(SUM(total), 0) FROM orders o WHERE o.user_id = u.id AND o.status = 'paid') AS totalSpent
+        FROM users u WHERE u.deleted_at IS NULL
+        ORDER BY totalSpent DESC, u.created_at DESC
+        LIMIT 500
+      `).all();
+      json(res, 200, { customers });
+      return;
+    }
+
+    if (req.method === "POST" && u.pathname === "/api/admin/contact-messages") {
+      if (!requireAdmin(session)) { json(res, 403, { error: "אין הרשאה" }); return; }
+      const messages = db.prepare(`
+        SELECT id, name, email, message, created_at FROM contact_messages
+        ORDER BY created_at DESC LIMIT 300
+      `).all();
+      json(res, 200, { messages });
+      return;
+    }
+
+    if (req.method === "POST" && u.pathname === "/api/admin/sales-breakdown") {
+      if (!requireAdmin(session)) { json(res, 403, { error: "אין הרשאה" }); return; }
+      const byColor = db.prepare(`
+        SELECT oi.color, SUM(oi.qty) AS qty, SUM(oi.qty * oi.price) AS revenue
+        FROM order_items oi JOIN orders o ON o.id = oi.order_id
+        WHERE o.status = 'paid'
+        GROUP BY oi.color ORDER BY qty DESC
+      `).all();
+      const byProduct = db.prepare(`
+        SELECT oi.product_id, oi.color, oi.size, SUM(oi.qty) AS qty, SUM(oi.qty * oi.price) AS revenue
+        FROM order_items oi JOIN orders o ON o.id = oi.order_id
+        WHERE o.status = 'paid'
+        GROUP BY oi.product_id, oi.color, oi.size ORDER BY qty DESC
+        LIMIT 500
+      `).all();
+      const nameById = new Map(getAllProducts(db).map((p) => [p.id, p.name]));
+      for (const row of byProduct) row.name = nameById.get(row.product_id) || row.product_id;
+      json(res, 200, { byColor, byProduct });
+      return;
+    }
+
     if (req.method === "POST" && u.pathname === "/api/admin/inventory") {
       if (!requireAdmin(session)) { json(res, 403, { error: "אין הרשאה" }); return; }
       json(res, 200, { products: getAllProducts(db) });

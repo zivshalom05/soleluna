@@ -1024,6 +1024,25 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .adm-del { color: #a4513f; font-size: .72rem; }
 .adm-addcolor { font-family: var(--mark); font-size: .74rem; color: var(--forest); margin-top: .6rem; text-decoration: underline; }
 
+#adminSave[hidden] { display: none; }
+.admin__tabs { position: sticky; top: 61px; z-index: 2; background: var(--bone); border-bottom: 1px solid var(--line); display: flex; gap: .3rem; flex-wrap: wrap; padding: .7rem 1.5rem; }
+.admin__tab { font-family: var(--mark); font-size: .72rem; letter-spacing: .06em; padding: .5em 1em; border-radius: 30px; color: var(--olive); transition: all .25s var(--ease); }
+.admin__tab:hover { background: var(--sand); }
+.admin__tab.is-active { background: var(--forest); color: var(--bone); }
+.adm-table { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; font-size: .86rem; }
+.adm-table th { text-align: start; font-family: var(--mark); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--olive); padding: .7em .9em; background: var(--sand); }
+.adm-table td { padding: .6em .9em; border-top: 1px solid var(--line); vertical-align: top; }
+.adm-table tr:hover td { background: var(--mist); }
+.adm-empty { color: var(--olive); font-size: .9rem; padding: 1.5rem; text-align: center; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+.adm-msg { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.2rem; }
+.adm-msg + .adm-msg { margin-top: .7rem; }
+.adm-msg__head { display: flex; justify-content: space-between; gap: 1rem; font-size: .82rem; color: var(--olive); margin-bottom: .4rem; flex-wrap: wrap; }
+.adm-msg__head b { color: var(--ink); }
+.adm-tag { font-family: var(--mark); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; padding: .25em .7em; border-radius: 30px; }
+.adm-tag--paid { background: var(--okbg, #e8f3ec); color: var(--forest); }
+.adm-tag--pending { background: var(--sand); color: var(--clay); }
+.adm-tag--canceled { background: var(--mist); color: var(--olive); }
+
 /* ===========================================================
    ✦ ATELIER 3D LAYER — WebGL silk · tilt
    (all optional & guarded; site is fully usable without any of it)
@@ -1798,12 +1817,18 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <!-- ============ ADMIN — inventory manager (open via ?admin=PASS) ============ -->
   <div class="admin" id="adminPanel" hidden>
     <div class="admin__bar">
-      <strong>ניהול מלאי · sole&luna</strong>
-      <span class="admin__hint">שינויים נשמרים בשרת · נראים לכל הלקוחות</span>
+      <strong>ניהול · sole&luna</strong>
       <div class="admin__actions">
         <button class="btn btn--sm" id="adminSave"><span>שמירה ופרסום</span></button>
         <button class="btn btn--sm btn--ghost" id="adminClose"><span>סגירה</span></button>
       </div>
+    </div>
+    <div class="admin__tabs" id="adminTabs">
+      <button class="admin__tab is-active" data-tab="inventory">מלאי ומחירים</button>
+      <button class="admin__tab" data-tab="orders">הזמנות</button>
+      <button class="admin__tab" data-tab="customers">לקוחות</button>
+      <button class="admin__tab" data-tab="contact">פניות</button>
+      <button class="admin__tab" data-tab="sales">מכירות לפי צבע/מידה</button>
     </div>
     <div class="admin__body" id="adminBody"></div>
   </div>
@@ -2801,6 +2826,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
      =========================================================== */
   const adminPanel = $("#adminPanel"), adminBody = $("#adminBody");
   let adminStats = { orders: 0, paid: 0, revenue: 0, subscribers: 0, users: 0 };
+  let adminOrders = [];
+  let adminTab = "inventory";
+  // lazy per-tab caches — null means "not fetched yet"
+  let adminCustomers = null, adminMessages = null, adminSales = null;
+  let adminOrderFilter = { q: "", status: "all" };
 
   function adminDashboard() {
     const cell = (label, val) => `<div class="dash-cell"><span>${label}</span><b>${val}</b></div>`;
@@ -2813,8 +2843,15 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <div class="dash-note">נתונים מהשרת בזמן אמת.</div>
     </div>`;
   }
-  function buildAdmin() {
-    adminBody.innerHTML = adminDashboard() + PRODUCTS.map((p) => {
+  function orderStatusTag(o) {
+    const label = { paid: "שולם", pending: "ממתין", canceled: "בוטל" }[o.status] || o.status;
+    const cls = { paid: "paid", pending: "pending", canceled: "canceled" }[o.status] || "pending";
+    return `<span class="adm-tag adm-tag--${cls}">${esc(label)}</span>`;
+  }
+  function fmtDate(ts) { return ts ? new Date(ts).toLocaleString("he-IL") : "—"; }
+
+  function buildInventoryTab() {
+    return adminDashboard() + PRODUCTS.map((p) => {
       const colors = invColors(p.id).map((c, ci) => {
         const stock = p.sizes.map((s) =>
           `<span class="adm-stock"><label>${s}</label><input type="number" min="0" data-k="stock" data-id="${p.id}" data-color="${c.name}" data-size="${s}" value="${invStock(p.id, c.name, s)}"></span>`).join("");
@@ -2827,7 +2864,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       }).join("");
       return `<div class="adm-card">
         <div class="adm-card__head">
-          <h4>${p.name}</h4>
+          <h4>${esc(p.name)}</h4>
           <span class="pmodal__label">מחיר ₪</span>
           <input class="adm-price" type="number" min="0" data-k="price" data-id="${p.id}" value="${invPrice(p.id)}">
         </div>
@@ -2836,6 +2873,119 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       </div>`;
     }).join("");
   }
+
+  function buildOrdersTab() {
+    const q = adminOrderFilter.q.trim().toLowerCase();
+    const list = adminOrders.filter((o) => {
+      if (adminOrderFilter.status !== "all" && o.status !== adminOrderFilter.status) return false;
+      if (!q) return true;
+      return (o.order_num || "").toLowerCase().includes(q) || (o.email || "").toLowerCase().includes(q);
+    });
+    const rows = list.map((o) => `<tr>
+        <td><b>${esc(o.order_num)}</b></td>
+        <td>${fmtDate(o.created_at)}</td>
+        <td>${esc(o.email || "—")}</td>
+        <td>${o.item_count} פריטים</td>
+        <td>${ILS(o.total)}</td>
+        <td>${orderStatusTag(o)}</td>
+        <td>${o.status === "paid" ? (o.shipped_at ? "נשלח · " + fmtDate(o.shipped_at) : "לא נשלח") : "—"}</td>
+      </tr>`).join("");
+    return `
+      <div class="adm-card">
+        <div class="adm-card__head">
+          <input type="text" placeholder="חיפוש לפי מספר הזמנה או מייל…" id="admOrderSearch" value="${esc(adminOrderFilter.q)}" style="flex:1;min-width:200px">
+          <select id="admOrderStatus">
+            <option value="all" ${adminOrderFilter.status === "all" ? "selected" : ""}>כל הסטטוסים</option>
+            <option value="paid" ${adminOrderFilter.status === "paid" ? "selected" : ""}>שולם</option>
+            <option value="pending" ${adminOrderFilter.status === "pending" ? "selected" : ""}>ממתין</option>
+            <option value="canceled" ${adminOrderFilter.status === "canceled" ? "selected" : ""}>בוטל</option>
+          </select>
+        </div>
+      </div>
+      ${list.length ? `<table class="adm-table"><thead><tr>
+          <th>הזמנה</th><th>תאריך</th><th>לקוח</th><th>פריטים</th><th>סכום</th><th>סטטוס</th><th>משלוח</th>
+        </tr></thead><tbody>${rows}</tbody></table>`
+        : `<div class="adm-empty">אין הזמנות תואמות לסינון (${adminOrders.length} סה״כ בשרת).</div>`}
+      <div class="dash-note" style="margin-top:.5rem">מציג עד 200 ההזמנות האחרונות.</div>`;
+  }
+
+  function buildCustomersTab() {
+    if (!adminCustomers) return `<div class="adm-empty">טוען…</div>`;
+    if (!adminCustomers.length) return `<div class="adm-empty">אין עדיין לקוחות רשומים.</div>`;
+    const rows = adminCustomers.map((c) => `<tr>
+        <td><b>${esc(c.name || "—")}</b></td>
+        <td>${esc(c.email)}</td>
+        <td>${esc(c.phone || "—")}</td>
+        <td>${fmtDate(c.created_at)}</td>
+        <td>${c.orderCount}</td>
+        <td>${ILS(c.totalSpent)}</td>
+      </tr>`).join("");
+    return `<table class="adm-table"><thead><tr>
+        <th>שם</th><th>אימייל</th><th>טלפון</th><th>נרשם/ה</th><th>הזמנות</th><th>סה״כ הוצאה</th>
+      </tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  function buildContactTab() {
+    if (!adminMessages) return `<div class="adm-empty">טוען…</div>`;
+    if (!adminMessages.length) return `<div class="adm-empty">אין פניות מטופס צור-קשר.</div>`;
+    return adminMessages.map((m) => `<div class="adm-msg">
+        <div class="adm-msg__head"><span><b>${esc(m.name || "ללא שם")}</b> · ${esc(m.email)}</span><span>${fmtDate(m.created_at)}</span></div>
+        <div>${esc(m.message)}</div>
+      </div>`).join("");
+  }
+
+  function buildSalesTab() {
+    if (!adminSales) return `<div class="adm-empty">טוען…</div>`;
+    const colorRows = adminSales.byColor.map((r) => `<tr>
+        <td><b>${esc(r.color)}</b></td><td>${r.qty} יח׳</td><td>${ILS(r.revenue)}</td>
+      </tr>`).join("");
+    const prodRows = adminSales.byProduct.map((r) => `<tr>
+        <td>${esc(r.name)}</td><td>${esc(r.color)}</td><td>${esc(r.size)}</td><td>${r.qty} יח׳</td><td>${ILS(r.revenue)}</td>
+      </tr>`).join("");
+    return `
+      <div class="dash-note" style="margin-bottom:.6rem">מבוסס על הזמנות ששולמו בפועל (סטטוס "שולם") — כל הזמן, לא רק חלון זמן.</div>
+      <h4 style="margin-bottom:.5rem">לפי צבע (כל המוצרים)</h4>
+      ${adminSales.byColor.length
+        ? `<table class="adm-table"><thead><tr><th>צבע</th><th>כמות שנמכרה</th><th>הכנסה</th></tr></thead><tbody>${colorRows}</tbody></table>`
+        : `<div class="adm-empty">אין עדיין מכירות.</div>`}
+      <h4 style="margin:1.2rem 0 .5rem">לפי מוצר · צבע · מידה</h4>
+      ${adminSales.byProduct.length
+        ? `<table class="adm-table"><thead><tr><th>מוצר</th><th>צבע</th><th>מידה</th><th>כמות</th><th>הכנסה</th></tr></thead><tbody>${prodRows}</tbody></table>`
+        : `<div class="adm-empty">אין עדיין מכירות.</div>`}`;
+  }
+
+  async function buildAdmin() {
+    $("#adminSave").hidden = adminTab !== "inventory";
+    if (adminTab === "inventory") { adminBody.innerHTML = buildInventoryTab(); return; }
+    if (adminTab === "orders") { adminBody.innerHTML = buildOrdersTab(); return; }
+    if (adminTab === "customers") {
+      adminBody.innerHTML = buildCustomersTab();
+      if (!adminCustomers) { adminCustomers = (await api("/api/admin/customers", { method: "POST", body: "{}" }).catch(() => ({ customers: [] }))).customers || []; adminBody.innerHTML = buildCustomersTab(); }
+      return;
+    }
+    if (adminTab === "contact") {
+      adminBody.innerHTML = buildContactTab();
+      if (!adminMessages) { adminMessages = (await api("/api/admin/contact-messages", { method: "POST", body: "{}" }).catch(() => ({ messages: [] }))).messages || []; adminBody.innerHTML = buildContactTab(); }
+      return;
+    }
+    if (adminTab === "sales") {
+      adminBody.innerHTML = buildSalesTab();
+      if (!adminSales) { adminSales = await api("/api/admin/sales-breakdown", { method: "POST", body: "{}" }).catch(() => ({ byColor: [], byProduct: [] })); adminBody.innerHTML = buildSalesTab(); }
+      return;
+    }
+  }
+  $("#adminTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-tab]"); if (!btn) return;
+    adminTab = btn.dataset.tab;
+    $$("#adminTabs .admin__tab").forEach((b) => b.classList.toggle("is-active", b === btn));
+    buildAdmin();
+  });
+  adminBody.addEventListener("input", (e) => {
+    if (e.target.id === "admOrderSearch") { adminOrderFilter.q = e.target.value; buildAdmin(); }
+  });
+  adminBody.addEventListener("change", (e) => {
+    if (e.target.id === "admOrderStatus") { adminOrderFilter.status = e.target.value; buildAdmin(); }
+  });
   async function loadAdminData() {
     try {
       const [invData, ordData] = await Promise.all([
@@ -2845,11 +2995,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       PRODUCTS = invData.products || PRODUCTS;
       syncInventoryFromProducts();
       adminStats = ordData.stats || adminStats;
+      adminOrders = ordData.orders || [];
     } catch (e) {
       toast("שגיאה בטעינת נתוני ניהול");
     }
   }
-  async function openAdmin() { await loadAdminData(); buildAdmin(); adminPanel.hidden = false; document.body.style.overflow = "hidden"; }
+  async function openAdmin() { await loadAdminData(); await buildAdmin(); adminPanel.hidden = false; document.body.style.overflow = "hidden"; }
   function closeAdmin() { adminPanel.hidden = true; document.body.style.overflow = ""; }
 
   adminBody.addEventListener("input", (e) => {
