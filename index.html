@@ -2206,7 +2206,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   let pmCurrent = null, pmSize = null, pmColor = null;
 
   function productDesc(p) {
-    const t = p.type === "shirt" ? "חולצה" : "מכנסיים";
+    const t = p.cut === "jacket" ? "ג'קט" : p.cut === "shorts" ? "מכנס קצר" : (p.type === "shirt" ? "חולצה" : "מכנסיים");
     const fitTxt = {
       relaxed: "גזרה רפויה ונופלת לתחושת חופש מלאה, שמחמיאה לכל קו גוף",
       straight: "גזרה ישרה ונקייה שמחמיאה לכל מבנה גוף",
@@ -2222,8 +2222,14 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     let cols, rows;
     if (p.type === "pants") {
       const base = { relaxed: { waist: 84, hip: 110 }, straight: { waist: 82, hip: 106 }, slim: { waist: 80, hip: 102 } }[p.fit];
+      const isShorts = p.cut === "shorts";
       cols = ["מידה", "היקף מותן", "היקף ירך", "אורך פנימי", "אורך כולל"];
-      rows = p.sizes.map((s) => { const k = step(s); return [s, (base.waist + k * 4), (base.hip + k * 4), (74 + k), (100 + k * 2)]; });
+      rows = p.sizes.map((s) => {
+        const k = step(s);
+        const inseam = isShorts ? (24 + k) : (74 + k);
+        const total = isShorts ? (46 + k) : (100 + k * 2);
+        return [s, (base.waist + k * 4), (base.hip + k * 4), inseam, total];
+      });
     } else {
       const base = { relaxed: { chest: 112 }, straight: { chest: 106 }, slim: { chest: 100 } }[p.fit];
       cols = ["מידה", "היקף חזה", "אורך", "כתפיים", "שרוול"];
