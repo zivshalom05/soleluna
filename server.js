@@ -60,6 +60,7 @@ const GROW = {
 };
 
 const rateBuckets = new Map();
+const loginBuckets = new Map();
 const pendingPayments = new Map();
 const verifyTokens = new Map();
 
@@ -109,6 +110,22 @@ function rateLimit(ip) {
   }
   bucket.count += 1;
   return bucket.count <= RATE_MAX;
+}
+
+// Tighter, separate budget for password-guessing endpoints (admin + user
+// login) — the general API limit alone (60/min) is loose enough to brute
+// force a weak password; this caps it independently of normal browsing traffic.
+const LOGIN_RATE_WINDOW_MS = 15 * 60_000;
+const LOGIN_RATE_MAX = 10;
+function loginRateLimit(ip) {
+  const now = Date.now();
+  let bucket = loginBuckets.get(ip);
+  if (!bucket || now - bucket.start > LOGIN_RATE_WINDOW_MS) {
+    bucket = { start: now, count: 0 };
+    loginBuckets.set(ip, bucket);
+  }
+  bucket.count += 1;
+  return bucket.count <= LOGIN_RATE_MAX;
 }
 
 function newToken() {
@@ -477,6 +494,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === "POST" && u.pathname === "/api/auth/login") {
+      if (!loginRateLimit(ip)) { json(res, 429, { error: "יותר מדי ניסיונות התחברות — נסו שוב בעוד כמה דקות" }); return; }
       const body = await parseJson(req);
       const email = String(body.email || "").trim().toLowerCase();
       const password = String(body.password || "");
@@ -573,6 +591,7 @@ const server = http.createServer(async (req, res) => {
     /* ---- Admin ---- */
     if (req.method === "POST" && u.pathname === "/api/admin/login") {
       if (!ADMIN_PASS) { json(res, 403, { ok: false }); return; }
+      if (!loginRateLimit(ip)) { json(res, 429, { ok: false, error: "יותר מדי ניסיונות — נסו שוב בעוד כמה דקות" }); return; }
       const body = await parseJson(req);
       const password = String(body.password || "");
       const a = Buffer.from(password);

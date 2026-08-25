@@ -26,8 +26,10 @@ services:
         value: solelunabsns@gmail.com
       - key: RESEND_API_KEY
         sync: false
+      # secret — set once in Render's dashboard, never committed. Changing
+      # this to sync:false does NOT reset the value already configured there.
       - key: CRON_KEY
-        value: sl_wt_7hq3k9zt2p_report_trigger
+        sync: false
       - key: REPORT_INTERVAL_HOURS
         value: "12"
       - key: LOW_STOCK_THRESHOLD
