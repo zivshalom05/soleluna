@@ -713,8 +713,15 @@ const server = http.createServer(async (req, res) => {
       const orderCalc = validateCart(body.cart, body.coupon);
       if (orderCalc.error) { json(res, 400, { error: orderCalc.error }); return; }
 
+      const guestEmail = String(body.email || "").trim();
+      if (guestEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail)) {
+        json(res, 400, { error: "אימייל לא תקין" }); return;
+      }
+      const email = guestEmail || (session && session.user && session.user.email) || "";
+      const giftName = String(body.giftName || "").trim().slice(0, 120) || null;
+      const giftMsg = String(body.giftMsg || "").trim().slice(0, 500) || null;
+
       const paymentSession = newToken();
-      const email = body.email || (session && session.user && session.user.email) || "";
       const { orderId, orderNum } = createOrder({
         userId: session && session.user ? session.user.id : null,
         total: orderCalc.total,
@@ -723,8 +730,8 @@ const server = http.createServer(async (req, res) => {
         shipping: orderCalc.shipping,
         coupon: orderCalc.coupon,
         email,
-        giftName: body.giftName || null,
-        giftMsg: body.giftMsg || null,
+        giftName,
+        giftMsg,
         paymentToken: paymentSession,
         lines: orderCalc.lines,
       });

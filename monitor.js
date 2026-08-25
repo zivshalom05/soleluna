@@ -6,6 +6,9 @@
 
 const HOUR = 3600_000;
 
+// customer-supplied fields (order email, error text) reach the HTML email
+// body built here — escape before interpolating, always.
+function esc(v) { return String(v ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m])); }
 function shekel(n) { return "₪" + Number(n || 0).toLocaleString("he-IL"); }
 function ok(label, note) { return { label, status: "ok", note }; }
 function warn(label, note) { return { label, status: "warn", note }; }
@@ -226,27 +229,27 @@ function renderReportHtml(r) {
 
   const checksHtml = r.checks.map((c) =>
     `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid #f0f2ec">
-       <span style="color:#1e2a22">${c.label} — <span style="color:#5a6b5e">${c.note}</span></span>
+       <span style="color:#1e2a22">${esc(c.label)} — <span style="color:#5a6b5e">${esc(c.note)}</span></span>
        <span style="${badge(c.status)}">${statusWord(c.status)}</span></div>`).join("");
 
   const lowHtml = r.inventory.low.length
-    ? r.inventory.low.map((i) => `<div style="padding:4px 0;color:#8a6d1a">⚠ ${i.name} (${i.color_name} / ${i.size}) — נותרו ${i.stock}</div>`).join("")
+    ? r.inventory.low.map((i) => `<div style="padding:4px 0;color:#8a6d1a">⚠ ${esc(i.name)} (${esc(i.color_name)} / ${esc(i.size)}) — נותרו ${i.stock}</div>`).join("")
     : `<div style="color:#5a6b5e">כל הפריטים במלאי תקין 👍</div>`;
   const soldOutHtml = r.inventory.soldOut.length
-    ? r.inventory.soldOut.map((i) => `<div style="padding:4px 0;color:#b3261e">✗ אזל: ${i.name} (${i.color_name} / ${i.size})</div>`).join("")
+    ? r.inventory.soldOut.map((i) => `<div style="padding:4px 0;color:#b3261e">✗ אזל: ${esc(i.name)} (${esc(i.color_name)} / ${esc(i.size)})</div>`).join("")
     : "";
   const shipHtml = r.shipments.pending.length
     ? `<table style="width:100%;border-collapse:collapse;font:13px system-ui,Arial">
         <tr style="color:#5a6b5e;text-align:start"><th style="text-align:start;padding:4px 0">הזמנה</th><th style="text-align:start">לקוח</th><th style="text-align:start">פריטים</th><th style="text-align:end">סכום</th></tr>
-        ${r.shipments.pending.map((s) => `<tr style="border-top:1px solid #f0f2ec"><td style="padding:6px 0;font-weight:600">${s.order_num}</td><td>${s.email || "—"}</td><td>${s.units}</td><td style="text-align:end">${shekel(s.total)}</td></tr>`).join("")}
+        ${r.shipments.pending.map((s) => `<tr style="border-top:1px solid #f0f2ec"><td style="padding:6px 0;font-weight:600">${esc(s.order_num)}</td><td>${esc(s.email || "—")}</td><td>${s.units}</td><td style="text-align:end">${shekel(s.total)}</td></tr>`).join("")}
        </table>`
     : `<div style="color:#5a6b5e">אין משלוחים ממתינים 🎉</div>`;
   const topHtml = r.purchases.topSold.length
-    ? r.purchases.topSold.map((t) => `<div style="padding:3px 0;color:#1e2a22">· ${t.name || t.product_id} — <b>${t.qty}</b> יח׳</div>`).join("")
+    ? r.purchases.topSold.map((t) => `<div style="padding:3px 0;color:#1e2a22">· ${esc(t.name || t.product_id)} — <b>${t.qty}</b> יח׳</div>`).join("")
     : `<div style="color:#5a6b5e">אין מכירות בחלון הזמן הזה</div>`;
   const errHtml = r.health.errorsWindow
     ? `<div style="margin-top:8px;color:#b3261e">${r.health.errorsWindow} שגיאות שרת בחלון:</div>` +
-      r.health.lastErrors.map((e) => `<div style="font:12px monospace;color:#7a2b26;padding:2px 0">${fmtTime(e.created_at)} — ${(e.detail || "").replace(/</g, "&lt;")}</div>`).join("")
+      r.health.lastErrors.map((e) => `<div style="font:12px monospace;color:#7a2b26;padding:2px 0">${esc(fmtTime(e.created_at) + " — " + (e.detail || ""))}</div>`).join("")
     : "";
 
   return `<div style="max-width:640px;margin:0 auto;font:14px/1.55 system-ui,Arial;color:#1e2a22;direction:rtl;text-align:right;background:#faf9f5;padding:24px;border-radius:10px">

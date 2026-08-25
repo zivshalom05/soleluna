@@ -7,6 +7,11 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
 // domain address later to also email customers their order confirmations.
 const FROM_EMAIL = process.env.FROM_EMAIL || "onboarding@resend.dev";
 
+// text bodies here often embed customer input (order email, gift name,
+// contact form message) — escape before turning newlines into <br>, so a
+// crafted value can't inject markup/scripts into the HTML the owner reads.
+const escHtml = (s) => String(s).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+
 async function sendEmail({ to, subject, text, html }) {
   if (!to) return { ok: false, skipped: true };
   if (RESEND_API_KEY) {
@@ -22,7 +27,7 @@ async function sendEmail({ to, subject, text, html }) {
           to: [to],
           subject,
           text,
-          html: html || text.replace(/\n/g, "<br>"),
+          html: html || escHtml(text).replace(/\n/g, "<br>"),
         }),
       });
       if (!r.ok) {

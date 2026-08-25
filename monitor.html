@@ -121,6 +121,9 @@
 
 <script>
   const $ = (id) => document.getElementById(id);
+  // customer-supplied fields (email, gift name, product/color names an admin
+  // typed) reach this page via the API — escape before innerHTML, always.
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (m) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
   const shekel = (n) => "₪" + Number(n||0).toLocaleString("he-IL");
   const statusWord = (s) => s==="ok" ? "תקין ✓" : s==="warn" ? "לתשומת לב ⚠" : "תקלה ✗";
   const fmt = (ts) => new Date(ts).toLocaleString("he-IL");
@@ -151,7 +154,7 @@
     $("kpItemsAll").textContent = p.itemsAll;
     $("kpRevAll").textContent = shekel(p.revenueAll);
     $("topSold").innerHTML = p.topSold.length
-      ? "<div class='muted' style='margin-bottom:4px'>הנמכרים ביותר בחלון</div>" + p.topSold.map(t=>`<div class="row"><span class="lab">${t.name||t.product_id}</span><span class="val">${t.qty} יח׳</span></div>`).join("")
+      ? "<div class='muted' style='margin-bottom:4px'>הנמכרים ביותר בחלון</div>" + p.topSold.map(t=>`<div class="row"><span class="lab">${esc(t.name||t.product_id)}</span><span class="val">${t.qty} יח׳</span></div>`).join("")
       : "<div class='muted'>אין מכירות בחלון הזה</div>";
 
     const u = d.users;
@@ -159,19 +162,19 @@
     $("uExist").textContent = u.existing; $("uDel").textContent = u.deletedWindow + " / " + u.deletedAll;
     $("uClub").textContent = u.clubTotal + " (חדשים: " + u.clubNew + ")";
 
-    $("checks").innerHTML = d.checks.map(c=>`<div class="check"><span>${c.label} — <span class="muted">${c.note}</span></span><span class="tag ${c.status}">${statusWord(c.status)}</span></div>`).join("")
-      + (d.health.errorsWindow ? `<div class="failrow" style="margin-top:8px">${d.health.errorsWindow} שגיאות שרת בחלון — ` + d.health.lastErrors.map(e=>fmt(e.created_at)+": "+(e.detail||"")).join(" · ") + "</div>" : "");
+    $("checks").innerHTML = d.checks.map(c=>`<div class="check"><span>${esc(c.label)} — <span class="muted">${esc(c.note)}</span></span><span class="tag ${c.status}">${statusWord(c.status)}</span></div>`).join("")
+      + (d.health.errorsWindow ? `<div class="failrow" style="margin-top:8px">${d.health.errorsWindow} שגיאות שרת בחלון — ` + d.health.lastErrors.map(e=>esc(fmt(e.created_at)+": "+(e.detail||""))).join(" · ") + "</div>" : "");
 
     const inv = d.inventory;
     $("invUnits").textContent = inv.unitsInStock;
-    $("invLow").innerHTML = inv.low.length ? inv.low.map(i=>`<div class="warnrow">⚠ ${i.name} (${i.color_name} / ${i.size}) — נותרו ${i.stock}</div>`).join("") : "<div class='muted'>כל הפריטים במלאי תקין 👍</div>";
-    $("invOut").innerHTML = inv.soldOut.map(i=>`<div class="failrow">✗ אזל: ${i.name} (${i.color_name} / ${i.size})</div>`).join("");
+    $("invLow").innerHTML = inv.low.length ? inv.low.map(i=>`<div class="warnrow">⚠ ${esc(i.name)} (${esc(i.color_name)} / ${esc(i.size)}) — נותרו ${i.stock}</div>`).join("") : "<div class='muted'>כל הפריטים במלאי תקין 👍</div>";
+    $("invOut").innerHTML = inv.soldOut.map(i=>`<div class="failrow">✗ אזל: ${esc(i.name)} (${esc(i.color_name)} / ${esc(i.size)})</div>`).join("");
 
     const s = d.shipments;
     $("shipCount").textContent = s.pendingCount;
     $("shipWrap").innerHTML = s.pending.length
       ? `<table><thead><tr><th>הזמנה</th><th>לקוח</th><th>פריטים</th><th>סכום</th><th>שולם</th><th></th></tr></thead><tbody>`
-        + s.pending.map(o=>`<tr><td><b>${o.order_num}</b></td><td>${o.email||"—"}</td><td>${o.units}</td><td>${shekel(o.total)}</td><td class="muted">${fmt(o.paid_at)}</td><td><button class="btn btn--ship" data-ship="${o.order_num}">סמן כנשלח</button></td></tr>`).join("")
+        + s.pending.map(o=>`<tr><td><b>${esc(o.order_num)}</b></td><td>${esc(o.email||"—")}</td><td>${o.units}</td><td>${shekel(o.total)}</td><td class="muted">${fmt(o.paid_at)}</td><td><button class="btn btn--ship" data-ship="${esc(o.order_num)}">סמן כנשלח</button></td></tr>`).join("")
         + "</tbody></table>"
       : "<div class='muted'>אין משלוחים ממתינים 🎉</div>";
     document.querySelectorAll("[data-ship]").forEach(b=>b.addEventListener("click", ()=>markShipped(b.dataset.ship)));
