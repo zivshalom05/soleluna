@@ -926,6 +926,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .pmodal__tag { align-self: flex-start; font-family: var(--mark); font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; background: var(--sand); color: var(--clay); padding: .35em .8em; border-radius: 30px; margin-bottom: 1rem; }
 .pmodal__info h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 500; line-height: 1.1; }
 .pmodal__price { font-family: var(--mark); font-size: 1.3rem; color: var(--ink); margin-top: .5rem; }
+.pmodal__price del { color: var(--sage); margin-inline-start: .5em; font-size: .75em; }
 .pmodal__fabric { font-family: var(--mark); font-size: .64rem; letter-spacing: .16em; text-transform: uppercase; color: var(--sage); margin-top: .6rem; }
 .pmodal__desc { color: var(--moss); font-size: .98rem; margin-top: 1.2rem; line-height: 1.7; }
 .pmodal__field { display: flex; align-items: center; gap: 1rem; margin-top: 1.3rem; flex-wrap: wrap; }
@@ -1980,7 +1981,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
             <div class="card__meta">${fitLabel(p.fit)} · ${p.sizes.join(" / ")}</div>
             <div class="card__colors">${invColors(p.id).map((c) => `<button class="card-sw ${c.name === defaultColor(p.id) ? 'is-active' : ''}" data-cardsw="${p.id}" data-color="${c.name}" style="--sw:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join("")}</div>
           </div>
-          <div class="card__price">${ILS(invPrice(p.id))}</div>
+          <div class="card__price">${priceHTML(p.id)}</div>
         </div>
       </article>`;
     }).join("");
@@ -2003,6 +2004,15 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 
   function invColors(id) { return (INV[id] && INV[id].colors) || []; }
   function invPrice(id) { return (INV[id] && INV[id].price != null) ? INV[id].price : (product(id) && product(id).price) || 0; }
+  function invCompareAt(id) {
+    const p = product(id);
+    const c = p && p.compareAtPrice;
+    return (c != null && c > invPrice(id)) ? c : null;
+  }
+  function priceHTML(id) {
+    const compareAt = invCompareAt(id);
+    return compareAt ? `${ILS(invPrice(id))} <del>${ILS(compareAt)}</del>` : ILS(invPrice(id));
+  }
   function invStock(id, color, size) { try { return INV[id].stock[color][size] || 0; } catch (e) { return 0; } }
   function colorInStock(id, color) { const p = product(id); return p && p.sizes.some((s) => invStock(id, color, s) > 0); }
   function productInStock(id) { return invColors(id).some((c) => colorInStock(id, c.name)); }
@@ -2279,7 +2289,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     const tag = $("#pmTag");
     if (p.tag) { tag.textContent = p.tag; tag.hidden = false; } else tag.hidden = true;
     $("#pmName").textContent = p.name;
-    $("#pmPrice").textContent = ILS(invPrice(id));
+    $("#pmPrice").innerHTML = priceHTML(id);
     $("#pmFit").textContent = fitLabel(p.fit);
     $("#pmDesc").textContent = productDesc(p);
     const meas = $("#pmMeasures"); if (meas) meas.innerHTML = measurementsFor(p);

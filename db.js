@@ -38,6 +38,7 @@ function initSchema(db) {
       type TEXT NOT NULL,
       fit TEXT NOT NULL,
       price INTEGER NOT NULL,
+      compare_at_price INTEGER,
       sizes TEXT NOT NULL,
       grad TEXT,
       img TEXT,
@@ -148,6 +149,9 @@ function migrateSchema(db) {
   if (!hasColumn("users", "deleted_at")) {
     db.exec("ALTER TABLE users ADD COLUMN deleted_at INTEGER");
   }
+  if (!hasColumn("products", "compare_at_price")) {
+    db.exec("ALTER TABLE products ADD COLUMN compare_at_price INTEGER");
+  }
 }
 
 function logEvent(db, type, detail) {
@@ -177,8 +181,8 @@ function seedProducts(db, catalog) {
 
   const items = catalog.items || [];
   const insertProduct = db.prepare(`
-    INSERT INTO products (id, name, gender, type, fit, price, sizes, grad, img, tag)
-    VALUES (@id, @name, @gender, @type, @fit, @price, @sizes, @grad, @img, @tag)
+    INSERT INTO products (id, name, gender, type, fit, price, compare_at_price, sizes, grad, img, tag)
+    VALUES (@id, @name, @gender, @type, @fit, @price, @compareAtPrice, @sizes, @grad, @img, @tag)
   `);
   const insertInv = db.prepare(`
     INSERT INTO inventory (product_id, color_name, color_hex, size, stock)
@@ -195,6 +199,7 @@ function seedProducts(db, catalog) {
         type: p.type,
         fit: p.fit,
         price,
+        compareAtPrice: p.compareAt != null ? p.compareAt : null,
         sizes: JSON.stringify(p.sizes),
         grad: p.grad || null,
         img: p.img || null,
@@ -246,6 +251,7 @@ function rowToProduct(row, inventoryRows) {
     type: row.type,
     fit: row.fit,
     price: row.price,
+    compareAtPrice: row.compare_at_price || null,
     sizes,
     grad: row.grad,
     img: row.img,
