@@ -2018,7 +2018,20 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   // color name → image-file suffix (real per-color photography)
   const COLOR_SUFFIX = { "לבן": "white", "נייבי": "navy", "זית": "sage", "חום": "brown", "בז'": "beige" };
   const imgForColor = (p, cname) => { const s = COLOR_SUFFIX[cname]; return s ? ("img/products/" + p.id + "-" + s + ".png") : imgFor(p); };
-  const defaultColor = (id) => { const cs = invColors(id); return (cs.find((c) => colorInStock(id, c.name)) || cs[0] || { name: "" }).name; };
+  // rotate the starting color per product (by its position in the catalog) so
+  // the shop grid shows a mix of colors instead of every card defaulting to
+  // the same one — falls through to the next in-stock color if needed.
+  const defaultColor = (id) => {
+    const cs = invColors(id);
+    if (!cs.length) return "";
+    const idx = PRODUCTS.findIndex((p) => p.id === id);
+    const start = idx >= 0 ? idx % cs.length : 0;
+    for (let i = 0; i < cs.length; i++) {
+      const c = cs[(start + i) % cs.length];
+      if (colorInStock(id, c.name)) return c.name;
+    }
+    return cs[0].name;
+  };
   // next/previous color name in the product's color list, wrapping around
   function neighborColor(id, currentName, dir) {
     const cs = invColors(id);
