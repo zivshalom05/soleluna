@@ -10,16 +10,19 @@
 ## שלב 1 — חשבון Grow
 פִּתחו חשבון עסקי ב-[Grow (משולם)](https://www.meshulam.co.il/) והפעילו את אמצעי התשלום הרצויים (Bit, אשראי, Apple Pay, Google Pay) ב**עמוד התשלום** שלכם. רשמו את: `userId`, `pageCode`, `apiKey`.
 
-## שלב 2 — העלאה ל-Replit
-1. צרו Repl חדש מסוג **Node.js** (או ייבאו את התיקייה).
-2. העלו את כל הקבצים (`index.html`, `server.js`, תיקיית `img/`).
-3. ב-Replit לחצו על **Secrets** (🔒) והוסיפו את המשתנים מתוך `.env.example`:
-   `GROW_USER_ID`, `GROW_PAGE_CODE`, `GROW_API_KEY`, ו-`GROW_ENV=sandbox`.
-4. **Run** — Replit מריץ `node server.js` והאתר עולה.
+## שלב 2 — הזנת המפתחות ב-Render
+האתר כבר פרוס וחי ב-Render (ראו `README-עלייה-לאוויר.md`), אז אין צורך להעלות שום דבר —
+רק להוסיף את שלושת המפתחות לשירות הקיים:
+1. בדשבורד של [Render](https://dashboard.render.com) → השירות `soleluna` → **Environment**.
+2. הוסיפו/עדכנו: `GROW_USER_ID`, `GROW_PAGE_CODE`, `GROW_API_KEY` (מה-dashboard של Grow), ו-`GROW_ENV=sandbox` לבדיקה ראשונה.
+3. **Save Changes** — Render עושה דיפלוי מחדש אוטומטית עם המפתחות החדשים (כ-1-2 דקות).
 
 ## שלב 3 — בדיקה ומעבר לאוויר
-1. עם `GROW_ENV=sandbox` — בצעו הזמנת בדיקה. תופנו לעמוד התשלום של Grow, ובחזרה ל-`/?paid=1` (הסל מתרוקן + הודעת הצלחה).
-2. עובד? שנו ל-`GROW_ENV=production` — וזהו, חיובים אמיתיים.
+1. עם `GROW_ENV=sandbox` — בצעו הזמנת בדיקה באתר החי. תופנו לעמוד התשלום של Grow, ובחזרה לאתר עם הודעת הצלחה + הסל מתרוקן.
+2. עובד? ב-Render → Environment שנו:
+   - `GROW_ENV` → `production`
+   - `ALLOW_DEMO_CHECKOUT` → `false` (כדי לוודא שלקוחות לא "נופלים" בטעות לדמו אם יהיה תקל רגעי ב-Grow)
+   - **Save Changes** — וזהו, מרגע זה כל הזמנה מחייבת אמיתית.
 
 ---
 **הערה:** שמות השדות ב-`server.js` תואמים ל-Grow "Light API". אם החשבון שלכם משתמש ב-API אחר, נעדכן את `createPayment()` בהתאם — שלחו לי את מסמך ה-API מה-dashboard ואסגור את זה.
