@@ -1720,8 +1720,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         <button class="pmodal__zoom" id="pmZoom" aria-label="הגדלת תמונה">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
         </button>
-        <button class="img-nav img-nav--prev" id="pmPrevColor" aria-label="צבע קודם">‹</button>
-        <button class="img-nav img-nav--next" id="pmNextColor" aria-label="צבע הבא">›</button>
+        <button class="img-nav img-nav--prev" id="pmPrevColor" aria-label="צבע קודם"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="img-nav img-nav--next" id="pmNextColor" aria-label="צבע הבא"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
       <div class="pmodal__info">
         <span class="pmodal__tag" id="pmTag" hidden></span>
@@ -1775,8 +1775,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     <button class="lightbox__close" id="lightboxClose" aria-label="סגור">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
-    <button class="img-nav img-nav--prev" id="lbPrevColor" aria-label="צבע קודם">‹</button>
-    <button class="img-nav img-nav--next" id="lbNextColor" aria-label="צבע הבא">›</button>
+    <button class="img-nav img-nav--prev" id="lbPrevColor" aria-label="צבע קודם"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button class="img-nav img-nav--next" id="lbNextColor" aria-label="צבע הבא"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
     <img id="lightboxImg" src="" alt="" />
     <div class="lightbox__colors" id="lbColors" aria-label="בחירת צבע"></div>
   </div>
@@ -1953,8 +1953,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       const inStock = productInStock(p.id);
       const multiColor = invColors(p.id).length > 1;
       const navArrows = multiColor
-        ? `<button class="img-nav img-nav--prev" data-imgnav="${p.id}" data-dir="prev" aria-label="צבע קודם">‹</button>
-           <button class="img-nav img-nav--next" data-imgnav="${p.id}" data-dir="next" aria-label="צבע הבא">›</button>`
+        ? `<button class="img-nav img-nav--prev" data-imgnav="${p.id}" data-dir="prev" aria-label="צבע קודם"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+           <button class="img-nav img-nav--next" data-imgnav="${p.id}" data-dir="next" aria-label="צבע הבא"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>`
         : "";
       const addArea = inStock
         ? `<div class="card__add"><button class="btn btn--sm btn--block" data-view="${p.id}"><span>בחירת מידה</span></button></div>`
