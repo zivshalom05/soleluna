@@ -591,6 +591,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   background: var(--ink); color: var(--bone); padding: .42em 1em; border-radius: 30px;
 }
 .card.is-sold .photo { opacity: .85; }
+.badge-sold {
+  position: absolute; top: 1.2rem; inset-inline-start: 1.2rem; z-index: 5;
+  font-family: var(--mark); font-size: .72rem; letter-spacing: .22em; text-transform: uppercase;
+  background: var(--ink); color: var(--bone); padding: .55em 1.3em; border-radius: 30px;
+}
+.hero .badge-sold { top: 100px; inset-inline-end: 2rem; inset-inline-start: auto; z-index: 3; }
 .card.is-sold .card__price { color: var(--olive); text-decoration: line-through; }
 .card__fav { position: absolute; top: .7rem; inset-inline-end: .7rem; z-index: 3; width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--bone) 75%, transparent); display: grid; place-items: center; color: var(--ink); transition: background .3s, color .3s; }
 .card__fav:hover, .card__fav.is-on { background: var(--forest); color: var(--bone); }
@@ -1163,6 +1169,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     </div>
     <div class="hero__scrim" aria-hidden="true"></div>
     <div class="hero__silk" id="heroSilk" aria-hidden="true"></div>
+    <span class="badge-sold">Sold Out</span>
 
     <div class="hero__content container">
       <span class="hero__eyebrow" data-reveal>הקולקציה הראשונה · קיץ 2026</span>
@@ -1348,18 +1355,22 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <div class="cats__grid">
         <a href="#shop" class="cat" data-occasion="casual" data-reveal>
           <img class="photo" src="img/lifestyle.png" alt="בגדי יום-יום מלייוסל ופשתן" loading="lazy">
+          <span class="badge-sold">Sold Out</span>
           <div class="cat__body"><h3>יום-יום</h3><span>גלו</span></div>
         </a>
         <a href="#shop" class="cat" data-occasion="work" data-reveal data-reveal-delay="1">
           <img class="photo" src="img/editorial-warm-men.png" alt="בגדי עבודה מחויטים" loading="lazy">
+          <span class="badge-sold">Sold Out</span>
           <div class="cat__body"><h3>בגדי עבודה</h3><span>גלו</span></div>
         </a>
         <a href="#shop" class="cat" data-occasion="suit" data-reveal data-reveal-delay="2">
           <img class="photo" src="img/cat-men-pants.png" alt="חליפות ומכנסיים מחויטים" loading="lazy">
+          <span class="badge-sold">Sold Out</span>
           <div class="cat__body"><h3>חליפות</h3><span>גלו</span></div>
         </a>
         <a href="#shop" class="cat" data-occasion="resort" data-reveal data-reveal-delay="3">
           <img class="photo" src="img/editorial-warm-women.png" alt="בגדי ריזורט לחופשה" loading="lazy">
+          <span class="badge-sold">Sold Out</span>
           <div class="cat__body"><h3>ריזורט</h3><span>גלו</span></div>
         </a>
       </div>
@@ -1379,10 +1390,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <div class="lookbook__grid">
         <figure class="lookbook__item" data-reveal>
           <img class="photo" src="img/editorial-warm-women.png" alt="אישה בחולצת לייוסל-פשתן בגוון קמל ומכנסיים רחבים — sole&luna" loading="lazy">
+          <span class="badge-sold">Sold Out</span>
           <figcaption><span>נשים</span><b>The Warm Edit</b></figcaption>
         </figure>
         <figure class="lookbook__item" data-reveal data-reveal-delay="1">
           <img class="photo" src="img/editorial-warm-men.png" alt="גבר בחולצת לייוסל-פשתן בגוון זית ומכנסי בז' — sole&luna" loading="lazy">
+          <span class="badge-sold">Sold Out</span>
           <figcaption><span>גברים</span><b>Resort Tailoring</b></figcaption>
         </figure>
       </div>
