@@ -1816,6 +1816,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     <div class="admin__bar">
       <strong>ניהול · sole&luna</strong>
       <div class="admin__actions">
+        <button class="btn btn--sm btn--ghost" id="adminClearForLaunch"><span>סימון הכל כאזל + ביטול הנחות</span></button>
         <button class="btn btn--sm" id="adminSave"><span>שמירה ופרסום</span></button>
         <button class="btn btn--sm btn--ghost" id="adminClose"><span>סגירה</span></button>
       </div>
@@ -1988,7 +1989,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <article class="card ${inStock ? '' : 'is-sold'}" data-id="${p.id}">
         <div class="card__media">
           ${tag}
-          ${inStock ? '' : '<span class="card__sold">אזל מהמלאי</span>'}
+          ${inStock ? '' : '<span class="card__sold">Sold Out</span>'}
           <button class="card__fav ${fav}" data-fav="${p.id}" aria-label="הוסף למועדפים">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="${fav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10z"/></svg>
           </button>
@@ -3056,6 +3057,20 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     toast("המלאי נשמר ופורסם");
   }
   $("#adminSave").addEventListener("click", () => saveAdminInventory().catch(() => toast("שגיאה בשמירה")));
+  async function clearForLaunch() {
+    if (!confirm("לסמן את כל המוצרים כאזל מהמלאי ולבטל את כל ההנחות? הפעולה חלה מיד על האתר החי.")) return;
+    try {
+      await api("/api/admin/inventory/clear-for-launch", { method: "POST", body: "{}" });
+      await loadAdminData();
+      await buildAdmin();
+      await loadProducts();
+      renderProducts();
+      toast("כל המוצרים סומנו כאזל וההנחות בוטלו");
+    } catch (e) {
+      toast("שגיאה בעדכון");
+    }
+  }
+  $("#adminClearForLaunch").addEventListener("click", clearForLaunch);
   $("#adminClose").addEventListener("click", closeAdmin);
   async function tryOpenAdmin(pass) {
     let ok = false;

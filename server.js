@@ -742,6 +742,16 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    /* ---- Bulk: mark every product sold out and clear all discounts (pre-launch mode) ---- */
+    if (req.method === "POST" && u.pathname === "/api/admin/inventory/clear-for-launch") {
+      if (!requireAdmin(session)) { json(res, 403, { error: "אין הרשאה" }); return; }
+      const soldOut = db.prepare("UPDATE inventory SET stock = 0").run();
+      const cleared = db.prepare("UPDATE products SET compare_at_price = NULL").run();
+      logEvent(db, "bulk_clear_for_launch", `stock rows=${soldOut.changes} discounts cleared=${cleared.changes}`);
+      json(res, 200, { ok: true, stockRowsUpdated: soldOut.changes, productsDiscountCleared: cleared.changes });
+      return;
+    }
+
     /* Legacy admin-verify (redirect clients to /api/admin/login) */
     if (req.method === "POST" && u.pathname === "/api/admin-verify") {
       if (!ADMIN_PASS) { json(res, 403, { ok: false }); return; }
