@@ -38,7 +38,6 @@
       "type": "shirt",
       "fit": "relaxed",
       "price": 180,
-      "compareAt": 225,
       "sizes": [
         "XS",
         "S",
@@ -54,7 +53,6 @@
       "type": "shirt",
       "fit": "slim",
       "price": 180,
-      "compareAt": 225,
       "sizes": [
         "S",
         "M",
@@ -69,7 +67,6 @@
       "type": "shirt",
       "fit": "relaxed",
       "price": 180,
-      "compareAt": 225,
       "sizes": [
         "XS",
         "S",
@@ -84,7 +81,6 @@
       "type": "pants",
       "fit": "relaxed",
       "price": 250,
-      "compareAt": 315,
       "sizes": [
         "S",
         "M",
@@ -98,7 +94,6 @@
       "type": "pants",
       "fit": "straight",
       "price": 250,
-      "compareAt": 315,
       "sizes": [
         "XS",
         "S",
@@ -114,7 +109,6 @@
       "type": "pants",
       "fit": "slim",
       "price": 250,
-      "compareAt": 315,
       "sizes": [
         "S",
         "M",
@@ -129,7 +123,6 @@
       "type": "shirt",
       "fit": "straight",
       "price": 150,
-      "compareAt": 190,
       "sizes": [
         "S",
         "M",
@@ -145,7 +138,6 @@
       "type": "shirt",
       "fit": "relaxed",
       "price": 180,
-      "compareAt": 225,
       "sizes": [
         "M",
         "L",
@@ -159,7 +151,6 @@
       "type": "shirt",
       "fit": "slim",
       "price": 150,
-      "compareAt": 190,
       "sizes": [
         "S",
         "M",
@@ -174,7 +165,6 @@
       "type": "pants",
       "fit": "straight",
       "price": 250,
-      "compareAt": 315,
       "sizes": [
         "S",
         "M",
@@ -189,7 +179,6 @@
       "type": "pants",
       "fit": "relaxed",
       "price": 250,
-      "compareAt": 315,
       "sizes": [
         "M",
         "L",
@@ -203,7 +192,6 @@
       "type": "pants",
       "fit": "slim",
       "price": 250,
-      "compareAt": 315,
       "sizes": [
         "S",
         "M",
@@ -219,7 +207,6 @@
       "type": "shirt",
       "fit": "relaxed",
       "price": 180,
-      "compareAt": 225,
       "sizes": [
         "S",
         "M",
@@ -235,7 +222,6 @@
       "type": "shirt",
       "fit": "slim",
       "price": 120,
-      "compareAt": 150,
       "sizes": [
         "XS",
         "S",
@@ -250,7 +236,6 @@
       "type": "pants",
       "fit": "straight",
       "price": 250,
-      "compareAt": 315,
       "sizes": [
         "XS",
         "S",
@@ -266,7 +251,6 @@
       "cut": "shorts",
       "fit": "relaxed",
       "price": 200,
-      "compareAt": 250,
       "sizes": [
         "S",
         "M",
@@ -282,7 +266,6 @@
       "cut": "jacket",
       "fit": "relaxed",
       "price": 200,
-      "compareAt": 250,
       "sizes": [
         "M",
         "L",
@@ -296,7 +279,6 @@
       "type": "shirt",
       "fit": "straight",
       "price": 150,
-      "compareAt": 190,
       "sizes": [
         "S",
         "M",
@@ -313,7 +295,6 @@
       "cut": "shorts",
       "fit": "relaxed",
       "price": 200,
-      "compareAt": 250,
       "sizes": [
         "S",
         "M",
@@ -328,7 +309,6 @@
       "type": "pants",
       "fit": "slim",
       "price": 250,
-      "compareAt": 315,
       "sizes": [
         "S",
         "M",

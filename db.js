@@ -18,6 +18,12 @@ const DEFAULT_COLORS = [
   { name: "זית", hex: "#8C9A82" },   // sage / olive
 ];
 
+// pre-launch mode: fresh installs seed sold out with no discounts (the free
+// Render plan resets the DB on every deploy, so this has to hold as the
+// default, not just a one-time admin action) — bump back to a real number
+// once the store is ready to sell.
+const DEFAULT_SEED_STOCK = 0;
+
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 }
@@ -218,7 +224,7 @@ function seedProducts(db, catalog) {
             color_name: c.name,
             color_hex: c.hex,
             size,
-            stock: 8,
+            stock: DEFAULT_SEED_STOCK,
           });
         }
       }
