@@ -2080,22 +2080,28 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 
   $("#sortSelect").addEventListener("change", (e) => { state.sort = e.target.value; renderProducts(); });
 
-  // filter toggle button - with extra robustness
+  // filter toggle button - with extra robustness and logging
   setTimeout(() => {
     try {
       const btnEl = document.getElementById("filterToggleBtn");
       const panelEl = document.getElementById("filterPanel");
+      console.log("Filter button setup:", {btnEl: !!btnEl, panelEl: !!panelEl, inDOM: btnEl ? document.body.contains(btnEl) : false});
       if (btnEl && panelEl && document.body.contains(btnEl)) {
         btnEl.style.cursor = "pointer";
         btnEl.onclick = function(e) {
+          console.log("Filter button clicked!", e);
           if (e) {
             e.preventDefault();
             e.stopPropagation();
           }
           const isHidden = panelEl.style.display === "none" || !panelEl.style.display;
           panelEl.style.display = isHidden ? "block" : "none";
+          console.log("Filter panel toggled to:", panelEl.style.display);
           return false;
         };
+        console.log("Filter button handler attached successfully");
+      } else {
+        console.warn("Filter button or panel not found or not in DOM");
       }
     } catch(err) {
       console.error("Filter button setup error:", err);
