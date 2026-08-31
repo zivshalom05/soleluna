@@ -2033,7 +2033,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       const c = cs[(start + i) % cs.length];
       if (colorInStock(id, c.name)) return c.name;
     }
-    return cs[0].name;
+    return cs[start].name;
   };
   // next/previous color name in the product's color list, wrapping around
   function neighborColor(id, currentName, dir) {
