@@ -1409,7 +1409,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         <p class="lead" data-reveal data-reveal-delay="2">סננו לפי מגדר, פריט, מידה וגזרה — ומצאו בדיוק את מה שמתאים לכם.</p>
       </div>
 
-      <!-- filter rows -->
+      <!-- filter toggle button -->
+      <button id="filterToggleBtn" class="btn" style="margin-bottom:1.6rem;"><span>סינון</span></button>
+
+      <!-- filter rows - hidden by default -->
+      <div id="filterPanel" style="display:none;">
       <div class="shop__bar" data-reveal>
         <div class="filters" id="filterGender">
           <span class="filters__label">מגדר</span>
@@ -1462,6 +1466,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
           <button class="chip" data-group="size" data-val="XL">XL</button>
         </div>
       </div>
+      </div><!-- close filterPanel -->
 
       <div class="products" id="productGrid"><!-- injected by JS --></div>
     </div>
@@ -2074,6 +2079,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   });
 
   $("#sortSelect").addEventListener("change", (e) => { state.sort = e.target.value; renderProducts(); });
+
+  // filter toggle button
+  $("#filterToggleBtn").addEventListener("click", () => {
+    const filterPanel = $("#filterPanel");
+    filterPanel.style.display = filterPanel.style.display === "none" ? "block" : "none";
+  });
 
   // deep links from nav / footer (data-filter -> set a filter and scroll to shop)
   function applyDeepFilter(val) {
