@@ -2080,16 +2080,15 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 
   $("#sortSelect").addEventListener("change", (e) => { state.sort = e.target.value; renderProducts(); });
 
-  // filter toggle button
-  const filterToggleBtn = $("#filterToggleBtn");
-  const filterPanel = $("#filterPanel");
-  if (filterToggleBtn && filterPanel) {
-    filterToggleBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      filterPanel.style.display = filterPanel.style.display === "none" ? "block" : "none";
-    });
-  }
+  // filter toggle button - using event delegation for robustness
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "filterToggleBtn" || e.target.closest("#filterToggleBtn")) {
+      const filterPanel = $("#filterPanel");
+      if (filterPanel) {
+        filterPanel.style.display = filterPanel.style.display === "none" ? "block" : "none";
+      }
+    }
+  });
 
   // deep links from nav / footer (data-filter -> set a filter and scroll to shop)
   function applyDeepFilter(val) {
