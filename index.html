@@ -586,9 +586,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   background: var(--sand); color: var(--clay); padding: .35em .8em; border-radius: 30px;
 }
 .card__sold {
-  position: absolute; top: .9rem; left: 50%; transform: translateX(-50%); z-index: 4;
-  font-family: var(--mark); font-size: .6rem; letter-spacing: .2em; text-transform: uppercase;
-  background: var(--ink); color: var(--bone); padding: .42em 1em; border-radius: 30px;
+  display: inline-block; margin-inline-start: .8em;
+  font-family: var(--mark); font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+  background: var(--ink); color: var(--bone); padding: .4em 1em; border-radius: 20px;
 }
 .card.is-sold .photo { opacity: .85; }
 .badge-sold {
@@ -1169,7 +1169,6 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     </div>
     <div class="hero__scrim" aria-hidden="true"></div>
     <div class="hero__silk" id="heroSilk" aria-hidden="true"></div>
-    <span class="badge-sold">Sold Out</span>
 
     <div class="hero__content container">
       <span class="hero__eyebrow" data-reveal>הקולקציה הראשונה · קיץ 2026</span>
@@ -1355,22 +1354,18 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <div class="cats__grid">
         <a href="#shop" class="cat" data-occasion="casual" data-reveal>
           <img class="photo" src="img/lifestyle.png" alt="בגדי יום-יום מלייוסל ופשתן" loading="lazy">
-          <span class="badge-sold">Sold Out</span>
           <div class="cat__body"><h3>יום-יום</h3><span>גלו</span></div>
         </a>
         <a href="#shop" class="cat" data-occasion="work" data-reveal data-reveal-delay="1">
           <img class="photo" src="img/editorial-warm-men.png" alt="בגדי עבודה מחויטים" loading="lazy">
-          <span class="badge-sold">Sold Out</span>
           <div class="cat__body"><h3>בגדי עבודה</h3><span>גלו</span></div>
         </a>
         <a href="#shop" class="cat" data-occasion="suit" data-reveal data-reveal-delay="2">
           <img class="photo" src="img/cat-men-pants.png" alt="חליפות ומכנסיים מחויטים" loading="lazy">
-          <span class="badge-sold">Sold Out</span>
           <div class="cat__body"><h3>חליפות</h3><span>גלו</span></div>
         </a>
         <a href="#shop" class="cat" data-occasion="resort" data-reveal data-reveal-delay="3">
           <img class="photo" src="img/editorial-warm-women.png" alt="בגדי ריזורט לחופשה" loading="lazy">
-          <span class="badge-sold">Sold Out</span>
           <div class="cat__body"><h3>ריזורט</h3><span>גלו</span></div>
         </a>
       </div>
@@ -1390,12 +1385,10 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <div class="lookbook__grid">
         <figure class="lookbook__item" data-reveal>
           <img class="photo" src="img/editorial-warm-women.png" alt="אישה בחולצת לייוסל-פשתן בגוון קמל ומכנסיים רחבים — sole&luna" loading="lazy">
-          <span class="badge-sold">Sold Out</span>
           <figcaption><span>נשים</span><b>The Warm Edit</b></figcaption>
         </figure>
         <figure class="lookbook__item" data-reveal data-reveal-delay="1">
           <img class="photo" src="img/editorial-warm-men.png" alt="גבר בחולצת לייוסל-פשתן בגוון זית ומכנסי בז' — sole&luna" loading="lazy">
-          <span class="badge-sold">Sold Out</span>
           <figcaption><span>גברים</span><b>Resort Tailoring</b></figcaption>
         </figure>
       </div>
@@ -2002,7 +1995,6 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <article class="card ${inStock ? '' : 'is-sold'}" data-id="${p.id}">
         <div class="card__media">
           ${tag}
-          ${inStock ? '' : '<span class="card__sold">Sold Out</span>'}
           <button class="card__fav ${fav}" data-fav="${p.id}" aria-label="הוסף למועדפים">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="${fav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10z"/></svg>
           </button>
@@ -2017,7 +2009,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
             <div class="card__meta">${fitLabel(p.fit)} · ${p.sizes.join(" / ")}</div>
             <div class="card__colors">${invColors(p.id).map((c) => `<button class="card-sw ${c.name === defaultColor(p.id) ? 'is-active' : ''}" data-cardsw="${p.id}" data-color="${c.name}" style="--sw:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join("")}</div>
           </div>
-          <div class="card__price">${priceHTML(p.id)}</div>
+          <div class="card__price">${priceHTML(p.id)} ${inStock ? '' : '<span class="card__sold">Sold Out</span>'}</div>
         </div>
       </article>`;
     }).join("");
