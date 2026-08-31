@@ -1410,7 +1410,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       </div>
 
       <!-- filter toggle button -->
-      <button id="filterToggleBtn" class="chip is-active" style="margin-bottom:1.6rem; align-self:flex-start;"><span>סינון</span></button>
+      <button id="filterToggleBtn" class="chip is-active" style="margin-bottom:1.6rem; display:block; cursor:pointer;"><span>סינון</span></button>
 
       <!-- filter rows - hidden by default -->
       <div id="filterPanel" style="display:none;">
@@ -2081,10 +2081,15 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   $("#sortSelect").addEventListener("change", (e) => { state.sort = e.target.value; renderProducts(); });
 
   // filter toggle button
-  $("#filterToggleBtn").addEventListener("click", () => {
-    const filterPanel = $("#filterPanel");
-    filterPanel.style.display = filterPanel.style.display === "none" ? "block" : "none";
-  });
+  const filterToggleBtn = $("#filterToggleBtn");
+  const filterPanel = $("#filterPanel");
+  if (filterToggleBtn && filterPanel) {
+    filterToggleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      filterPanel.style.display = filterPanel.style.display === "none" ? "block" : "none";
+    });
+  }
 
   // deep links from nav / footer (data-filter -> set a filter and scroll to shop)
   function applyDeepFilter(val) {
