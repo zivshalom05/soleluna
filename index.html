@@ -2350,6 +2350,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     updatePmAdd();
     openOverlay();
     productModal.classList.add("is-open");
+    if (lenis) lenis.stop(); // disable smooth scrolling to allow modal scroll
   }
 
   $("#pmColors").addEventListener("click", (e) => {
@@ -2578,6 +2579,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     lightbox.classList.remove("is-open");
     profile.classList.remove("is-open");
     document.body.style.overflow = "";
+    if (lenis) lenis.start(); // re-enable smooth scrolling
   }
   overlay.addEventListener("click", closeAll);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
