@@ -235,7 +235,6 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .topbar__track { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem 2.5rem; padding: .6rem 1rem; }
 .topbar__track span { display: inline-flex; align-items: center; gap: 2.5rem; }
 .topbar__track span:not(:last-child)::after { content: "✦"; color: var(--sage); }
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ===========================================================
    HEADER / NAV
@@ -375,14 +374,6 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 /* real photography */
 .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; z-index: 0; transform: scale(1.05); transition: transform 1.1s var(--ease); }
 .cat:hover .photo, .card:hover .card__media .photo { transform: scale(1.11); }
-
-/* ===========================================================
-   MARQUEE VALUES
-   =========================================================== */
-.valuestrip { border-block: 1px solid var(--line); background: var(--paper); overflow: hidden; }
-.valuestrip__track { display: flex; flex-wrap: nowrap; gap: 3.5rem; padding: 1.4rem 1rem; white-space: nowrap; animation: marquee 35s linear infinite; }
-.valuestrip__track span { display: inline-flex; align-items: center; gap: 3.5rem; font-family: var(--serif); font-style: normal; font-size: clamp(1.4rem, 2.4vw, 2.1rem); color: var(--olive); flex-shrink: 0; }
-.valuestrip__track span::after { content: "·"; color: var(--sage); }
 
 /* ===========================================================
    MANIFESTO
@@ -1117,7 +1108,6 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
    להחזרת סקשן: מוחקים אותו מרשימת הסלקטורים כאן.
    =========================================================== */
 @media (max-width: 760px) {
-  .valuestrip,
   #fabric,
   #categories,
   .lookbook,
@@ -1223,13 +1213,6 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     </div>
     <div class="hero__scroll" aria-hidden="true">גלילה</div>
   </section>
-
-  <!-- ============ VALUE MARQUEE ============ -->
-  <div class="valuestrip" aria-hidden="true">
-    <div class="valuestrip__track">
-      <span>נושם</span><span>מחויט</span><span>קליל</span><span>טבעי</span><span>מווסת חום</span><span>מחמיא לגוף</span><span>אלגנטי</span><span>בר-קיימא</span><span>נושם</span><span>מחויט</span><span>קליל</span><span>טבעי</span><span>מווסת חום</span><span>מחמיא לגוף</span><span>אלגנטי</span><span>בר-קיימא</span>
-    </div>
-  </div>
 
   <!-- ============ MANIFESTO / STORY ============ -->
   <section class="section manifesto" id="story">
