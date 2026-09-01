@@ -2,8 +2,9 @@ services:
   - type: web
     name: soleluna
     runtime: node
+    runtimeVersion: 20
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && npm rebuild
     startCommand: npm start
     healthCheckPath: /api/config
     envVars:
