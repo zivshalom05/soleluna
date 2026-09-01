@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>מגדל השמירה · sole&luna</title>
+  <style>
+    :root{
+      --forest:#23423a; --olive:#5a6b5e; --sage:#8a9a86; --bone:#faf9f5; --line:#e6e9e2;
+      --ink:#1e2a22; --ok:#2f7d52; --okbg:#e8f3ec; --warn:#b8860b; --warnbg:#fbf2df;
+      --fail:#b3261e; --failbg:#fbe7e5;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bone);color:var(--ink);font-family:system-ui,"Segoe UI",Arial,sans-serif;line-height:1.5}
+    a{color:inherit}
+    .wrap{max-width:1040px;margin:0 auto;padding:24px 18px 60px}
+    header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .brand{font:600 26px/1 Georgia,serif;letter-spacing:.5px}
+    .brand small{display:block;font:500 11px/1 system-ui;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin-top:6px}
+    .pill{padding:6px 16px;border-radius:99px;font-weight:600;font-size:14px}
+    .pill.ok{background:var(--okbg);color:var(--ok)} .pill.warn{background:var(--warnbg);color:var(--warn)} .pill.fail{background:var(--failbg);color:var(--fail)}
+    .meta{color:var(--sage);font-size:13px;margin:2px 0 22px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+    .card h2{font:600 13px/1 system-ui;letter-spacing:.12em;text-transform:uppercase;color:var(--olive);margin:0 0 14px}
+    .kpis{display:flex;flex-wrap:wrap;gap:18px}
+    .kpi{min-width:90px}
+    .kpi .n{font:600 30px/1 Georgia,serif;color:var(--forest)}
+    .kpi .l{font-size:12px;color:var(--olive);margin-top:4px}
+    .row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #f2f3ee;font-size:14px}
+    .row:last-child{border-bottom:0}
+    .row .lab{color:var(--olive)} .row .val{font-weight:600}
+    .check{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f2f3ee}
+    .check:last-child{border-bottom:0}
+    .tag{font-size:12px;font-weight:600;padding:2px 10px;border-radius:99px;white-space:nowrap}
+    .tag.ok{background:var(--okbg);color:var(--ok)} .tag.warn{background:var(--warnbg);color:var(--warn)} .tag.fail{background:var(--failbg);color:var(--fail)}
+    .muted{color:var(--sage);font-size:13px}
+    .warnrow{color:var(--warn);padding:4px 0;font-size:14px}
+    .failrow{color:var(--fail);padding:4px 0;font-size:14px}
+    table{width:100%;border-collapse:collapse;font-size:13.5px}
+    th{text-align:start;color:var(--olive);font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line)}
+    td{padding:8px 4px;border-bottom:1px solid #f2f3ee}
+    .btn{font:600 13px system-ui;border:1px solid var(--forest);background:var(--forest);color:#fff;border-radius:6px;padding:6px 14px;cursor:pointer}
+    .btn:hover{opacity:.9}
+    .btn--ship{background:#fff;color:var(--forest);padding:5px 12px}
+    .full{grid-column:1/-1}
+    .login{max-width:360px;margin:14vh auto 0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:30px;text-align:center}
+    .login input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-size:15px;margin:14px 0;text-align:center}
+    .login .btn{width:100%;padding:12px}
+    .err{color:var(--fail);font-size:13px;min-height:18px}
+    .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .dot{width:8px;height:8px;border-radius:99px;background:var(--ok);display:inline-block;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <!-- login gate -->
+  <div id="gate" class="login hidden">
+    <div class="brand" style="font-size:24px">sole&luna</div>
+    <p class="muted" style="margin:.4rem 0 0">מגדל השמירה — כניסת מנהל</p>
+    <input id="pass" type="password" placeholder="סיסמת מנהל" autocomplete="current-password" />
+    <div class="err" id="loginErr"></div>
+    <button class="btn" id="loginBtn">כניסה</button>
+  </div>
+
+  <!-- dashboard -->
+  <div id="dash" class="hidden">
+    <header>
+      <div class="brand">sole&luna<small>מגדל השמירה · ניטור 24/7</small></div>
+      <div class="bar">
+        <span class="pill ok" id="overall">—</span>
+        <button class="btn btn--ship" id="refreshBtn">רענון</button>
+      </div>
+    </header>
+    <div class="meta"><span class="dot"></span> <span id="metaLine">טוען…</span></div>
+
+    <div class="grid">
+      <div class="card"><h2>רכישות · חלון</h2>
+        <div class="kpis">
+          <div class="kpi"><div class="n" id="kpOrders">0</div><div class="l">הזמנות</div></div>
+          <div class="kpi"><div class="n" id="kpItems">0</div><div class="l">פריטים</div></div>
+          <div class="kpi"><div class="n" id="kpRev">₪0</div><div class="l">הכנסה</div></div>
+        </div>
+        <div style="margin-top:14px" id="topSold"></div>
+      </div>
+
+      <div class="card"><h2>מצטבר</h2>
+        <div class="row"><span class="lab">סה״כ הזמנות</span><span class="val" id="kpOrdersAll">0</span></div>
+        <div class="row"><span class="lab">סה״כ פריטים</span><span class="val" id="kpItemsAll">0</span></div>
+        <div class="row"><span class="lab">סה״כ הכנסה</span><span class="val" id="kpRevAll">₪0</span></div>
+        <div class="row"><span class="lab">זמן פעילות רצוף</span><span class="val" id="uptime">—</span></div>
+      </div>
+
+      <div class="card"><h2>משתמשים ומועדון</h2>
+        <div class="row"><span class="lab">לקוחות רשומים</span><span class="val" id="uTotal">0</span></div>
+        <div class="row"><span class="lab">חדשים בחלון</span><span class="val" id="uNew">0</span></div>
+        <div class="row"><span class="lab">לקוחות קיימים</span><span class="val" id="uExist">0</span></div>
+        <div class="row"><span class="lab">מחקו חשבון (חלון / מצטבר)</span><span class="val" id="uDel">0 / 0</span></div>
+        <div class="row"><span class="lab">חברי מועדון (ניוזלטר)</span><span class="val" id="uClub">0</span></div>
+      </div>
+
+      <div class="card full"><h2>בריאות ואבטחה</h2><div id="checks"></div></div>
+
+      <div class="card full"><h2>מלאי — נמוך ואזל</h2>
+        <div class="row"><span class="lab">סה״כ יחידות במלאי</span><span class="val" id="invUnits">0</span></div>
+        <div id="invLow" style="margin-top:8px"></div>
+        <div id="invOut" style="margin-top:4px"></div>
+      </div>
+
+      <div class="card full"><h2>משלוחים לביצוע · <span id="shipCount">0</span></h2>
+        <div id="shipWrap"></div>
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:26px;text-align:center">הדף מתרענן אוטומטית כל 45 שניות · דו״ח מלא נשלח למייל כל <span id="win">12</span> שעות</p>
+  </div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  // customer-supplied fields (email, gift name, product/color names an admin
+  // typed) reach this page via the API — escape before innerHTML, always.
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (m) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+  const shekel = (n) => "₪" + Number(n||0).toLocaleString("he-IL");
+  const statusWord = (s) => s==="ok" ? "תקין ✓" : s==="warn" ? "לתשומת לב ⚠" : "תקלה ✗";
+  const fmt = (ts) => new Date(ts).toLocaleString("he-IL");
+  function uptimeStr(sec){ if(sec==null) return "—"; const d=Math.floor(sec/86400),h=Math.floor((sec%86400)/3600),m=Math.floor((sec%3600)/60); return (d?d+" ימים ":"")+h+"ש "+m+"ד"; }
+
+  async function api(path, opts){ return fetch(path, Object.assign({credentials:"same-origin", headers:{"Content-Type":"application/json"}}, opts||{})); }
+
+  async function load(){
+    const r = await api("/api/admin/monitor");
+    if(r.status === 403){ showGate(); return; }
+    if(!r.ok){ $("metaLine").textContent = "שגיאה בטעינת הנתונים"; return; }
+    render(await r.json());
+  }
+
+  function render(d){
+    showDash();
+    $("overall").className = "pill " + d.overall;
+    $("overall").textContent = "מצב כללי: " + statusWord(d.overall);
+    $("metaLine").textContent = "עודכן " + fmt(d.generatedAt) + " · חלון " + d.windowHours + " שעות";
+    $("win").textContent = d.windowHours;
+    $("uptime").textContent = uptimeStr(d.uptimeSeconds);
+
+    const p = d.purchases;
+    $("kpOrders").textContent = p.ordersWindow;
+    $("kpItems").textContent = p.itemsWindow;
+    $("kpRev").textContent = shekel(p.revenueWindow);
+    $("kpOrdersAll").textContent = p.ordersAll;
+    $("kpItemsAll").textContent = p.itemsAll;
+    $("kpRevAll").textContent = shekel(p.revenueAll);
+    $("topSold").innerHTML = p.topSold.length
+      ? "<div class='muted' style='margin-bottom:4px'>הנמכרים ביותר בחלון</div>" + p.topSold.map(t=>`<div class="row"><span class="lab">${esc(t.name||t.product_id)}</span><span class="val">${t.qty} יח׳</span></div>`).join("")
+      : "<div class='muted'>אין מכירות בחלון הזה</div>";
+
+    const u = d.users;
+    $("uTotal").textContent = u.total; $("uNew").textContent = u.newWindow;
+    $("uExist").textContent = u.existing; $("uDel").textContent = u.deletedWindow + " / " + u.deletedAll;
+    $("uClub").textContent = u.clubTotal + " (חדשים: " + u.clubNew + ")";
+
+    $("checks").innerHTML = d.checks.map(c=>`<div class="check"><span>${esc(c.label)} — <span class="muted">${esc(c.note)}</span></span><span class="tag ${c.status}">${statusWord(c.status)}</span></div>`).join("")
+      + (d.health.errorsWindow ? `<div class="failrow" style="margin-top:8px">${d.health.errorsWindow} שגיאות שרת בחלון — ` + d.health.lastErrors.map(e=>esc(fmt(e.created_at)+": "+(e.detail||""))).join(" · ") + "</div>" : "");
+
+    const inv = d.inventory;
+    $("invUnits").textContent = inv.unitsInStock;
+    $("invLow").innerHTML = inv.low.length ? inv.low.map(i=>`<div class="warnrow">⚠ ${esc(i.name)} (${esc(i.color_name)} / ${esc(i.size)}) — נותרו ${i.stock}</div>`).join("") : "<div class='muted'>כל הפריטים במלאי תקין 👍</div>";
+    $("invOut").innerHTML = inv.soldOut.map(i=>`<div class="failrow">✗ אזל: ${esc(i.name)} (${esc(i.color_name)} / ${esc(i.size)})</div>`).join("");
+
+    const s = d.shipments;
+    $("shipCount").textContent = s.pendingCount;
+    $("shipWrap").innerHTML = s.pending.length
+      ? `<table><thead><tr><th>הזמנה</th><th>לקוח</th><th>פריטים</th><th>סכום</th><th>שולם</th><th></th></tr></thead><tbody>`
+        + s.pending.map(o=>`<tr><td><b>${esc(o.order_num)}</b></td><td>${esc(o.email||"—")}</td><td>${o.units}</td><td>${shekel(o.total)}</td><td class="muted">${fmt(o.paid_at)}</td><td><button class="btn btn--ship" data-ship="${esc(o.order_num)}">סמן כנשלח</button></td></tr>`).join("")
+        + "</tbody></table>"
+      : "<div class='muted'>אין משלוחים ממתינים 🎉</div>";
+    document.querySelectorAll("[data-ship]").forEach(b=>b.addEventListener("click", ()=>markShipped(b.dataset.ship)));
+  }
+
+  async function markShipped(orderNum){
+    const r = await api("/api/admin/orders/ship", { method:"POST", body: JSON.stringify({ orderNum }) });
+    if(r.ok) load(); else alert("לא ניתן לסמן — נסו שוב");
+  }
+
+  function showGate(){ $("gate").classList.remove("hidden"); $("dash").classList.add("hidden"); $("pass").focus(); }
+  function showDash(){ $("gate").classList.add("hidden"); $("dash").classList.remove("hidden"); }
+
+  async function doLogin(){
+    $("loginErr").textContent = "";
+    const r = await api("/api/admin/login", { method:"POST", body: JSON.stringify({ password: $("pass").value }) });
+    if(r.ok){ $("pass").value=""; load(); }
+    else if(r.status===403){ $("loginErr").textContent = "כניסת מנהל אינה מוגדרת (ADMIN_PASS)"; }
+    else { $("loginErr").textContent = "סיסמה שגויה"; }
+  }
+
+  $("loginBtn").addEventListener("click", doLogin);
+  $("pass").addEventListener("keydown", (e)=>{ if(e.key==="Enter") doLogin(); });
+  $("refreshBtn").addEventListener("click", load);
+  setInterval(()=>{ if(!$("dash").classList.contains("hidden")) load(); }, 45000);
+  load();
+</script>
+</body>
+</html>

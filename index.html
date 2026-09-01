@@ -11,8 +11,8 @@
   <meta name="theme-color" content="#1E2C4A" />
   <link rel="canonical" href="https://soleluna.co.il/" />
 
-  <!-- favicon (brand emblem, inline SVG) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231E2C4A'/%3E%3Cg fill='none' stroke='%23F4F1EA' stroke-width='4' stroke-linecap='round'%3E%3Ccircle cx='50' cy='50' r='27'/%3E%3Cpath d='M50 10v8M50 82v8M10 50h8M82 50h8M24 24l6 6M70 70l6 6M24 76l6-6M70 30l6-6'/%3E%3C/g%3E%3Cpath d='M57 37 A14 14 0 1 0 57 63 A11 11 0 1 1 57 37 Z' fill='%23F4F1EA'/%3E%3C/svg%3E" />
+  <!-- favicon (brand emblem, inline SVG — matches the header emblem exactly) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231E2C4A'/%3E%3Cg fill='none' stroke='%23EAE0CE' stroke-linecap='round' stroke-width='4.5'%3E%3Ccircle cx='48' cy='46' r='20'/%3E%3Cpath d='M70.5 46l9 0 M63.9 61.9l6.4 6.4 M48 68.5l0 9 M32.1 61.9l-6.4 6.4 M25.5 46l-9 0 M32.1 30.1l-6.4 -6.4 M48 23.5l0 -9 M63.9 30.1l6.4 -6.4'/%3E%3C/g%3E%3Cpath fill='%23EAE0CE' d='M66.87 39.38 A20 20 0 0 0 44.13 65.62 A20 20 0 0 0 66.87 39.38 Z'/%3E%3C/svg%3E" />
 
   <!-- Open Graph (Facebook / WhatsApp / LinkedIn) -->
   <meta property="og:type" content="website" />
@@ -150,7 +150,7 @@ body::after {
   position: fixed; inset: 0; z-index: -1;
   display: grid; place-items: center; pointer-events: none;
 }
-.brandmark-bg svg { width: min(760px, 76vw); height: auto; color: var(--forest); opacity: .05; }
+.brandmark-bg svg { width: min(1200px, 110vw); height: auto; color: var(--forest); opacity: .05; }
 .brand__emblem { width: 30px; height: 30px; color: var(--forest); margin: 0 auto 7px; display: block; }
 
 /* ---------- Layout helpers ---------- */
@@ -309,13 +309,19 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   display: flex; align-items: flex-end;
   overflow: hidden; background: var(--ink);
 }
-.hero__bg, .hero__bg picture, .hero__bg img, .hero__bg video {
+.hero__bg, .hero__bg img, .hero__bg video {
   position: absolute; inset: 0; width: 100%; height: 100%;
 }
 .hero__bg img, .hero__bg video { object-fit: cover; object-position: center 30%; transform: scale(1.04); will-change: transform; }
 /* the campaign film fades in over the poster once it can actually play */
 .hero__film { opacity: 0; transition: opacity 1.6s var(--ease); z-index: 0; }
 .hero__film.is-live { opacity: 1; }
+/* portrait screens: a shorter stage lets the 16:9 film keep horse and both
+   figures in frame instead of cropping into a single body */
+@media (max-width: 700px) {
+  .hero { min-height: 74svh; }
+  .hero__bg img, .hero__bg video { object-position: center center; transform: none; }
+}
 .hero__scrim {
   position: absolute; inset: 0; z-index: 1;
   background:
@@ -372,8 +378,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
    MARQUEE VALUES
    =========================================================== */
 .valuestrip { border-block: 1px solid var(--line); background: var(--paper); overflow: hidden; }
-.valuestrip__track { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 3.5rem; padding: 1.4rem 1rem; }
-.valuestrip__track span { display: inline-flex; align-items: center; gap: 3.5rem; font-family: var(--serif); font-style: normal; font-size: clamp(1.4rem, 2.4vw, 2.1rem); color: var(--olive); }
+.valuestrip__track { display: flex; flex-wrap: nowrap; gap: 3.5rem; padding: 1.4rem 1rem; white-space: nowrap; animation: marquee 35s linear infinite; }
+.valuestrip__track span { display: inline-flex; align-items: center; gap: 3.5rem; font-family: var(--serif); font-style: normal; font-size: clamp(1.4rem, 2.4vw, 2.1rem); color: var(--olive); flex-shrink: 0; }
 .valuestrip__track span::after { content: "·"; color: var(--sage); }
 
 /* ===========================================================
@@ -580,14 +586,39 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   background: var(--sand); color: var(--clay); padding: .35em .8em; border-radius: 30px;
 }
 .card__sold {
-  position: absolute; top: .9rem; left: 50%; transform: translateX(-50%); z-index: 4;
-  font-family: var(--mark); font-size: .6rem; letter-spacing: .2em; text-transform: uppercase;
-  background: var(--ink); color: var(--bone); padding: .42em 1em; border-radius: 30px;
+  display: inline-block; margin-inline-start: .8em;
+  font-family: var(--mark); font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+  background: var(--ink); color: var(--bone); padding: .4em 1em; border-radius: 20px;
 }
 .card.is-sold .photo { opacity: .85; }
+.badge-sold {
+  position: absolute; top: 1.2rem; inset-inline-start: 1.2rem; z-index: 5;
+  font-family: var(--mark); font-size: .72rem; letter-spacing: .22em; text-transform: uppercase;
+  background: var(--ink); color: var(--bone); padding: .55em 1.3em; border-radius: 30px;
+}
+.hero .badge-sold { top: 100px; inset-inline-end: 2rem; inset-inline-start: auto; z-index: 3; }
 .card.is-sold .card__price { color: var(--olive); text-decoration: line-through; }
 .card__fav { position: absolute; top: .7rem; inset-inline-end: .7rem; z-index: 3; width: 30px; height: 30px; border-radius: 50%; background: color-mix(in srgb, var(--bone) 75%, transparent); display: grid; place-items: center; color: var(--ink); transition: background .3s, color .3s; }
 .card__fav:hover, .card__fav.is-on { background: var(--forest); color: var(--bone); }
+
+/* image color arrows — card, quick-view modal, lightbox */
+.img-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+  width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--bone) 70%, transparent); color: var(--ink);
+  backdrop-filter: blur(4px); transition: background .25s, opacity .25s;
+  font-size: 1.1rem; line-height: 1; opacity: .0;
+}
+.card__media:hover .img-nav, .img-nav:focus-visible { opacity: 1; }
+.img-nav:hover { background: var(--bone); }
+.img-nav--prev { left: .6rem; }
+.img-nav--next { right: .6rem; }
+.pmodal__media .img-nav, .lightbox .img-nav { opacity: 1; width: 42px; height: 42px; font-size: 1.4rem; }
+.pmodal__media .img-nav--prev, .lightbox .img-nav--prev { left: .8rem; }
+.pmodal__media .img-nav--next, .lightbox .img-nav--next { right: .8rem; }
+.lightbox .img-nav { background: rgba(255,255,255,.14); color: var(--bone); }
+.lightbox .img-nav:hover { background: rgba(255,255,255,.26); }
+@media (hover: none) { .img-nav { opacity: 1; } }
 .card__add {
   position: absolute; inset-inline: .7rem; bottom: .7rem; z-index: 3;
   opacity: 0; transform: translateY(8px); transition: opacity .4s var(--ease), transform .4s var(--ease);
@@ -886,13 +917,14 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
    =========================================================== */
 .pmodal {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(.96);
-  width: min(920px, 94vw); max-height: 92vh; overflow-y: auto;
+  width: min(920px, 94vw); height: 90vh; overflow-y: scroll; overflow-x: hidden;
   background: var(--bone); z-index: 320; border-radius: var(--radius);
   opacity: 0; visibility: hidden; transition: opacity .4s var(--ease), transform .4s var(--ease), visibility .4s;
-  box-shadow: 0 40px 90px -40px rgba(20,26,36,.7);
+  box-shadow: 0 40px 90px -40px rgba(20,26,36,.7); scrollbar-width: thin;
 }
 .pmodal.is-open { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
 .pmodal__grid { display: grid; grid-template-columns: 1fr 1fr; }
+.pmodal__info { padding: clamp(1.6rem, 3vw, 2.6rem); display: flex; flex-direction: column; }
 .pmodal__media { position: relative; aspect-ratio: 3/4; background: var(--mist); overflow: hidden; cursor: zoom-in; }
 .pmodal__media img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; }
 .pmodal__zoom { position: absolute; bottom: 1rem; inset-inline-start: 1rem; width: 40px; height: 40px; border-radius: 50%; background: color-mix(in srgb, var(--bone) 80%, transparent); backdrop-filter: blur(6px); display: grid; place-items: center; color: var(--ink); transition: background .3s; }
@@ -901,6 +933,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .pmodal__tag { align-self: flex-start; font-family: var(--mark); font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; background: var(--sand); color: var(--clay); padding: .35em .8em; border-radius: 30px; margin-bottom: 1rem; }
 .pmodal__info h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 500; line-height: 1.1; }
 .pmodal__price { font-family: var(--mark); font-size: 1.3rem; color: var(--ink); margin-top: .5rem; }
+.pmodal__price del { color: var(--sage); margin-inline-start: .5em; font-size: .75em; }
 .pmodal__fabric { font-family: var(--mark); font-size: .64rem; letter-spacing: .16em; text-transform: uppercase; color: var(--sage); margin-top: .6rem; }
 .pmodal__desc { color: var(--moss); font-size: .98rem; margin-top: 1.2rem; line-height: 1.7; }
 .pmodal__field { display: flex; align-items: center; gap: 1rem; margin-top: 1.3rem; flex-wrap: wrap; }
@@ -956,6 +989,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .lightbox__colors .color-sw.is-active { box-shadow: 0 0 0 2px #141A24, 0 0 0 4px #fff; }
 
 @media (max-width: 720px) {
+  .pmodal { top: 50% !important; transform: translate(-50%, -50%) scale(.96); max-height: 90vh; }
+  .pmodal.is-open { transform: translate(-50%, -50%) scale(1); }
   .pmodal__grid { grid-template-columns: 1fr; }
   .pmodal__media { aspect-ratio: 4/5; }
 }
@@ -997,6 +1032,25 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .adm-stock input { width: 48px; text-align: center; }
 .adm-del { color: #a4513f; font-size: .72rem; }
 .adm-addcolor { font-family: var(--mark); font-size: .74rem; color: var(--forest); margin-top: .6rem; text-decoration: underline; }
+
+#adminSave[hidden] { display: none; }
+.admin__tabs { position: sticky; top: 61px; z-index: 2; background: var(--bone); border-bottom: 1px solid var(--line); display: flex; gap: .3rem; flex-wrap: wrap; padding: .7rem 1.5rem; }
+.admin__tab { font-family: var(--mark); font-size: .72rem; letter-spacing: .06em; padding: .5em 1em; border-radius: 30px; color: var(--olive); transition: all .25s var(--ease); }
+.admin__tab:hover { background: var(--sand); }
+.admin__tab.is-active { background: var(--forest); color: var(--bone); }
+.adm-table { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; font-size: .86rem; }
+.adm-table th { text-align: start; font-family: var(--mark); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--olive); padding: .7em .9em; background: var(--sand); }
+.adm-table td { padding: .6em .9em; border-top: 1px solid var(--line); vertical-align: top; }
+.adm-table tr:hover td { background: var(--mist); }
+.adm-empty { color: var(--olive); font-size: .9rem; padding: 1.5rem; text-align: center; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+.adm-msg { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.2rem; }
+.adm-msg + .adm-msg { margin-top: .7rem; }
+.adm-msg__head { display: flex; justify-content: space-between; gap: 1rem; font-size: .82rem; color: var(--olive); margin-bottom: .4rem; flex-wrap: wrap; }
+.adm-msg__head b { color: var(--ink); }
+.adm-tag { font-family: var(--mark); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; padding: .25em .7em; border-radius: 30px; }
+.adm-tag--paid { background: var(--okbg, #e8f3ec); color: var(--forest); }
+.adm-tag--pending { background: var(--sand); color: var(--clay); }
+.adm-tag--canceled { background: var(--mist); color: var(--olive); }
 
 /* ===========================================================
    ✦ ATELIER 3D LAYER — WebGL silk · tilt
@@ -1051,14 +1105,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <!-- ============ BRAND EMBLEM (logo) — reusable SVG ============ -->
   <svg class="svg-defs" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
     <symbol id="soleluna-emblem" viewBox="0 0 100 100">
-      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.4">
-        <circle cx="52" cy="50" r="27"/>
-        <path d="M52 9v8 M52 83v8 M9 50h8 M87 50h8 M24 22l5.5 5.5 M74.5 73.5l5.5 5.5 M24 78l5.5-5.5 M74.5 26.5l5.5-5.5 M67 11l2.8 7.4 M91 67l-7.4-2.8 M67 89l2.8-7.4 M13 33l7.4 2.8"/>
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="4.5">
+        <circle cx="48" cy="46" r="20"/>
+        <path d="M70.5 46l9 0 M63.9 61.9l6.4 6.4 M48 68.5l0 9 M32.1 61.9l-6.4 6.4 M25.5 46l-9 0 M32.1 30.1l-6.4 -6.4 M48 23.5l0 -9 M63.9 30.1l6.4 -6.4"/>
       </g>
-      <path d="M50 23 A27 27 0 1 0 50 77 A21 22 0 1 1 50 23 Z" fill="currentColor"/>
-      <g fill="#F4F1EA">
-        <circle cx="47" cy="33" r="1.7"/><circle cx="41" cy="39" r="1.7"/><circle cx="38" cy="50" r="1.7"/><circle cx="41" cy="61" r="1.7"/><circle cx="47" cy="67" r="1.7"/>
-      </g>
+      <path fill="currentColor" d="M66.87 39.38 A20 20 0 0 0 44.13 65.62 A20 20 0 0 0 66.87 39.38 Z"/>
     </symbol>
   </svg>
 
@@ -1091,7 +1142,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <a class="brand" href="#top" aria-label="sole&luna דף הבית">
         <svg class="brand__emblem" aria-hidden="true"><use href="#soleluna-emblem"></use></svg>
         <span class="brand__mark">sole&luna</span>
-        <span class="brand__sub">Woven for comfort</span>
+        <span class="brand__sub">Naturally Comfortable</span>
       </a>
 
       <div class="nav__actions">
@@ -1114,11 +1165,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <!-- ============ HERO — full-bleed editorial (maison style) ============ -->
   <section class="hero">
     <div class="hero__bg" aria-hidden="true">
-      <picture>
-        <source media="(max-width: 700px)" srcset="img/hero-card.png" />
-        <img class="hero__media" src="img/hero-beach.png" alt="" fetchpriority="high" />
-      </picture>
-      <!-- campaign film — loaded only on wide screens; image above is the poster & fallback -->
+      <!-- poster = the film's own first frame, so the swap to video is invisible -->
+      <img class="hero__media" src="img/hero-beach.png" alt="" fetchpriority="high" />
+      <!-- campaign film — every device; the image above stays as poster & fallback -->
       <video id="heroFilm" class="hero__media hero__film" muted loop playsinline preload="none"></video>
     </div>
     <div class="hero__scrim" aria-hidden="true"></div>
@@ -1126,12 +1175,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 
     <div class="hero__content container">
       <span class="hero__eyebrow" data-reveal>הקולקציה הראשונה · קיץ 2026</span>
-      <h1 class="hero__title" data-reveal aria-label="הנוחות, נארגת מחדש">
-        <span class="ln"><span>הנוחות,</span></span>
-        <span class="ln"><span>נארגת מחדש.</span></span>
+      <h1 class="hero__title" data-reveal aria-label="מהטבע, לסטייל שלא מתפשר">
+        <span class="ln"><span>מהטבע,</span></span>
+        <span class="ln"><span>לסטייל שלא מתפשר.</span></span>
       </h1>
       <p class="hero__copy" data-reveal data-reveal-delay="2">
-        לייוסל ופשתן, נטוויים לבגדים שנושמים איתכם — מהבוקר במשרד ועד ערב מול הים.
+        לייוסל ופשתן טבעיים, שנושמים איתכם ומחמיאים לכל קו גוף — מהבוקר במשרד ועד ערב מול הים.
       </p>
       <div class="hero__cta" data-reveal data-reveal-delay="3">
         <a href="#shop" class="btn btn--hero"><span>לגילוי הקולקציה</span></a>
@@ -1143,7 +1192,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <!-- ============ VALUE MARQUEE ============ -->
   <div class="valuestrip" aria-hidden="true">
     <div class="valuestrip__track">
-      <span>נושם</span><span>מחויט</span><span>קליל</span><span>טבעי</span><span>מווסת חום</span><span>אלגנטי</span>
+      <span>נושם</span><span>מחויט</span><span>קליל</span><span>טבעי</span><span>מווסת חום</span><span>מחמיא לגוף</span><span>אלגנטי</span><span>בר-קיימא</span><span>נושם</span><span>מחויט</span><span>קליל</span><span>טבעי</span><span>מווסת חום</span><span>מחמיא לגוף</span><span>אלגנטי</span><span>בר-קיימא</span>
     </div>
   </div>
 
@@ -1187,7 +1236,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         </div>
         <p class="lead" data-reveal data-reveal-delay="2">
           לא עוד “עוד חולצה”. הרכב מדויק של שני סיבים טבעיים, שנבחר כדי להעניק לכם
-          קרירות, נשימה ונפילה מחויטת — בלי גיהוץ אינסופי ובלי הזעה.
+          קרירות, נשימה וגזרה מחויטת — בלי גיהוץ אינסופי ובלי הזעה.
         </p>
       </div>
 
@@ -1223,13 +1272,13 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
           </div>
           <div class="feat">
             <svg class="feat__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 7v6l8 4 8-4V7"/></svg>
-            <h3>נפילה מחויטת</h3>
+            <h3>גזרה מחויטת</h3>
             <p>נפילה אלגנטית שמחזיקה צורה — מראה יומיומי ומוקפד, מהבוקר ועד הערב.</p>
           </div>
           <div class="feat">
             <svg class="feat__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10z"/><path d="M9 11l2 2 4-4"/></svg>
             <h3>טבעי ואחראי</h3>
-            <p>סיבים ממקור צמחי, רכים על העור וידידותיים יותר לסביבה.</p>
+            <p>סיבים ממקור צמחי, עדינים על העור, בריאים לגוף וידידותיים יותר לסביבה.</p>
           </div>
         </div>
       </div>
@@ -1241,7 +1290,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
           <strong>פוליאסטר</strong> סינתטי שלא באמת נושם, כולא חום ומתחיל להריח. הלייוסל שלנו מופק
           מעיסת אקליפטוס בתהליך סגור וממוחזר: הוא <strong>רך יותר מכותנה</strong>, סופג כ־50% יותר
           לחות ומנדף אותה מהר, ומווסת את חום הגוף כך שקריר כשחם וחמים כשקר. אליו נטווה <strong>פשתן</strong>
-          שמוסיף מבנה, אוורור ונפילה מחויטת. הצירוף המדויק הזה — 70/30 — הוא מה שאין לאף בד אחר.
+          שמוסיף מבנה, אוורור וגזרה מחויטת. הצירוף המדויק הזה — 70/30 — הוא מה שאין לאף בד אחר.
         </p>
 
         <div class="compare" data-reveal data-reveal-delay="2">
@@ -1360,7 +1409,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         <p class="lead" data-reveal data-reveal-delay="2">סננו לפי מגדר, פריט, מידה וגזרה — ומצאו בדיוק את מה שמתאים לכם.</p>
       </div>
 
-      <!-- filter rows -->
+      <!-- filter toggle button -->
+      <button id="filterToggleBtn" class="chip is-active" style="margin-bottom:1.6rem; display:block; cursor:pointer;"><span>סינון</span></button>
+
+      <!-- filter rows - hidden by default -->
+      <div id="filterPanel" style="display:none;">
       <div class="shop__bar" data-reveal>
         <div class="filters" id="filterGender">
           <span class="filters__label">מגדר</span>
@@ -1413,6 +1466,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
           <button class="chip" data-group="size" data-val="XL">XL</button>
         </div>
       </div>
+      </div><!-- close filterPanel -->
 
       <div class="products" id="productGrid"><!-- injected by JS --></div>
     </div>
@@ -1448,7 +1502,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <section class="section signup" id="contact">
     <div class="container">
       <span class="eyebrow" data-reveal>הצטרפו ל-sole&luna</span>
-      <h2 class="h-1" data-reveal data-reveal-delay="1">היו הראשונים לדעת</h2>
+      <h2 class="h-1" data-reveal data-reveal-delay="1">תמיד הראשונים לגלות.</h2>
       <p data-reveal data-reveal-delay="2">הצטרפו לרשימה שלנו וקבלו גישה מוקדמת לקולקציות ולהשקות — והטבת פתיחה אישית על ההזמנה הראשונה. ללא דיוור מיותר.</p>
       <div class="signup__code" id="couponReveal" data-reveal data-reveal-delay="2" hidden>
         <span>ההטבה שלכם: <strong id="couponCode">SOLELUNA10</strong></span>
@@ -1498,7 +1552,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <div class="footer__top">
         <div class="footer__brand">
           <span class="brand__mark">sole&luna</span>
-          <p>בדים שנארגים מתוך תשוקה לנוחות ולסטייל. הנוחות, נארגת מחדש.</p>
+          <p>בדים טבעיים ובני-קיימא, מתוך תשוקה לנוחות ולסטייל. מהטבע, לסטייל שלא מתפשר.</p>
           <p style="margin-top:.8rem;"><a href="mailto:solelunabsns@gmail.com" class="link-underline" style="color:var(--bone);">solelunabsns@gmail.com</a></p>
           <div class="footer__social">
             <a href="https://www.instagram.com/solelunaofficiall" target="_blank" rel="noopener" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
@@ -1555,7 +1609,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     </nav>
     <div class="mnav__foot">
       <button id="mnavAccount">התחברות</button>
-      <span>Woven for comfort</span>
+      <span>Naturally Comfortable</span>
     </div>
   </div>
 
@@ -1627,6 +1681,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         <p id="accountEmail" style="color:var(--olive);font-size:.9rem;margin-bottom:.4rem;"></p>
         <p style="font-family:var(--mark);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:1.4rem;">חבר/ת מועדון sole&luna</p>
         <button class="btn btn--block btn--ghost" id="logoutBtn"><span>התנתקות</span></button>
+        <button type="button" id="deleteAccountBtn" style="margin-top:1rem;background:none;border:0;color:var(--olive);font-size:.78rem;text-decoration:underline;cursor:pointer;opacity:.75;">מחיקת החשבון שלי</button>
       </div>
     </div>
   </div>
@@ -1698,6 +1753,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         <button class="pmodal__zoom" id="pmZoom" aria-label="הגדלת תמונה">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
         </button>
+        <button class="img-nav img-nav--prev" id="pmPrevColor" aria-label="צבע קודם"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="img-nav img-nav--next" id="pmNextColor" aria-label="צבע הבא"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
       <div class="pmodal__info">
         <span class="pmodal__tag" id="pmTag" hidden></span>
@@ -1751,6 +1808,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     <button class="lightbox__close" id="lightboxClose" aria-label="סגור">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
+    <button class="img-nav img-nav--prev" id="lbPrevColor" aria-label="צבע קודם"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button class="img-nav img-nav--next" id="lbNextColor" aria-label="צבע הבא"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
     <img id="lightboxImg" src="" alt="" />
     <div class="lightbox__colors" id="lbColors" aria-label="בחירת צבע"></div>
   </div>
@@ -1769,12 +1828,19 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <!-- ============ ADMIN — inventory manager (open via ?admin=PASS) ============ -->
   <div class="admin" id="adminPanel" hidden>
     <div class="admin__bar">
-      <strong>ניהול מלאי · sole&luna</strong>
-      <span class="admin__hint">שינויים נשמרים בשרת · נראים לכל הלקוחות</span>
+      <strong>ניהול · sole&luna</strong>
       <div class="admin__actions">
+        <button class="btn btn--sm btn--ghost" id="adminClearForLaunch"><span>סימון הכל כאזל + ביטול הנחות</span></button>
         <button class="btn btn--sm" id="adminSave"><span>שמירה ופרסום</span></button>
         <button class="btn btn--sm btn--ghost" id="adminClose"><span>סגירה</span></button>
       </div>
+    </div>
+    <div class="admin__tabs" id="adminTabs">
+      <button class="admin__tab is-active" data-tab="inventory">מלאי ומחירים</button>
+      <button class="admin__tab" data-tab="orders">הזמנות</button>
+      <button class="admin__tab" data-tab="customers">לקוחות</button>
+      <button class="admin__tab" data-tab="contact">פניות</button>
+      <button class="admin__tab" data-tab="sales">מכירות לפי צבע/מידה</button>
     </div>
     <div class="admin__body" id="adminBody"></div>
   </div>
@@ -1925,6 +1991,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       const fav = state.fav.has(p.id) ? "is-on" : "";
       const tag = p.tag ? `<span class="card__tag">${p.tag}</span>` : "";
       const inStock = productInStock(p.id);
+      const multiColor = invColors(p.id).length > 1;
+      const navArrows = multiColor
+        ? `<button class="img-nav img-nav--prev" data-imgnav="${p.id}" data-dir="prev" aria-label="צבע קודם"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+           <button class="img-nav img-nav--next" data-imgnav="${p.id}" data-dir="next" aria-label="צבע הבא"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>`
+        : "";
       const addArea = inStock
         ? `<div class="card__add"><button class="btn btn--sm btn--block" data-view="${p.id}"><span>בחירת מידה</span></button></div>`
         : `<div class="card__add"><button class="btn btn--sm btn--block btn--ghost" disabled><span>אזל מהמלאי</span></button></div>`;
@@ -1932,11 +2003,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <article class="card ${inStock ? '' : 'is-sold'}" data-id="${p.id}">
         <div class="card__media">
           ${tag}
-          ${inStock ? '' : '<span class="card__sold">אזל מהמלאי</span>'}
           <button class="card__fav ${fav}" data-fav="${p.id}" aria-label="הוסף למועדפים">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="${fav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10z"/></svg>
           </button>
           <img class="photo" src="${imgForColor(p, defaultColor(p.id))}" alt="${p.name}" loading="lazy" data-photo="${p.id}">
+          ${navArrows}
           ${addArea}
         </div>
         <div class="card__info">
@@ -1946,7 +2017,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
             <div class="card__meta">${fitLabel(p.fit)} · ${p.sizes.join(" / ")}</div>
             <div class="card__colors">${invColors(p.id).map((c) => `<button class="card-sw ${c.name === defaultColor(p.id) ? 'is-active' : ''}" data-cardsw="${p.id}" data-color="${c.name}" style="--sw:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join("")}</div>
           </div>
-          <div class="card__price">${ILS(invPrice(p.id))}</div>
+          <div class="card__price">${priceHTML(p.id)} ${inStock ? '' : '<span class="card__sold">Sold Out</span>'}</div>
         </div>
       </article>`;
     }).join("");
@@ -1958,10 +2029,39 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   // color name → image-file suffix (real per-color photography)
   const COLOR_SUFFIX = { "לבן": "white", "נייבי": "navy", "זית": "sage", "חום": "brown", "בז'": "beige" };
   const imgForColor = (p, cname) => { const s = COLOR_SUFFIX[cname]; return s ? ("img/products/" + p.id + "-" + s + ".png") : imgFor(p); };
-  const defaultColor = (id) => { const cs = invColors(id); return (cs.find((c) => colorInStock(id, c.name)) || cs[0] || { name: "" }).name; };
+  // rotate the starting color per product (by its position in the catalog) so
+  // the shop grid shows a mix of colors instead of every card defaulting to
+  // the same one — falls through to the next in-stock color if needed.
+  const defaultColor = (id) => {
+    const cs = invColors(id);
+    if (!cs.length) return "";
+    const idx = PRODUCTS.findIndex((p) => p.id === id);
+    const start = idx >= 0 ? idx % cs.length : 0;
+    for (let i = 0; i < cs.length; i++) {
+      const c = cs[(start + i) % cs.length];
+      if (colorInStock(id, c.name)) return c.name;
+    }
+    return cs[start].name;
+  };
+  // next/previous color name in the product's color list, wrapping around
+  function neighborColor(id, currentName, dir) {
+    const cs = invColors(id);
+    if (cs.length < 2) return currentName;
+    const i = Math.max(0, cs.findIndex((c) => c.name === currentName));
+    return cs[(i + dir + cs.length) % cs.length].name;
+  }
 
   function invColors(id) { return (INV[id] && INV[id].colors) || []; }
   function invPrice(id) { return (INV[id] && INV[id].price != null) ? INV[id].price : (product(id) && product(id).price) || 0; }
+  function invCompareAt(id) {
+    const p = product(id);
+    const c = p && p.compareAtPrice;
+    return (c != null && c > invPrice(id)) ? c : null;
+  }
+  function priceHTML(id) {
+    const compareAt = invCompareAt(id);
+    return compareAt ? `${ILS(invPrice(id))} <del>${ILS(compareAt)}</del>` : ILS(invPrice(id));
+  }
   function invStock(id, color, size) { try { return INV[id].stock[color][size] || 0; } catch (e) { return 0; } }
   function colorInStock(id, color) { const p = product(id); return p && p.sizes.some((s) => invStock(id, color, s) > 0); }
   function productInStock(id) { return invColors(id).some((c) => colorInStock(id, c.name)); }
@@ -1979,6 +2079,17 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   });
 
   $("#sortSelect").addEventListener("change", (e) => { state.sort = e.target.value; renderProducts(); });
+
+  // filter toggle button
+  const filterToggleBtn = $("#filterToggleBtn");
+  const filterPanel = $("#filterPanel");
+  if (filterToggleBtn && filterPanel) {
+    filterToggleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      filterPanel.style.display = filterPanel.style.display === "none" ? "block" : "none";
+    });
+  }
 
   // deep links from nav / footer (data-filter -> set a filter and scroll to shop)
   function applyDeepFilter(val) {
@@ -2125,6 +2236,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     const add = e.target.closest("[data-add]");
     const fav = e.target.closest("[data-fav]");
     const cardsw = e.target.closest("[data-cardsw]");
+    const navBtn = e.target.closest("[data-imgnav]");
     if (add) { addToCart(add.dataset.add); return; }
     if (fav) { toggleFav(fav.dataset.fav, fav); return; }
     if (cardsw) {
@@ -2132,6 +2244,16 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       const img = grid.querySelector(`img.photo[data-photo="${id}"]`);
       if (img) img.src = imgForColor(product(id), cname);
       cardsw.parentElement.querySelectorAll(".card-sw").forEach((b) => b.classList.toggle("is-active", b === cardsw));
+      return;
+    }
+    if (navBtn) {
+      const id = navBtn.dataset.imgnav;
+      const activeSw = grid.querySelector(`.card[data-id="${id}"] .card-sw.is-active`);
+      const current = activeSw ? activeSw.dataset.color : defaultColor(id);
+      const next = neighborColor(id, current, navBtn.dataset.dir === "next" ? 1 : -1);
+      const img = grid.querySelector(`img.photo[data-photo="${id}"]`);
+      if (img) img.src = imgForColor(product(id), next);
+      grid.querySelectorAll(`.card[data-id="${id}"] .card-sw`).forEach((b) => b.classList.toggle("is-active", b.dataset.color === next));
       return;
     }
     const card = e.target.closest(".card");
@@ -2144,9 +2266,13 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   let pmCurrent = null, pmSize = null, pmColor = null;
 
   function productDesc(p) {
-    const t = p.type === "shirt" ? "חולצה" : "מכנסיים";
-    const fitTxt = { relaxed: "גזרה רפויה ונופלת לתחושת חופש מלאה", straight: "גזרה ישרה ונקייה שמחמיאה לכל מבנה גוף", slim: "גזרה מחויטת ואלגנטית למראה מוקפד" }[p.fit] || "";
-    return `${t} מבד לייוסל 70% ופשתן 30% — נושם, קליל ונעים על העור. ${fitTxt}. מהמשרד ועד הריזורט.`;
+    const t = p.cut === "jacket" ? "ג'קט" : p.cut === "shorts" ? "מכנס קצר" : (p.type === "shirt" ? "חולצה" : "מכנסיים");
+    const fitTxt = {
+      relaxed: "גזרה רפויה ונופלת לתחושת חופש מלאה, שמחמיאה לכל קו גוף",
+      straight: "גזרה ישרה ונקייה שמחמיאה לכל מבנה גוף",
+      slim: "גזרה מחויטת שמדגישה את קווי הגוף למראה מוקפד ואלגנטי",
+    }[p.fit] || "";
+    return `${t} מבד טבעי לייוסל 70% ופשתן 30% — נושם, קליל ורך על העור. ${fitTxt}. הסטייל שעובר איתכם מהמשרד ועד הריזורט, בלי להתפשר על נוחות.`;
   }
 
   /* garment measurements (cm) — deterministic per type + fit + size */
@@ -2156,8 +2282,14 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     let cols, rows;
     if (p.type === "pants") {
       const base = { relaxed: { waist: 84, hip: 110 }, straight: { waist: 82, hip: 106 }, slim: { waist: 80, hip: 102 } }[p.fit];
+      const isShorts = p.cut === "shorts";
       cols = ["מידה", "היקף מותן", "היקף ירך", "אורך פנימי", "אורך כולל"];
-      rows = p.sizes.map((s) => { const k = step(s); return [s, (base.waist + k * 4), (base.hip + k * 4), (74 + k), (100 + k * 2)]; });
+      rows = p.sizes.map((s) => {
+        const k = step(s);
+        const inseam = isShorts ? (24 + k) : (74 + k);
+        const total = isShorts ? (46 + k) : (100 + k * 2);
+        return [s, (base.waist + k * 4), (base.hip + k * 4), inseam, total];
+      });
     } else {
       const base = { relaxed: { chest: 112 }, straight: { chest: 106 }, slim: { chest: 100 } }[p.fit];
       cols = ["מידה", "היקף חזה", "אורך", "כתפיים", "שרוול"];
@@ -2198,6 +2330,19 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     span.textContent = ok ? "הוספה לסל" : "אזל מהמלאי";
   }
 
+  // move to the next (dir=1) or previous (dir=-1) color, updating every place the image shows
+  function stepPmColor(dir) {
+    if (!pmCurrent) return;
+    const next = neighborColor(pmCurrent, pmColor, dir);
+    if (next === pmColor) return;
+    pmColor = next;
+    pmSize = product(pmCurrent).sizes.find((s) => invStock(pmCurrent, pmColor, s) > 0) || null;
+    const src = imgForColor(product(pmCurrent), pmColor);
+    $("#pmImg").src = src;
+    if (lightbox.classList.contains("is-open")) $("#lightboxImg").src = src;
+    renderPmColors(); renderPmSizes(); updatePmAdd();
+  }
+
   function openProduct(id) {
     const p = product(id);
     if (!p) return;
@@ -2210,15 +2355,18 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     const tag = $("#pmTag");
     if (p.tag) { tag.textContent = p.tag; tag.hidden = false; } else tag.hidden = true;
     $("#pmName").textContent = p.name;
-    $("#pmPrice").textContent = ILS(invPrice(id));
+    $("#pmPrice").innerHTML = priceHTML(id);
     $("#pmFit").textContent = fitLabel(p.fit);
     $("#pmDesc").textContent = productDesc(p);
     const meas = $("#pmMeasures"); if (meas) meas.innerHTML = measurementsFor(p);
+    const showNav = colors.length > 1;
+    $("#pmPrevColor").hidden = $("#pmNextColor").hidden = $("#lbPrevColor").hidden = $("#lbNextColor").hidden = !showNav;
     renderPmColors();
     renderPmSizes();
     updatePmAdd();
     openOverlay();
     productModal.classList.add("is-open");
+    if (lenis) lenis.stop(); // disable smooth scrolling to allow modal scroll
   }
 
   $("#pmColors").addEventListener("click", (e) => {
@@ -2262,6 +2410,22 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   });
   $("#lightboxImg").addEventListener("click", (e) => e.stopPropagation());  // don't close when interacting with image
   lightbox.addEventListener("click", () => lightbox.classList.remove("is-open"));
+
+  // color arrows on the quick-view image and the lightbox
+  $("#pmPrevColor").addEventListener("click", (e) => { e.stopPropagation(); stepPmColor(-1); });
+  $("#pmNextColor").addEventListener("click", (e) => { e.stopPropagation(); stepPmColor(1); });
+  $("#lbPrevColor").addEventListener("click", (e) => { e.stopPropagation(); stepPmColor(-1); });
+  $("#lbNextColor").addEventListener("click", (e) => { e.stopPropagation(); stepPmColor(1); });
+
+  // ← → keys cycle colors while the quick-view or lightbox is open
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    if (!productModal.classList.contains("is-open") && !lightbox.classList.contains("is-open")) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || "";
+    if (tag === "INPUT" || tag === "TEXTAREA") return;
+    e.preventDefault();
+    stepPmColor(e.key === "ArrowRight" ? 1 : -1);
+  });
 
   cartBody.addEventListener("click", (e) => {
     const inc = e.target.closest("[data-inc]");
@@ -2431,6 +2595,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     lightbox.classList.remove("is-open");
     profile.classList.remove("is-open");
     document.body.style.overflow = "";
+    if (lenis) lenis.start(); // re-enable smooth scrolling
   }
   overlay.addEventListener("click", closeAll);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
@@ -2592,6 +2757,23 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 
   $("#logoutBtn").addEventListener("click", () => logoutUser());
 
+  async function deleteAccount() {
+    if (!confirm("למחוק את החשבון לצמיתות? הפעולה אינה הפיכה. היסטוריית ההזמנות נשמרת אצלנו לצרכים חשבונאיים בלבד.")) return;
+    try {
+      await api("/api/auth/delete", { method: "DELETE" });
+      toast("החשבון נמחק");
+    } catch (e) {
+      toast("לא ניתן למחוק כרגע — נסו שוב");
+      return;
+    }
+    state.user = null; save("soleluna_user", null);
+    state.orders = [];
+    renderUserUI();
+    closeAll();
+  }
+  const delBtn = $("#deleteAccountBtn");
+  if (delBtn) delBtn.addEventListener("click", deleteAccount);
+
   /* ===========================================================
      NEWSLETTER + COUPON COPY
      =========================================================== */
@@ -2681,6 +2863,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
      =========================================================== */
   const adminPanel = $("#adminPanel"), adminBody = $("#adminBody");
   let adminStats = { orders: 0, paid: 0, revenue: 0, subscribers: 0, users: 0 };
+  let adminOrders = [];
+  let adminTab = "inventory";
+  // lazy per-tab caches — null means "not fetched yet"
+  let adminCustomers = null, adminMessages = null, adminSales = null;
+  let adminOrderFilter = { q: "", status: "all" };
 
   function adminDashboard() {
     const cell = (label, val) => `<div class="dash-cell"><span>${label}</span><b>${val}</b></div>`;
@@ -2693,8 +2880,15 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <div class="dash-note">נתונים מהשרת בזמן אמת.</div>
     </div>`;
   }
-  function buildAdmin() {
-    adminBody.innerHTML = adminDashboard() + PRODUCTS.map((p) => {
+  function orderStatusTag(o) {
+    const label = { paid: "שולם", pending: "ממתין", canceled: "בוטל" }[o.status] || o.status;
+    const cls = { paid: "paid", pending: "pending", canceled: "canceled" }[o.status] || "pending";
+    return `<span class="adm-tag adm-tag--${cls}">${esc(label)}</span>`;
+  }
+  function fmtDate(ts) { return ts ? new Date(ts).toLocaleString("he-IL") : "—"; }
+
+  function buildInventoryTab() {
+    return adminDashboard() + PRODUCTS.map((p) => {
       const colors = invColors(p.id).map((c, ci) => {
         const stock = p.sizes.map((s) =>
           `<span class="adm-stock"><label>${s}</label><input type="number" min="0" data-k="stock" data-id="${p.id}" data-color="${c.name}" data-size="${s}" value="${invStock(p.id, c.name, s)}"></span>`).join("");
@@ -2707,7 +2901,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       }).join("");
       return `<div class="adm-card">
         <div class="adm-card__head">
-          <h4>${p.name}</h4>
+          <h4>${esc(p.name)}</h4>
           <span class="pmodal__label">מחיר ₪</span>
           <input class="adm-price" type="number" min="0" data-k="price" data-id="${p.id}" value="${invPrice(p.id)}">
         </div>
@@ -2716,6 +2910,119 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       </div>`;
     }).join("");
   }
+
+  function buildOrdersTab() {
+    const q = adminOrderFilter.q.trim().toLowerCase();
+    const list = adminOrders.filter((o) => {
+      if (adminOrderFilter.status !== "all" && o.status !== adminOrderFilter.status) return false;
+      if (!q) return true;
+      return (o.order_num || "").toLowerCase().includes(q) || (o.email || "").toLowerCase().includes(q);
+    });
+    const rows = list.map((o) => `<tr>
+        <td><b>${esc(o.order_num)}</b></td>
+        <td>${fmtDate(o.created_at)}</td>
+        <td>${esc(o.email || "—")}</td>
+        <td>${o.item_count} פריטים</td>
+        <td>${ILS(o.total)}</td>
+        <td>${orderStatusTag(o)}</td>
+        <td>${o.status === "paid" ? (o.shipped_at ? "נשלח · " + fmtDate(o.shipped_at) : "לא נשלח") : "—"}</td>
+      </tr>`).join("");
+    return `
+      <div class="adm-card">
+        <div class="adm-card__head">
+          <input type="text" placeholder="חיפוש לפי מספר הזמנה או מייל…" id="admOrderSearch" value="${esc(adminOrderFilter.q)}" style="flex:1;min-width:200px">
+          <select id="admOrderStatus">
+            <option value="all" ${adminOrderFilter.status === "all" ? "selected" : ""}>כל הסטטוסים</option>
+            <option value="paid" ${adminOrderFilter.status === "paid" ? "selected" : ""}>שולם</option>
+            <option value="pending" ${adminOrderFilter.status === "pending" ? "selected" : ""}>ממתין</option>
+            <option value="canceled" ${adminOrderFilter.status === "canceled" ? "selected" : ""}>בוטל</option>
+          </select>
+        </div>
+      </div>
+      ${list.length ? `<table class="adm-table"><thead><tr>
+          <th>הזמנה</th><th>תאריך</th><th>לקוח</th><th>פריטים</th><th>סכום</th><th>סטטוס</th><th>משלוח</th>
+        </tr></thead><tbody>${rows}</tbody></table>`
+        : `<div class="adm-empty">אין הזמנות תואמות לסינון (${adminOrders.length} סה״כ בשרת).</div>`}
+      <div class="dash-note" style="margin-top:.5rem">מציג עד 200 ההזמנות האחרונות.</div>`;
+  }
+
+  function buildCustomersTab() {
+    if (!adminCustomers) return `<div class="adm-empty">טוען…</div>`;
+    if (!adminCustomers.length) return `<div class="adm-empty">אין עדיין לקוחות רשומים.</div>`;
+    const rows = adminCustomers.map((c) => `<tr>
+        <td><b>${esc(c.name || "—")}</b></td>
+        <td>${esc(c.email)}</td>
+        <td>${esc(c.phone || "—")}</td>
+        <td>${fmtDate(c.created_at)}</td>
+        <td>${c.orderCount}</td>
+        <td>${ILS(c.totalSpent)}</td>
+      </tr>`).join("");
+    return `<table class="adm-table"><thead><tr>
+        <th>שם</th><th>אימייל</th><th>טלפון</th><th>נרשם/ה</th><th>הזמנות</th><th>סה״כ הוצאה</th>
+      </tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  function buildContactTab() {
+    if (!adminMessages) return `<div class="adm-empty">טוען…</div>`;
+    if (!adminMessages.length) return `<div class="adm-empty">אין פניות מטופס צור-קשר.</div>`;
+    return adminMessages.map((m) => `<div class="adm-msg">
+        <div class="adm-msg__head"><span><b>${esc(m.name || "ללא שם")}</b> · ${esc(m.email)}</span><span>${fmtDate(m.created_at)}</span></div>
+        <div>${esc(m.message)}</div>
+      </div>`).join("");
+  }
+
+  function buildSalesTab() {
+    if (!adminSales) return `<div class="adm-empty">טוען…</div>`;
+    const colorRows = adminSales.byColor.map((r) => `<tr>
+        <td><b>${esc(r.color)}</b></td><td>${r.qty} יח׳</td><td>${ILS(r.revenue)}</td>
+      </tr>`).join("");
+    const prodRows = adminSales.byProduct.map((r) => `<tr>
+        <td>${esc(r.name)}</td><td>${esc(r.color)}</td><td>${esc(r.size)}</td><td>${r.qty} יח׳</td><td>${ILS(r.revenue)}</td>
+      </tr>`).join("");
+    return `
+      <div class="dash-note" style="margin-bottom:.6rem">מבוסס על הזמנות ששולמו בפועל (סטטוס "שולם") — כל הזמן, לא רק חלון זמן.</div>
+      <h4 style="margin-bottom:.5rem">לפי צבע (כל המוצרים)</h4>
+      ${adminSales.byColor.length
+        ? `<table class="adm-table"><thead><tr><th>צבע</th><th>כמות שנמכרה</th><th>הכנסה</th></tr></thead><tbody>${colorRows}</tbody></table>`
+        : `<div class="adm-empty">אין עדיין מכירות.</div>`}
+      <h4 style="margin:1.2rem 0 .5rem">לפי מוצר · צבע · מידה</h4>
+      ${adminSales.byProduct.length
+        ? `<table class="adm-table"><thead><tr><th>מוצר</th><th>צבע</th><th>מידה</th><th>כמות</th><th>הכנסה</th></tr></thead><tbody>${prodRows}</tbody></table>`
+        : `<div class="adm-empty">אין עדיין מכירות.</div>`}`;
+  }
+
+  async function buildAdmin() {
+    $("#adminSave").hidden = adminTab !== "inventory";
+    if (adminTab === "inventory") { adminBody.innerHTML = buildInventoryTab(); return; }
+    if (adminTab === "orders") { adminBody.innerHTML = buildOrdersTab(); return; }
+    if (adminTab === "customers") {
+      adminBody.innerHTML = buildCustomersTab();
+      if (!adminCustomers) { adminCustomers = (await api("/api/admin/customers", { method: "POST", body: "{}" }).catch(() => ({ customers: [] }))).customers || []; adminBody.innerHTML = buildCustomersTab(); }
+      return;
+    }
+    if (adminTab === "contact") {
+      adminBody.innerHTML = buildContactTab();
+      if (!adminMessages) { adminMessages = (await api("/api/admin/contact-messages", { method: "POST", body: "{}" }).catch(() => ({ messages: [] }))).messages || []; adminBody.innerHTML = buildContactTab(); }
+      return;
+    }
+    if (adminTab === "sales") {
+      adminBody.innerHTML = buildSalesTab();
+      if (!adminSales) { adminSales = await api("/api/admin/sales-breakdown", { method: "POST", body: "{}" }).catch(() => ({ byColor: [], byProduct: [] })); adminBody.innerHTML = buildSalesTab(); }
+      return;
+    }
+  }
+  $("#adminTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-tab]"); if (!btn) return;
+    adminTab = btn.dataset.tab;
+    $$("#adminTabs .admin__tab").forEach((b) => b.classList.toggle("is-active", b === btn));
+    buildAdmin();
+  });
+  adminBody.addEventListener("input", (e) => {
+    if (e.target.id === "admOrderSearch") { adminOrderFilter.q = e.target.value; buildAdmin(); }
+  });
+  adminBody.addEventListener("change", (e) => {
+    if (e.target.id === "admOrderStatus") { adminOrderFilter.status = e.target.value; buildAdmin(); }
+  });
   async function loadAdminData() {
     try {
       const [invData, ordData] = await Promise.all([
@@ -2725,11 +3032,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       PRODUCTS = invData.products || PRODUCTS;
       syncInventoryFromProducts();
       adminStats = ordData.stats || adminStats;
+      adminOrders = ordData.orders || [];
     } catch (e) {
       toast("שגיאה בטעינת נתוני ניהול");
     }
   }
-  async function openAdmin() { await loadAdminData(); buildAdmin(); adminPanel.hidden = false; document.body.style.overflow = "hidden"; }
+  async function openAdmin() { await loadAdminData(); await buildAdmin(); adminPanel.hidden = false; document.body.style.overflow = "hidden"; }
   function closeAdmin() { adminPanel.hidden = true; document.body.style.overflow = ""; }
 
   adminBody.addEventListener("input", (e) => {
@@ -2775,6 +3083,20 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     toast("המלאי נשמר ופורסם");
   }
   $("#adminSave").addEventListener("click", () => saveAdminInventory().catch(() => toast("שגיאה בשמירה")));
+  async function clearForLaunch() {
+    if (!confirm("לסמן את כל המוצרים כאזל מהמלאי ולבטל את כל ההנחות? הפעולה חלה מיד על האתר החי.")) return;
+    try {
+      await api("/api/admin/inventory/clear-for-launch", { method: "POST", body: "{}" });
+      await loadAdminData();
+      await buildAdmin();
+      await loadProducts();
+      renderProducts();
+      toast("כל המוצרים סומנו כאזל וההנחות בוטלו");
+    } catch (e) {
+      toast("שגיאה בעדכון");
+    }
+  }
+  $("#adminClearForLaunch").addEventListener("click", clearForLaunch);
   $("#adminClose").addEventListener("click", closeAdmin);
   async function tryOpenAdmin(pass) {
     let ok = false;
@@ -2924,7 +3246,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   /* ---------- LENIS — premium smooth scroll ---------- */
   let lenis = null;
   if (window.Lenis && !reduce) {
-    lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.8, smoothWheel: true, syncTouch: true, touchMultiplier: 1.4 });
+    // touch devices keep native OS scrolling (the speed users already know) —
+    // Lenis only smooths wheel input (desktop mouse/trackpad).
+    lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.8, smoothWheel: true, syncTouch: false });
     const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
     lenis.on("scroll", (e) => {
@@ -3242,23 +3566,34 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   /* native cursor — 3D presence stays in the silk and the tilt, not the pointer */
 
   /* ----------------------------------------------------------
-     3 · HERO CAMPAIGN FILM — silent, wide screens only,
-     poster image is the permanent fallback
+     3 · HERO CAMPAIGN FILM — silent, every device.
+     The poster frame is the film's own first frame, so the
+     swap is invisible and the image is always a valid fallback.
      ---------------------------------------------------------- */
   (function heroFilm() {
     const v = document.getElementById("heroFilm");
     if (!v) return;
-    const wide = matchMedia("(min-width: 701px)").matches;
-    if (reduce || !wide) { v.remove(); return; }
+    // respect reduced-motion and explicit data-saver / very slow links only
+    const net = navigator.connection || {};
+    const tooSlow = net.saveData === true || /^(slow-2g|2g)$/.test(net.effectiveType || "");
+    if (reduce || tooSlow) { v.remove(); return; }
+
     v.src = "video/hero-film.mp4";
     v.addEventListener("canplay", () => { v.classList.add("is-live"); }, { once: true });
     v.addEventListener("error", () => { v.remove(); }, { once: true });
-    v.play().catch(() => { /* poster stays — autoplay refused or file missing */ });
-    // battery care: pause when the hero is off screen
+
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+    // iOS/Safari can refuse autoplay until the first interaction — retry once, quietly
+    ["touchstart", "pointerdown"].forEach((ev) =>
+      window.addEventListener(ev, tryPlay, { once: true, passive: true })
+    );
+
+    // battery care: play only while the hero is on screen
     if (window.IntersectionObserver) {
       new IntersectionObserver((ents) => {
         if (!v.isConnected) return;
-        ents[0].isIntersecting ? v.play().catch(() => {}) : v.pause();
+        ents[0].isIntersecting ? tryPlay() : v.pause();
       }, { threshold: 0.05 }).observe(v);
     }
   })();

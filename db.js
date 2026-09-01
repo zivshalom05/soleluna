@@ -18,6 +18,12 @@ const DEFAULT_COLORS = [
   { name: "זית", hex: "#8C9A82" },   // sage / olive
 ];
 
+// pre-launch mode: fresh installs seed sold out with no discounts (the free
+// Render plan resets the DB on every deploy, so this has to hold as the
+// default, not just a one-time admin action) — bump back to a real number
+// once the store is ready to sell.
+const DEFAULT_SEED_STOCK = 0;
+
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 }
@@ -38,6 +44,8 @@ function initSchema(db) {
       type TEXT NOT NULL,
       fit TEXT NOT NULL,
       price INTEGER NOT NULL,
+      compare_at_price INTEGER,
+      cut TEXT,
       sizes TEXT NOT NULL,
       grad TEXT,
       img TEXT,
@@ -116,9 +124,65 @@ function initSchema(db) {
       created_at INTEGER NOT NULL
     );
 
+    -- Watchtower: health/security/audit events (errors, account deletions, report sends)
+    CREATE TABLE IF NOT EXISTS system_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL,
+      detail TEXT,
+      created_at INTEGER NOT NULL
+    );
+
+    -- key/value store for scheduler bookkeeping (e.g. last report timestamp)
+    CREATE TABLE IF NOT EXISTS meta (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    );
+
     CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
     CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+    CREATE INDEX IF NOT EXISTS idx_events_type_time ON system_events(type, created_at);
+    CREATE INDEX IF NOT EXISTS idx_orders_paid_at ON orders(paid_at);
   `);
+}
+
+// Idempotent column additions for databases created before Watchtower.
+// SQLite has no "ADD COLUMN IF NOT EXISTS", so we check table_info first.
+function migrateSchema(db) {
+  const hasColumn = (table, col) =>
+    db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === col);
+  if (!hasColumn("orders", "shipped_at")) {
+    db.exec("ALTER TABLE orders ADD COLUMN shipped_at INTEGER");
+  }
+  if (!hasColumn("users", "deleted_at")) {
+    db.exec("ALTER TABLE users ADD COLUMN deleted_at INTEGER");
+  }
+  if (!hasColumn("products", "compare_at_price")) {
+    db.exec("ALTER TABLE products ADD COLUMN compare_at_price INTEGER");
+  }
+  if (!hasColumn("products", "cut")) {
+    db.exec("ALTER TABLE products ADD COLUMN cut TEXT");
+  }
+}
+
+function logEvent(db, type, detail) {
+  try {
+    db.prepare("INSERT INTO system_events (type, detail, created_at) VALUES (?, ?, ?)")
+      .run(String(type), detail == null ? null : String(detail).slice(0, 500), Date.now());
+  } catch (e) {
+    // Never let telemetry break a request.
+    console.error("[events] log failed:", e.message);
+  }
+}
+
+function getMeta(db, key) {
+  const row = db.prepare("SELECT value FROM meta WHERE key = ?").get(key);
+  return row ? row.value : null;
+}
+
+function setMeta(db, key, value) {
+  db.prepare(
+    "INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+  ).run(key, value == null ? null : String(value));
 }
 
 function seedProducts(db, catalog) {
@@ -127,8 +191,8 @@ function seedProducts(db, catalog) {
 
   const items = catalog.items || [];
   const insertProduct = db.prepare(`
-    INSERT INTO products (id, name, gender, type, fit, price, sizes, grad, img, tag)
-    VALUES (@id, @name, @gender, @type, @fit, @price, @sizes, @grad, @img, @tag)
+    INSERT INTO products (id, name, gender, type, fit, price, compare_at_price, cut, sizes, grad, img, tag)
+    VALUES (@id, @name, @gender, @type, @fit, @price, @compareAtPrice, @cut, @sizes, @grad, @img, @tag)
   `);
   const insertInv = db.prepare(`
     INSERT INTO inventory (product_id, color_name, color_hex, size, stock)
@@ -145,6 +209,8 @@ function seedProducts(db, catalog) {
         type: p.type,
         fit: p.fit,
         price,
+        compareAtPrice: p.compareAt != null ? p.compareAt : null,
+        cut: p.cut || null,
         sizes: JSON.stringify(p.sizes),
         grad: p.grad || null,
         img: p.img || null,
@@ -158,7 +224,7 @@ function seedProducts(db, catalog) {
             color_name: c.name,
             color_hex: c.hex,
             size,
-            stock: 8,
+            stock: DEFAULT_SEED_STOCK,
           });
         }
       }
@@ -172,6 +238,7 @@ function openDb() {
   ensureDataDir();
   const db = new Database(DB_PATH);
   initSchema(db);
+  migrateSchema(db);
   const catalog = loadCatalog();
   seedProducts(db, catalog);
   return { db, catalog };
@@ -195,6 +262,8 @@ function rowToProduct(row, inventoryRows) {
     type: row.type,
     fit: row.fit,
     price: row.price,
+    compareAtPrice: row.compare_at_price || null,
+    cut: row.cut || null,
     sizes,
     grad: row.grad,
     img: row.img,
@@ -251,6 +320,9 @@ module.exports = {
   getStock,
   decrementStock,
   newOrderNum,
+  logEvent,
+  getMeta,
+  setMeta,
   DB_PATH,
   DATA_DIR,
 };
