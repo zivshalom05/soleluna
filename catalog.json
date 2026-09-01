@@ -1,25 +1,25 @@
 {
   "products": {
-    "w-shirt-01": 180,
-    "w-shirt-02": 180,
+    "w-shirt-01": 160,
+    "w-shirt-02": 170,
     "w-shirt-03": 180,
-    "w-pants-01": 250,
-    "w-pants-02": 250,
-    "w-pants-03": 250,
-    "m-shirt-01": 150,
-    "m-shirt-02": 180,
+    "w-pants-01": 270,
+    "w-pants-02": 260,
+    "w-pants-03": 270,
+    "m-shirt-01": 170,
+    "m-shirt-02": 199,
     "m-shirt-03": 150,
-    "m-pants-01": 250,
-    "m-pants-02": 250,
-    "m-pants-03": 250,
-    "w-shirt-04": 180,
+    "m-pants-01": 280,
+    "m-pants-02": 270,
+    "m-pants-03": 299,
+    "w-shirt-04": 199,
     "w-shirt-05": 120,
-    "w-pants-04": 250,
-    "w-pants-05": 200,
-    "m-shirt-04": 200,
-    "m-shirt-05": 150,
-    "m-pants-04": 200,
-    "m-pants-05": 250
+    "w-pants-04": 270,
+    "w-pants-05": 230,
+    "m-shirt-04": 250,
+    "m-shirt-05": 129,
+    "m-pants-04": 250,
+    "m-pants-05": 299
   },
   "coupons": {
     "SOLELUNA10": 0.1,
@@ -37,7 +37,7 @@
       "gender": "women",
       "type": "shirt",
       "fit": "relaxed",
-      "price": 180,
+      "price": 160,
       "sizes": [
         "XS",
         "S",
@@ -52,7 +52,7 @@
       "gender": "women",
       "type": "shirt",
       "fit": "slim",
-      "price": 180,
+      "price": 170,
       "sizes": [
         "S",
         "M",
@@ -80,7 +80,7 @@
       "gender": "women",
       "type": "pants",
       "fit": "relaxed",
-      "price": 250,
+      "price": 270,
       "sizes": [
         "S",
         "M",
@@ -93,7 +93,7 @@
       "gender": "women",
       "type": "pants",
       "fit": "straight",
-      "price": 250,
+      "price": 260,
       "sizes": [
         "XS",
         "S",
@@ -108,7 +108,7 @@
       "gender": "women",
       "type": "pants",
       "fit": "slim",
-      "price": 250,
+      "price": 270,
       "sizes": [
         "S",
         "M",
@@ -122,7 +122,7 @@
       "gender": "men",
       "type": "shirt",
       "fit": "straight",
-      "price": 150,
+      "price": 170,
       "sizes": [
         "S",
         "M",
@@ -137,7 +137,7 @@
       "gender": "men",
       "type": "shirt",
       "fit": "relaxed",
-      "price": 180,
+      "price": 199,
       "sizes": [
         "M",
         "L",
@@ -164,7 +164,7 @@
       "gender": "men",
       "type": "pants",
       "fit": "straight",
-      "price": 250,
+      "price": 280,
       "sizes": [
         "S",
         "M",
@@ -178,7 +178,7 @@
       "gender": "men",
       "type": "pants",
       "fit": "relaxed",
-      "price": 250,
+      "price": 270,
       "sizes": [
         "M",
         "L",
@@ -191,7 +191,7 @@
       "gender": "men",
       "type": "pants",
       "fit": "slim",
-      "price": 250,
+      "price": 299,
       "sizes": [
         "S",
         "M",
@@ -206,7 +206,7 @@
       "gender": "women",
       "type": "shirt",
       "fit": "relaxed",
-      "price": 180,
+      "price": 199,
       "sizes": [
         "S",
         "M",
@@ -235,7 +235,7 @@
       "gender": "women",
       "type": "pants",
       "fit": "straight",
-      "price": 250,
+      "price": 270,
       "sizes": [
         "XS",
         "S",
@@ -250,7 +250,7 @@
       "type": "pants",
       "cut": "shorts",
       "fit": "relaxed",
-      "price": 200,
+      "price": 230,
       "sizes": [
         "S",
         "M",
@@ -265,7 +265,7 @@
       "type": "shirt",
       "cut": "jacket",
       "fit": "relaxed",
-      "price": 200,
+      "price": 250,
       "sizes": [
         "M",
         "L",
@@ -278,7 +278,7 @@
       "gender": "men",
       "type": "shirt",
       "fit": "straight",
-      "price": 150,
+      "price": 129,
       "sizes": [
         "S",
         "M",
@@ -294,7 +294,7 @@
       "type": "pants",
       "cut": "shorts",
       "fit": "relaxed",
-      "price": 200,
+      "price": 250,
       "sizes": [
         "S",
         "M",
@@ -308,7 +308,7 @@
       "gender": "men",
       "type": "pants",
       "fit": "slim",
-      "price": 250,
+      "price": 299,
       "sizes": [
         "S",
         "M",
