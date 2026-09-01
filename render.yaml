@@ -2,7 +2,7 @@ services:
   - type: web
     name: soleluna
     runtime: node
-    runtimeVersion: 20
+    nodeVersion: 20.11.0
     plan: free
     buildCommand: npm install
     startCommand: npm start
