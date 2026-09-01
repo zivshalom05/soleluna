@@ -4,7 +4,7 @@ services:
     runtime: node
     nodeVersion: 20.11.0
     plan: free
-    buildCommand: npm install
+    buildCommand: npm ci && npm rebuild
     startCommand: npm start
     healthCheckPath: /api/config
     envVars:
