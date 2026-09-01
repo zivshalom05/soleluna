@@ -317,9 +317,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .hero__film { opacity: 0; transition: opacity 1.6s var(--ease); z-index: 0; }
 .hero__film.is-live { opacity: 1; }
 /* portrait screens: a shorter stage lets the 16:9 film keep horse and both
-   figures in frame instead of cropping into a single body */
+   figures in frame instead of cropping into a single body. 74svh was still
+   tall enough that cover-cropping only showed a narrow vertical sliver —
+   mostly empty sand between the two of them. Shorter still gets both in. */
 @media (max-width: 700px) {
-  .hero { min-height: 74svh; }
+  .hero { min-height: 52svh; }
   .hero__bg img, .hero__bg video { object-position: center center; transform: none; }
 }
 .hero__scrim {
@@ -779,6 +781,15 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   .signup__form { flex-direction: column; }
   .footer__top { grid-template-columns: 1fr; gap: 2rem; }
   .footer__bottom { flex-direction: column; text-align: center; }
+
+  /* the desktop type scale clamps to its floor on phones and reads oversized/heavy;
+     tighten headings, product names, eyebrow tracking and buttons for mobile */
+  .h-display { font-size: clamp(1.9rem, 9vw, 2.6rem); }
+  .h-1 { font-size: clamp(1.7rem, 8vw, 2.4rem); }
+  .h-2 { font-size: clamp(1.3rem, 6vw, 1.7rem); }
+  .eyebrow { letter-spacing: .26em; font-size: .64rem; }
+  .card__info h3 { font-size: 1.08rem; }
+  .btn { padding: .95em 2em; font-size: .74rem; letter-spacing: .13em; }
 }
 @media (max-width: 460px) {
   .products, .cats__grid, .feats, .assure__grid { grid-template-columns: 1fr; }
