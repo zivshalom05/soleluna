@@ -2624,11 +2624,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   }
   overlay.addEventListener("click", closeAll);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
-  // manager shortcut: Ctrl/Cmd + Shift + A → open admin panel directly (no URL / no prompt)
+  // manager shortcut: Ctrl/Cmd + Shift + A → prompt for the admin password (no URL needed)
   document.addEventListener("keydown", (e) => {
     if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
       e.preventDefault();
-      tryOpenAdmin("luna2026");
+      const pass = prompt("סיסמת ניהול:");
+      if (pass) tryOpenAdmin(pass);
     }
   });
 
@@ -3128,7 +3129,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     try {
       const data = await api("/api/admin/login", { method: "POST", body: JSON.stringify({ password: pass }) });
       ok = !!(data && data.ok);
-    } catch (e) { ok = (pass === "luna2026"); }   // no backend (static host / local file) → client-side check
+    } catch (e) { /* backend unreachable — deny access, never fall back to a client-side check */ }
     if (ok) openAdmin(); else toast("גישת ניהול נדחתה");
   }
   async function adminGate() {

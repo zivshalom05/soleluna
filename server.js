@@ -25,6 +25,10 @@ const SESSION_TTL_MS = 7 * 24 * 60 * 60_000;
 const PAYMENT_TTL_MS = 30 * 60_000;
 const COOKIE_NAME = "sl_session";
 const BCRYPT_ROUNDS = 10;
+// constant-time stand-in for a missing user, so login takes the same time
+// whether or not the email is registered — otherwise the bcrypt compare's
+// absence is a timing side-channel that lets an attacker enumerate accounts
+const DUMMY_PASSWORD_HASH = bcrypt.hashSync("no-such-account", BCRYPT_ROUNDS);
 
 const ADMIN_PASS = process.env.ADMIN_PASS || "";
 const IS_PRODUCTION = process.env.NODE_ENV === "production" || process.env.GROW_ENV === "production";
@@ -499,7 +503,8 @@ const server = http.createServer(async (req, res) => {
       const email = String(body.email || "").trim().toLowerCase();
       const password = String(body.password || "");
       const user = db.prepare("SELECT * FROM users WHERE email = ? AND deleted_at IS NULL").get(email);
-      if (!user || !bcrypt.compareSync(password, user.password_hash)) {
+      const passwordOk = bcrypt.compareSync(password, user ? user.password_hash : DUMMY_PASSWORD_HASH);
+      if (!user || !passwordOk) {
         json(res, 401, { error: "אימייל או סיסמה שגויים" }); return;
       }
       destroySession(req, res);
