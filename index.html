@@ -315,13 +315,14 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 /* the campaign film fades in over the poster once it can actually play */
 .hero__film { opacity: 0; transition: opacity 1.6s var(--ease); z-index: 0; }
 .hero__film.is-live { opacity: 1; }
-/* portrait screens: a shorter stage lets the 16:9 film keep horse and both
-   figures in frame instead of cropping into a single body. 74svh was still
-   tall enough that cover-cropping only showed a narrow vertical sliver —
-   mostly empty sand between the two of them. Shorter still gets both in. */
+/* portrait screens: cover-cropping this wide 16:9 shot into a tall narrow
+   frame always isolates one figure — there's no crop that keeps the hero
+   full-screen AND shows both of them. contain shows the whole photograph,
+   letterboxed in the section's own ink tone (a deliberate cinematic bar,
+   not empty space) instead of cropping either of them out. */
 @media (max-width: 700px) {
-  .hero { min-height: 52svh; }
-  .hero__bg img, .hero__bg video { object-position: center center; transform: none; }
+  .hero { min-height: 100svh; }
+  .hero__bg img, .hero__bg video { object-fit: contain; object-position: center center; transform: none; }
 }
 .hero__scrim {
   position: absolute; inset: 0; z-index: 1;
@@ -570,7 +571,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .card-sw { width: 15px; height: 15px; border-radius: 50%; background: var(--sw, #ccc); border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); box-shadow: 0 0 0 2px transparent; transition: box-shadow .25s var(--ease), transform .25s var(--ease); cursor: pointer; }
 .card-sw:hover { transform: scale(1.12); }
 .card-sw.is-active { box-shadow: 0 0 0 2px var(--bone), 0 0 0 3px var(--forest); }
-.card { position: relative; transition: transform .55s var(--ease); }
+.card { position: relative; min-width: 0; transition: transform .55s var(--ease); }
 .card:hover { transform: translateY(-5px); }
 .card__media { position: relative; aspect-ratio: 3/4; border-radius: var(--radius); overflow: hidden; background: var(--mist); }
 .card__tag {
@@ -788,7 +789,13 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   .pmodal__media .img-nav, .lightbox .img-nav { width: 34px; height: 34px; font-size: 1.1rem; }
 }
 @media (max-width: 460px) {
-  .products, .cats__grid, .feats, .assure__grid { grid-template-columns: 1fr; }
+  /* full-width single-column cards made every product photo dominate the
+     whole screen; two columns keeps browsing the shop from being a full
+     screen-height photo per swipe */
+  .products { grid-template-columns: repeat(2, 1fr); gap: 1.4rem .9rem; }
+  .cats__grid, .feats, .assure__grid { grid-template-columns: 1fr; }
+  .card__info h3 { font-size: .96rem; }
+  .card__fabric { display: none; }
 }
 
 /* mobile nav panel */
@@ -2035,7 +2042,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
             <div class="card__meta">${fitLabel(p.fit)} · ${p.sizes.join(" / ")}</div>
             <div class="card__colors">${invColors(p.id).map((c) => `<button class="card-sw ${c.name === defaultColor(p.id) ? 'is-active' : ''}" data-cardsw="${p.id}" data-color="${c.name}" style="--sw:${c.hex}" title="${c.name}" aria-label="${c.name}"></button>`).join("")}</div>
           </div>
-          <div class="card__price">${priceHTML(p.id)} ${inStock ? '' : '<span class="card__sold">Sold Out</span>'}</div>
+          <div class="card__price">${priceHTML(p.id)}</div>
         </div>
       </article>`;
     }).join("");
