@@ -315,14 +315,15 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 /* the campaign film fades in over the poster once it can actually play */
 .hero__film { opacity: 0; transition: opacity 1.6s var(--ease); z-index: 0; }
 .hero__film.is-live { opacity: 1; }
-/* portrait screens: cover-cropping this wide 16:9 shot into a tall narrow
-   frame always isolates one figure — there's no crop that keeps the hero
-   full-screen AND shows both of them. contain shows the whole photograph,
-   letterboxed in the section's own ink tone (a deliberate cinematic bar,
-   not empty space) instead of cropping either of them out. */
+/* portrait screens: contain-at-100svh was tried first, but the math for
+   this photo's 16:9 shape means "no cropping" only fits the frame at
+   ~26% of the screen height — mostly dead space above/below a small
+   photo, not a cinematic look. Back to edge-to-edge cover, tall enough
+   to read as a real hero but short enough that both riders still land
+   fully in the visible crop (no gap, no one cut off). */
 @media (max-width: 700px) {
-  .hero { min-height: 100svh; }
-  .hero__bg img, .hero__bg video { object-fit: contain; object-position: center center; transform: none; }
+  .hero { min-height: 55svh; }
+  .hero__bg img, .hero__bg video { object-position: center center; transform: none; }
 }
 .hero__scrim {
   position: absolute; inset: 0; z-index: 1;
