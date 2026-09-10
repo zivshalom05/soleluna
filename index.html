@@ -745,6 +745,26 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .field input:focus { outline: none; border-color: var(--olive); }
 .modal__foot { text-align: center; margin-top: 1rem; font-size: .82rem; color: var(--olive); }
 .modal__hide { display: none; }
+.modal--search .modal__body { padding-top: 1rem; }
+.search-field {
+  display: flex; align-items: center; gap: .7rem; padding: .7em 1.1em;
+  border: 1px solid var(--line); background: var(--paper); border-radius: var(--radius); color: var(--olive);
+}
+.search-field input {
+  flex: 1; border: 0; background: transparent; font-family: var(--sans); font-size: .95rem; color: var(--ink);
+}
+.search-field input:focus { outline: none; }
+.search-field input::-webkit-search-cancel-button { display: none; }
+.search-results { margin-top: 1rem; max-height: 48vh; overflow-y: auto; display: flex; flex-direction: column; gap: .2rem; }
+.search-results__item {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  width: 100%; padding: .7em .6em; border-radius: var(--radius); text-align: start; transition: background .2s;
+}
+.search-results__item:hover, .search-results__item:focus-visible { background: var(--line-soft); outline: none; }
+.search-results__name { font-family: var(--serif); font-size: 1rem; }
+.search-results__meta { font-family: var(--mark); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: var(--olive); margin-top: .15rem; }
+.search-results__price { font-family: var(--mark); font-size: .85rem; color: var(--ink); white-space: nowrap; }
+.search-results__hint, .search-results__empty { text-align: center; color: var(--olive); font-family: var(--serif); font-size: .98rem; padding: 1.6rem 0; }
 .account__avatar { width: 66px; height: 66px; border-radius: 50%; background: var(--forest); color: var(--bone); display: grid; place-items: center; margin: 0 auto; font-family: var(--logo); font-weight: 500; font-size: 1.7rem; }
 .nav-initial { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--forest); color: var(--bone); font-family: var(--mark); font-size: .72rem; font-weight: 500; }
 
@@ -1181,7 +1201,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       </a>
 
       <div class="nav__actions">
-        <button aria-label="חיפוש">
+        <button id="searchBtn" aria-label="חיפוש">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
         </button>
         <button id="accountBtn" aria-label="חשבון">
@@ -1673,6 +1693,23 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     </div>
   </aside>
 
+  <!-- ============ SEARCH MODAL ============ -->
+  <div class="modal modal--search" id="searchModal" role="dialog" aria-label="חיפוש">
+    <button class="modal__close" id="searchClose" style="position:absolute;top:1rem;inset-inline-start:1rem;" aria-label="סגור">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="modal__head">
+      <span class="brand__mark" style="font-size:1.15rem;">חיפוש</span>
+    </div>
+    <div class="modal__body">
+      <div class="search-field">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" id="searchInput" placeholder="חפשו לפי שם, סוג או גזרה…" aria-label="חיפוש מוצרים" autocomplete="off" />
+      </div>
+      <div id="searchResults" class="search-results"></div>
+    </div>
+  </div>
+
   <!-- ============ AUTH MODAL ============ -->
   <div class="modal" id="authModal" role="dialog" aria-label="התחברות">
     <button class="modal__close" id="authClose" style="position:absolute;top:1rem;inset-inline-start:1rem;" aria-label="סגור">
@@ -2116,6 +2153,63 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       e.preventDefault();
       e.stopPropagation();
       filterPanel.style.display = filterPanel.style.display === "none" ? "block" : "none";
+    });
+  }
+
+  /* ===========================================================
+     SEARCH
+     =========================================================== */
+  const TYPE_LABEL = { shirt: "חולצה", pants: "מכנסיים" };
+  const OCCASION_LABEL = { casual: "יום-יום", work: "עבודה", suit: "חליפות", resort: "ריזורט", beach: "חוף" };
+  function searchText(p) {
+    return [p.name, TYPE_LABEL[p.type], fitLabel(p.fit), OCCASION_LABEL[p.occasion], p.tag]
+      .filter(Boolean).join(" ").toLowerCase();
+  }
+  const searchModal = $("#searchModal");
+  const searchInput = $("#searchInput");
+  const searchResults = $("#searchResults");
+  function renderSearchResults() {
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) {
+      searchResults.innerHTML = '<p class="search-results__hint">הקלידו לחיפוש בקולקציה — שם, "חולצה", "מכנסיים", גזרה ועוד.</p>';
+      return;
+    }
+    const found = PRODUCTS.filter((p) => searchText(p).includes(q)).slice(0, 10);
+    if (!found.length) {
+      searchResults.innerHTML = `<p class="search-results__empty">לא נמצאו תוצאות עבור "${esc(searchInput.value.trim())}".</p>`;
+      return;
+    }
+    searchResults.innerHTML = found.map((p) => `
+      <button type="button" class="search-results__item" data-searchresult="${p.id}">
+        <span>
+          <span class="search-results__name">${esc(p.name)}</span><br/>
+          <span class="search-results__meta">${esc(TYPE_LABEL[p.type] || p.type)} · ${esc(fitLabel(p.fit))}</span>
+        </span>
+        <span class="search-results__price">${priceHTML(p.id)}</span>
+      </button>
+    `).join("");
+  }
+  function openSearch() {
+    openOverlay();
+    searchModal.classList.add("is-open");
+    renderSearchResults();
+    setTimeout(() => searchInput.focus(), 250);
+  }
+  if (searchModal && searchInput && searchResults) {
+    $("#searchBtn").addEventListener("click", openSearch);
+    $("#searchClose").addEventListener("click", closeAll);
+    searchInput.addEventListener("input", renderSearchResults);
+    searchResults.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-searchresult]");
+      if (!btn) return;
+      closeAll();
+      openProduct(btn.dataset.searchresult);
+    });
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      const first = searchResults.querySelector("[data-searchresult]");
+      if (first) { closeAll(); openProduct(first.dataset.searchresult); }
     });
   }
 
@@ -2622,6 +2716,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     productModal.classList.remove("is-open");
     lightbox.classList.remove("is-open");
     profile.classList.remove("is-open");
+    if (searchModal) searchModal.classList.remove("is-open");
     document.body.style.overflow = "";
     if (window.lenis) window.lenis.start(); // re-enable smooth scrolling
   }
