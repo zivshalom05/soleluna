@@ -1221,7 +1221,10 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   <section class="hero">
     <div class="hero__bg" aria-hidden="true">
       <!-- poster = the film's own first frame, so the swap to video is invisible -->
-      <img class="hero__media" src="img/hero-beach.webp" alt="" fetchpriority="high" />
+      <picture>
+        <source media="(max-width: 700px)" srcset="img/hero-beach-mobile.webp" />
+        <img class="hero__media" src="img/hero-beach.webp" alt="" fetchpriority="high" />
+      </picture>
       <!-- campaign film — every device; the image above stays as poster & fallback -->
       <video id="heroFilm" class="hero__media hero__film" muted loop playsinline preload="none"></video>
     </div>
@@ -3706,7 +3709,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     const tooSlow = net.saveData === true || /^(slow-2g|2g)$/.test(net.effectiveType || "");
     if (reduce || tooSlow) { v.remove(); return; }
 
-    v.src = "video/hero-film.mp4";
+    v.src = matchMedia("(max-width: 700px)").matches ? "video/hero-film-mobile.mp4" : "video/hero-film.mp4";
     v.addEventListener("canplay", () => { v.classList.add("is-live"); }, { once: true });
     v.addEventListener("error", () => { v.remove(); }, { once: true });
 
