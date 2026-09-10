@@ -5,7 +5,8 @@
   <url><loc>https://soleluna.co.il/washing.html</loc><lastmod>2026-07-01</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
   <url><loc>https://soleluna.co.il/size-guide.html</loc><lastmod>2026-07-01</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
   <url><loc>https://soleluna.co.il/faq.html</loc><lastmod>2026-07-01</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://soleluna.co.il/contact.html</loc><lastmod>2026-07-01</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
   <url><loc>https://soleluna.co.il/accessibility.html</loc><lastmod>2026-07-01</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://soleluna.co.il/terms.html</loc><lastmod>2026-07-01</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://soleluna.co.il/privacy.html</loc><lastmod>2026-07-01</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <!-- terms.html and privacy.html are noindex until a legal review clears the
+       draft note on those pages — omitted here on purpose; add back once they are -->
 </urlset>

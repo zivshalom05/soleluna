@@ -136,6 +136,15 @@ function newToken() {
   return crypto.randomBytes(24).toString("hex");
 }
 
+// constant-time secret comparison — used for anything checked against an
+// env-configured secret (admin password, cron key), so a wrong guess can't
+// be narrowed down by how fast the comparison fails
+function timingSafeStrEqual(a, b) {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  return bufA.length === bufB.length && bufA.length > 0 && crypto.timingSafeEqual(bufA, bufB);
+}
+
 function pruneMaps() {
   const now = Date.now();
   for (const [k, v] of pendingPayments) {
@@ -577,7 +586,10 @@ const server = http.createServer(async (req, res) => {
       const email = String(body.email || "").trim();
       const message = String(body.message || "").trim();
       const name = String(body.name || "").trim();
-      if (!email || !message) { json(res, 400, { error: "נא למלא אימייל והודעה" }); return; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        json(res, 400, { error: "אימייל לא תקין" }); return;
+      }
+      if (!message) { json(res, 400, { error: "נא למלא הודעה" }); return; }
       db.prepare("INSERT INTO contact_messages (name, email, message, created_at) VALUES (?, ?, ?, ?)")
         .run(name, email, message, Date.now());
       const { sendEmail } = require("./mail");
@@ -599,9 +611,7 @@ const server = http.createServer(async (req, res) => {
       if (!loginRateLimit(ip)) { json(res, 429, { ok: false, error: "יותר מדי ניסיונות — נסו שוב בעוד כמה דקות" }); return; }
       const body = await parseJson(req);
       const password = String(body.password || "");
-      const a = Buffer.from(password);
-      const b = Buffer.from(ADMIN_PASS);
-      const ok = a.length === b.length && a.length > 0 && crypto.timingSafeEqual(a, b);
+      const ok = timingSafeStrEqual(password, ADMIN_PASS);
       if (!ok) { json(res, 401, { ok: false }); return; }
       destroySession(req, res);
       createSession(res, { isAdmin: true });
@@ -711,7 +721,7 @@ const server = http.createServer(async (req, res) => {
     /* ---- Watchtower: cron-triggered 12h report (external scheduler) ---- */
     if ((req.method === "GET" || req.method === "POST") && u.pathname === "/api/cron/report") {
       const key = u.searchParams.get("key") || (await parseJson(req).catch(() => ({}))).key || "";
-      if (!CRON_KEY || key !== CRON_KEY) { json(res, 403, { error: "forbidden" }); return; }
+      if (!CRON_KEY || !timingSafeStrEqual(key, CRON_KEY)) { json(res, 403, { error: "forbidden" }); return; }
       const force = u.searchParams.get("force") === "1";
       if (force) setMeta(db, "last_report_at", "0");
       const out = await sendReport("cron");
@@ -762,9 +772,7 @@ const server = http.createServer(async (req, res) => {
       if (!ADMIN_PASS) { json(res, 403, { ok: false }); return; }
       const body = await parseJson(req);
       const password = String(body.password || "");
-      const a = Buffer.from(password);
-      const b = Buffer.from(ADMIN_PASS);
-      const ok = a.length === b.length && a.length > 0 && crypto.timingSafeEqual(a, b);
+      const ok = timingSafeStrEqual(password, ADMIN_PASS);
       if (ok) { destroySession(req, res); createSession(res, { isAdmin: true }); }
       json(res, ok ? 200 : 401, { ok });
       return;

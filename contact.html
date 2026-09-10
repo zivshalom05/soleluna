@@ -21,6 +21,8 @@
     form{display:grid;gap:.8rem;margin-top:1rem;}
     input,textarea{font-family:inherit;font-size:1rem;border:1px solid var(--line);background:#fff;border-radius:6px;padding:.7em .9em;}
     button{font-family:"Assistant";font-weight:600;background:var(--navy);color:var(--bone);border:0;border-radius:6px;padding:.9em;cursor:pointer;letter-spacing:.06em;}
+    button:disabled{opacity:.6;cursor:default;}
+    #formStatus{font-size:.9rem;min-height:1.3em;}
     footer{border-top:1px solid var(--line);margin-top:3rem;padding-top:1.4rem;font-size:.85rem;color:var(--muted);}
   </style>
 </head>
@@ -35,14 +37,49 @@
     <div class="card"><b>זמני מענה:</b> א׳–ה׳, 9:00–18:00 · מענה תוך יום עסקים</div>
 
     <h2>שלחו לנו הודעה</h2>
-    <form onsubmit="event.preventDefault(); window.location.href='mailto:solelunabsns@gmail.com?subject='+encodeURIComponent('פנייה מהאתר — '+(this.name.value||''))+'&body='+encodeURIComponent(this.msg.value||'');">
+    <form id="contactForm">
       <input name="name" type="text" placeholder="שם מלא" required />
       <input name="email" type="email" placeholder="אימייל" required />
       <textarea name="msg" rows="4" placeholder="במה נוכל לעזור?" required></textarea>
       <button type="submit">שליחה</button>
+      <p id="formStatus" role="status"></p>
     </form>
 
     <footer><a href="index.html">חזרה לאתר</a> · <a href="faq.html">שאלות נפוצות</a></footer>
   </div>
+  <script>
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector("button");
+      const status = document.getElementById("formStatus");
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const message = form.msg.value.trim();
+      btn.disabled = true;
+      const originalLabel = btn.textContent;
+      btn.textContent = "שולח…";
+      status.style.color = "";
+      status.textContent = "";
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, message }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "שגיאה בשליחה");
+        status.style.color = "#2f6b3f";
+        status.textContent = "ההודעה נשלחה, נחזור אליכם בהקדם.";
+        form.reset();
+      } catch (err) {
+        status.style.color = "#a4513f";
+        status.textContent = (err && err.message) || "שגיאה בשליחה — נסו שוב או כתבו לנו ישירות למייל.";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalLabel;
+      }
+    });
+  </script>
 </body>
 </html>
