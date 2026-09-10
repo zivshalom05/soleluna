@@ -258,7 +258,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .header:not(.is-scrolled) .brand__sub { color: color-mix(in srgb, var(--bone) 75%, transparent); }
 .header:not(.is-scrolled) .brand__emblem { color: var(--bone); }
 .header:not(.is-scrolled) .nav__list a::after { background: var(--bone); }
-.nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 76px; }
+.nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 96px; }
 .nav__list { display: flex; gap: 2.2rem; }
 .nav__list a {
   font-family: var(--mark); text-transform: uppercase; letter-spacing: .14em;
@@ -304,7 +304,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
 .hero {
   position: relative;
   min-height: calc(100svh - 33px);
-  margin-top: -76px;                 /* slides under the transparent header */
+  margin-top: -96px;                 /* slides under the transparent header */
   display: flex; align-items: flex-end;
   overflow: hidden; background: var(--ink);
 }
@@ -644,8 +644,13 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   flex: 1; padding: 1.05em 1.4em; background: transparent; border: 1px solid rgba(255,255,255,.28);
   color: var(--bone); font-family: var(--sans); font-size: .95rem; border-radius: var(--radius);
 }
-.signup__form input::placeholder { color: rgba(243,240,231,.5); }
-.signup__form input:focus { outline: none; border-color: var(--sage); }
+.signup__form input::placeholder, .signup__form textarea::placeholder { color: rgba(243,240,231,.5); }
+.signup__form input:focus, .signup__form textarea:focus { outline: none; border-color: var(--sage); }
+.signup__form textarea {
+  flex: 1; min-width: 140px; padding: .9em 1.4em; background: transparent; border: 1px solid rgba(255,255,255,.28);
+  color: var(--bone); font-family: var(--sans); font-size: .95rem; border-radius: var(--radius);
+  resize: vertical;
+}
 .signup__note { font-family: var(--mark); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--olive); margin-top: 1.2rem; }
 
 /* ===========================================================
@@ -1539,7 +1544,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       <form class="signup__form" id="contactForm" data-reveal data-reveal-delay="4" style="margin-top:2rem;max-width:520px;">
         <input type="text" name="name" placeholder="שם (אופציונלי)" aria-label="שם" />
         <input type="email" name="email" placeholder="אימייל ליצירת קשר" required aria-label="אימייל" />
-        <textarea name="message" rows="2" placeholder="איך נוכל לעזור?" required aria-label="הודעה" style="width:100%;padding:.9em 1em;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:var(--bone);border-radius:2px;font-family:var(--sans);resize:vertical;"></textarea>
+        <textarea name="message" rows="2" placeholder="איך נוכל לעזור?" required aria-label="הודעה"></textarea>
         <button class="btn btn--ghost" type="submit" style="border-color:var(--bone);color:var(--bone);"><span>שליחה</span></button>
       </form>
     </div>
@@ -2389,7 +2394,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     updatePmAdd();
     openOverlay();
     productModal.classList.add("is-open");
-    if (lenis) lenis.stop(); // disable smooth scrolling to allow modal scroll
+    if (window.lenis) window.lenis.stop(); // disable smooth scrolling to allow modal scroll
   }
 
   $("#pmColors").addEventListener("click", (e) => {
@@ -2618,7 +2623,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
     lightbox.classList.remove("is-open");
     profile.classList.remove("is-open");
     document.body.style.overflow = "";
-    if (lenis) lenis.start(); // re-enable smooth scrolling
+    if (window.lenis) window.lenis.start(); // re-enable smooth scrolling
   }
   overlay.addEventListener("click", closeAll);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
@@ -3290,6 +3295,10 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
       });
     });
   }
+  // exposed so the modal/drawer logic in the main app script (a separate
+  // top-level <script>, so it can't see this block's own `lenis` binding)
+  // can pause/resume smooth scroll while a modal is open
+  window.lenis = lenis;
 
   /* ---------- scroll progress hairline ---------- */
   const fill = document.querySelector(".scrollbar__fill");
