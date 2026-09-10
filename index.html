@@ -67,6 +67,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- start fetching the hero film in parallel with everything else, instead of
+       waiting for gsap/ScrollTrigger/lenis/three.js to load before the script
+       that assigns video.src even runs -->
+  <link rel="preload" as="video" type="video/mp4" href="video/hero-film-mobile.mp4" media="(max-width: 700px) and (prefers-reduced-motion: no-preference)" fetchpriority="high" />
+  <link rel="preload" as="video" type="video/mp4" href="video/hero-film.mp4" media="(min-width: 701px) and (prefers-reduced-motion: no-preference)" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;700&family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <style>
 /* ===========================================================
@@ -1226,7 +1231,39 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
         <img class="hero__media" src="img/hero-beach.webp" alt="" fetchpriority="high" />
       </picture>
       <!-- campaign film — every device; the image above stays as poster & fallback -->
-      <video id="heroFilm" class="hero__media hero__film" muted loop playsinline preload="none"></video>
+      <video id="heroFilm" class="hero__media hero__film" muted loop playsinline preload="none" fetchpriority="high"></video>
+      <script>
+      /* runs immediately, right here — not after gsap/ScrollTrigger/lenis/three.js
+         load further down the page — so the hero film starts fetching as early as
+         possible instead of queuing behind three unrelated library downloads */
+      (function heroFilm() {
+        var v = document.getElementById("heroFilm");
+        if (!v) return;
+        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var net = navigator.connection || {};
+        var tooSlow = net.saveData === true || /^(slow-2g|2g)$/.test(net.effectiveType || "");
+        if (reduce || tooSlow) { v.remove(); return; }
+
+        v.src = matchMedia("(max-width: 700px)").matches ? "video/hero-film-mobile.mp4" : "video/hero-film.mp4";
+        v.addEventListener("canplay", function () { v.classList.add("is-live"); }, { once: true });
+        v.addEventListener("error", function () { v.remove(); }, { once: true });
+
+        var tryPlay = function () { v.play().catch(function () {}); };
+        tryPlay();
+        // iOS/Safari can refuse autoplay until the first interaction — retry once, quietly
+        ["touchstart", "pointerdown"].forEach(function (ev) {
+          window.addEventListener(ev, tryPlay, { once: true, passive: true });
+        });
+
+        // battery care: play only while the hero is on screen
+        if (window.IntersectionObserver) {
+          new IntersectionObserver(function (ents) {
+            if (!v.isConnected) return;
+            ents[0].isIntersecting ? tryPlay() : v.pause();
+          }, { threshold: 0.05 }).observe(v);
+        }
+      })();
+      </script>
     </div>
     <div class="hero__scrim" aria-hidden="true"></div>
     <div class="hero__silk" id="heroSilk" aria-hidden="true"></div>
@@ -3695,39 +3732,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.12; let
   })();
 
   /* native cursor — 3D presence stays in the silk and the tilt, not the pointer */
-
-  /* ----------------------------------------------------------
-     3 · HERO CAMPAIGN FILM — silent, every device.
-     The poster frame is the film's own first frame, so the
-     swap is invisible and the image is always a valid fallback.
-     ---------------------------------------------------------- */
-  (function heroFilm() {
-    const v = document.getElementById("heroFilm");
-    if (!v) return;
-    // respect reduced-motion and explicit data-saver / very slow links only
-    const net = navigator.connection || {};
-    const tooSlow = net.saveData === true || /^(slow-2g|2g)$/.test(net.effectiveType || "");
-    if (reduce || tooSlow) { v.remove(); return; }
-
-    v.src = matchMedia("(max-width: 700px)").matches ? "video/hero-film-mobile.mp4" : "video/hero-film.mp4";
-    v.addEventListener("canplay", () => { v.classList.add("is-live"); }, { once: true });
-    v.addEventListener("error", () => { v.remove(); }, { once: true });
-
-    const tryPlay = () => v.play().catch(() => {});
-    tryPlay();
-    // iOS/Safari can refuse autoplay until the first interaction — retry once, quietly
-    ["touchstart", "pointerdown"].forEach((ev) =>
-      window.addEventListener(ev, tryPlay, { once: true, passive: true })
-    );
-
-    // battery care: play only while the hero is on screen
-    if (window.IntersectionObserver) {
-      new IntersectionObserver((ents) => {
-        if (!v.isConnected) return;
-        ents[0].isIntersecting ? tryPlay() : v.pause();
-      }, { threshold: 0.05 }).observe(v);
-    }
-  })();
+  /* hero campaign film init moved inline right after the <video> tag in the
+     markup — see the <script> there — so it isn't stuck queuing behind this
+     block's own gsap/ScrollTrigger/lenis/three.js loads */
 })();
   </script>
 </body>
