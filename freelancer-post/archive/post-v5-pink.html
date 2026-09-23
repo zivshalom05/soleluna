@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <title>Freelancer Post</title>
-<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="../fonts.css">
 <style>
 /*
   DESIGN SYSTEM
   Canvas 1080×1350 (4:5) · 8px grid · outer margin 80 → content 920 (x 80–1000)
   Columns: visual 400 (x 80–480) · gutter 40 · text 480 (x 520–1000)
-  Type scale: 20 / 22 / 28 / 32 / 40 / 120 · line-heights on 8px multiples
-  Colour 60/30/10: periwinkle field · indigo structure · violet accent only
+  Type scale: 20 / 22 / 28 / 32 / 40 / 152 · line-heights on 8px multiples
+  Colour 60/30/10: blush field · navy structure · fuchsia accent only
   One typeface family: Heebo (weights 400/500/700/800) for everything
 */
   :root{
-    --field:#E8E9FB; --field-2:#DCDDF7; --navy:#1E1B4B; --navy-2:#34307A;
-    --accent:#6B4EF0; --accent-soft:#C8BEFF; --text:#1E1B4B; --muted:#5A5A80; --hair:rgba(30,27,75,.14);
+    --field:#FBE8EE; --field-2:#F7DCE5; --navy:#1A2744; --navy-2:#2B3C63;
+    --accent:#E0457B; --accent-soft:#FFC4D6; --text:#1A2744; --muted:#5D6580; --hair:rgba(26,39,68,.14);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:1080px;height:1350px;overflow:hidden;background:var(--field)}
@@ -23,24 +23,24 @@
   .frame{position:relative;width:1080px;height:1350px;overflow:hidden;background:var(--field)}
   .abs{position:absolute}
 
-  /* ---------- HEADER (y 80–528) ---------- */
+  /* ---------- HEADER (y 80–520) ---------- */
   .kicker{right:80px;top:80px;height:32px;display:flex;align-items:center;gap:16px;
           font-size:20px;font-weight:700;letter-spacing:2px;color:var(--accent)}
   .kicker::before{content:"";width:40px;height:2px;background:var(--accent)}
   .meta{left:80px;top:80px;height:32px;display:flex;align-items:center;font-size:20px;font-weight:500;color:var(--muted);letter-spacing:1px}
 
-  h1{right:80px;top:128px;font-weight:800;font-size:120px;line-height:112px;
+  h1{right:80px;top:128px;font-weight:800;font-size:144px;line-height:136px;
      letter-spacing:-4px;color:var(--navy);white-space:nowrap}
   h1 em{font-style:normal;color:var(--accent)}
-  .sub{right:80px;top:488px;width:760px;font-size:28px;line-height:40px;color:var(--muted)}
+  .sub{right:80px;top:440px;width:600px;font-size:28px;line-height:40px;color:var(--muted)}
   .sub b{color:var(--text);font-weight:700}
 
-  /* ---------- CONTENT (y 592–1136) · list top/bottom = phone top/bottom ---------- */
-  /* services — text column x 520–1000, 4 rows × 136 = 544 */
-  .list{right:80px;top:592px;width:480px}
-  .row{height:136px;display:grid;grid-template-columns:56px 1fr;align-items:center;border-top:1px solid var(--hair)}
+  /* ---------- CONTENT (y 576–1152) · list top/bottom = phone top/bottom ---------- */
+  /* services — text column x 520–1000, 4 rows × 144 = 576 */
+  .list{right:80px;top:576px;width:480px}
+  .row{height:144px;display:grid;grid-template-columns:56px 1fr;align-items:center;border-top:1px solid var(--hair)}
   .row:last-child{border-bottom:1px solid var(--hair)}
-  .n{font-weight:700;font-size:22px;letter-spacing:1px;color:var(--accent);align-self:start;padding-top:36px}
+  .n{font-weight:700;font-size:22px;letter-spacing:1px;color:var(--accent);align-self:start;padding-top:40px}
   .row h3{font-size:32px;line-height:40px;font-weight:800;color:var(--navy)}
   .row p{font-size:22px;line-height:32px;color:var(--muted)}
   .traits{right:80px;top:1072px;width:480px;height:40px;display:flex;align-items:center;gap:16px;
@@ -51,7 +51,7 @@
   .disc{left:40px;top:624px;width:480px;height:480px;border-radius:50%;
         background:radial-gradient(circle at 35% 30%,var(--navy-2),var(--navy) 70%)}
 
-  .phone{left:136px;top:592px;width:288px;height:544px;border-radius:48px;padding:10px;transform:rotate(-6deg);transform-origin:50% 50%;
+  .phone{left:136px;top:576px;width:288px;height:576px;border-radius:48px;padding:10px;transform:rotate(-6deg);transform-origin:50% 50%;
          background:linear-gradient(145deg,#3a3b40,#101114 45%,#26272b);
          box-shadow:0 48px 72px -24px rgba(10,16,40,.55),inset 0 0 0 2px #56575d,inset 0 0 0 4px #0b0b0d}
   .sb{position:absolute;width:3px;border-radius:2px;background:#26272b}
@@ -92,7 +92,7 @@
   .react{position:absolute;bottom:-11px;right:8px;background:#fff;border-radius:10px;padding:0 4px;font-size:11px;box-shadow:0 1px 3px rgba(0,0,0,.18)}
   .seen{font-size:10px;color:#8e8e8e;text-align:left;margin-top:3px}
   .card{background:#EFEFEF;border-radius:16px;overflow:hidden;width:148px}
-  .card .img{height:76px}
+  .card .img{height:96px}
   .card .img svg{display:block}
   .card .t{padding:6px 9px;font-size:11px;line-height:1.3;color:#000}
   .card .t span{display:block;color:#8e8e8e}
@@ -113,9 +113,9 @@
   .note .top{display:flex;justify-content:space-between;font-size:12px;color:#8e8e8e;letter-spacing:.3px}
   .note b{display:block;font-size:15px;font-weight:700;color:#000;margin-top:1px}
   .note p{font-size:13.5px;color:#222}
-  .n1{left:24px;top:500px;transform:rotate(-2deg)}
+  .n1{left:24px;top:520px;transform:rotate(-2deg)}
   .n1 .app{background:linear-gradient(135deg,#FEDA75,#D62976 50%,#4F5BD5)}
-  .n2{left:40px;top:1048px;transform:rotate(-2deg)}
+  .n2{left:40px;top:1064px;transform:rotate(-2deg)}
   .n2 .app{background:var(--accent)}
 
   /* ---------- FOOTER (y 1174–1350, 176 tall) ---------- */
@@ -135,8 +135,8 @@
   <!-- header -->
   <div class="abs kicker">לחנויות אונליין ומותגים באינסטגרם</div>
   <div class="abs meta">פרילנס · עבודה מרחוק</div>
-  <h1 class="abs">אתם תצמחו.<br><em>את השאר<br>תשאירו לי.</em></h1>
-  <p class="abs sub">ניהול <b>לקוחות, משפיעניות ותפעול שוטף</b> למותג שלכם.</p>
+  <h1 class="abs">יד ימין<br><em>למותג שלך.</em></h1>
+  <p class="abs sub">ניהול <b>לקוחות, משפיעניות ותפעול שוטף</b>,<br>כדי שלכם יישאר זמן לצמוח.</p>
 
   <!-- visual -->
   <div class="abs disc"></div>
@@ -161,7 +161,7 @@
         <div class="l them"><div class="mini"><svg viewBox="0 0 40 40" width="100%" height="100%"><defs><filter id="bl2"><feGaussianBlur stdDeviation="0.5"/></filter><linearGradient id="bgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D9CBB8"/><stop offset="1" stop-color="#A89A86"/></linearGradient><linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1CDB6"/><stop offset="1" stop-color="#D9A88C"/></linearGradient></defs><g filter="url(#bl2)"><rect width="40" height="40" fill="url(#bgA)"/><path d="M8 40c1-9 6-13 12-13s11 4 12 13z" fill="#2F2A2A"/><ellipse cx="20" cy="17" rx="9.5" ry="11" fill="#4A2F22"/><ellipse cx="20" cy="18" rx="6.3" ry="7.6" fill="url(#skin)"/><path d="M13.5 15c1.5-6 11.5-6 13 0-2-2.5-4-3.4-6.5-3.4S15.5 12.5 13.5 15z" fill="#3B241A"/><path d="M11 22c0 6 2 9 3 11l2-9zM29 22c0 6-2 9-3 11l-2-9z" fill="#4A2F22"/></g></svg></div><div class="m">היי! יש את השמלה במידה M? 😍</div></div>
         <div class="sp"></div>
         <div class="l me"><div class="m">היי מאיה 🤍 כן! נשארו 2 אחרונות</div></div>
-        <div class="l me"><div class="card"><div class="img"><svg viewBox="0 14 148 76" width="148" height="76" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1E9E2"/><stop offset=".78" stop-color="#E6DBD1"/><stop offset=".78" stop-color="#D9CBBF"/><stop offset="1" stop-color="#CFC0B3"/></linearGradient><linearGradient id="satin" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#21463C"/><stop offset=".38" stop-color="#4F8574"/><stop offset=".52" stop-color="#77A898"/><stop offset=".64" stop-color="#3F7061"/><stop offset="1" stop-color="#1D4036"/></linearGradient><filter id="sh"><feGaussianBlur stdDeviation="3"/></filter></defs><rect width="148" height="104" fill="url(#wall)"/><ellipse cx="74" cy="96" rx="30" ry="4" fill="#000" opacity=".22" filter="url(#sh)"/><path d="M66 8q0-3 2-3M82 8q0-3-2-3" stroke="#8B7B6E" stroke-width="1" fill="none"/><path d="M67 8l1 12M81 8l-1 12" stroke="#21463C" stroke-width="1.2"/><path d="M66 20q8 4 16 0l2 16 16 58H48l16-58z" fill="url(#satin)"/><path d="M68 36q6 3 12 0" stroke="#173229" stroke-width="1" fill="none" opacity=".6"/><path d="M76 38c-1 18-3 36-6 56" stroke="#fff" stroke-opacity=".16" stroke-width="3" fill="none"/><path d="M60 60c-3 12-6 24-10 34" stroke="#000" stroke-opacity=".12" stroke-width="3" fill="none"/></svg></div><div class="t">שמלת סאטן ירוקה<span>₪289 · noa-style.co.il</span></div></div></div>
+        <div class="l me"><div class="card"><div class="img"><svg viewBox="0 0 148 104" width="148" height="104"><defs><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1E9E2"/><stop offset=".78" stop-color="#E6DBD1"/><stop offset=".78" stop-color="#D9CBBF"/><stop offset="1" stop-color="#CFC0B3"/></linearGradient><linearGradient id="satin" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#21463C"/><stop offset=".38" stop-color="#4F8574"/><stop offset=".52" stop-color="#77A898"/><stop offset=".64" stop-color="#3F7061"/><stop offset="1" stop-color="#1D4036"/></linearGradient><filter id="sh"><feGaussianBlur stdDeviation="3"/></filter></defs><rect width="148" height="104" fill="url(#wall)"/><ellipse cx="74" cy="96" rx="30" ry="4" fill="#000" opacity=".22" filter="url(#sh)"/><path d="M66 8q0-3 2-3M82 8q0-3-2-3" stroke="#8B7B6E" stroke-width="1" fill="none"/><path d="M67 8l1 12M81 8l-1 12" stroke="#21463C" stroke-width="1.2"/><path d="M66 20q8 4 16 0l2 16 16 58H48l16-58z" fill="url(#satin)"/><path d="M68 36q6 3 12 0" stroke="#173229" stroke-width="1" fill="none" opacity=".6"/><path d="M76 38c-1 18-3 36-6 56" stroke="#fff" stroke-opacity=".16" stroke-width="3" fill="none"/><path d="M60 60c-3 12-6 24-10 34" stroke="#000" stroke-opacity=".12" stroke-width="3" fill="none"/></svg></div><div class="t">שמלת סאטן ירוקה<span>₪289 · noa-style.co.il</span></div></div></div>
         <div class="sp"></div>
         <div class="l them"><div class="mini"><svg viewBox="0 0 40 40" width="100%" height="100%"><defs><filter id="bl2"><feGaussianBlur stdDeviation="0.5"/></filter><linearGradient id="bgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D9CBB8"/><stop offset="1" stop-color="#A89A86"/></linearGradient><linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1CDB6"/><stop offset="1" stop-color="#D9A88C"/></linearGradient></defs><g filter="url(#bl2)"><rect width="40" height="40" fill="url(#bgA)"/><path d="M8 40c1-9 6-13 12-13s11 4 12 13z" fill="#2F2A2A"/><ellipse cx="20" cy="17" rx="9.5" ry="11" fill="#4A2F22"/><ellipse cx="20" cy="18" rx="6.3" ry="7.6" fill="url(#skin)"/><path d="M13.5 15c1.5-6 11.5-6 13 0-2-2.5-4-3.4-6.5-3.4S15.5 12.5 13.5 15z" fill="#3B241A"/><path d="M11 22c0 6 2 9 3 11l2-9zM29 22c0 6-2 9-3 11l-2-9z" fill="#4A2F22"/></g></svg></div><div class="m">הזמנתי! תודה על המענה המהיר<span class="react">❤️</span></div></div>
         <div class="sp"></div><div class="sp"></div>
