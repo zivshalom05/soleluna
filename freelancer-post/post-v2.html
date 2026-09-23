@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Freelancer Post</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --green:#153F3A; --green-2:#1F5A52; --blush:#F4E7DE; --paper:#FBF6F1;
+    --terra:#C4744F; --terra-soft:#E9C4AE; --ink:#1B2B28; --muted:#5E6B68;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1350px;overflow:hidden;background:var(--blush)}
+  body{font-family:'Heebo',sans-serif;color:var(--ink)}
+  .frame{position:relative;width:1080px;height:1350px;overflow:hidden;background:var(--blush)}
+
+  /* background shapes */
+  .blob{position:absolute;left:-190px;top:430px;width:640px;height:640px;border-radius:50%;background:var(--green)}
+  .ring{position:absolute;left:-250px;top:380px;width:640px;height:640px;border-radius:50%;border:2px solid var(--terra)}
+  .grain{position:absolute;inset:0;opacity:.35;
+    background-image:radial-gradient(rgba(0,0,0,.05) 1px,transparent 1px);background-size:6px 6px}
+
+  /* header */
+  .head{position:absolute;right:80px;top:70px;left:80px}
+  .kicker{font-family:'Amatic SC',cursive;font-weight:700;font-size:54px;color:var(--terra);line-height:1}
+  h1{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:104px;line-height:.98;color:var(--green);
+     margin-top:14px;letter-spacing:-1px}
+  h1 .u{position:relative;display:inline-block}
+  h1 .u svg{position:absolute;right:-6px;left:-6px;bottom:-14px;width:calc(100% + 12px);height:26px}
+  .sub{font-size:30px;line-height:1.45;color:var(--muted);margin-top:34px;max-width:620px}
+  .sub b{color:var(--ink);font-weight:700}
+
+  /* services list (right column) */
+  .list{position:absolute;right:80px;top:545px;width:520px}
+  .item{display:flex;gap:22px;padding:24px 0;border-top:1.5px solid rgba(21,63,58,.18)}
+  .item:last-child{border-bottom:1.5px solid rgba(21,63,58,.18)}
+  .num{font-family:'Frank Ruhl Libre',serif;font-weight:700;font-size:32px;color:var(--terra);line-height:1.15;min-width:44px}
+  .item h3{font-size:33px;font-weight:800;color:var(--green);line-height:1.15}
+  .item p{font-size:23px;color:var(--muted);line-height:1.4;margin-top:6px}
+
+  /* phone mockup */
+  .phone{position:absolute;left:92px;top:520px;width:330px;height:600px;border-radius:46px;background:#0F1E1C;
+         padding:12px;transform:rotate(-5deg);box-shadow:0 40px 70px -20px rgba(0,0,0,.45)}
+  .screen{width:100%;height:100%;border-radius:36px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+  .notch{width:110px;height:26px;background:#0F1E1C;border-radius:0 0 16px 16px;margin:0 auto}
+  .chat-h{display:flex;align-items:center;gap:12px;padding:14px 18px 14px;border-bottom:1px solid #EEE}
+  .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#E9C4AE,#C4744F)}
+  .chat-h b{font-size:18px;font-weight:700;display:block}
+  .chat-h span{font-size:14px;color:#8a8a8a}
+  .msgs{flex:1;padding:18px 16px;display:flex;flex-direction:column;gap:12px;background:#FFFCFA}
+  .m{max-width:78%;font-size:18px;line-height:1.35;padding:11px 15px;border-radius:20px}
+  .in{align-self:flex-end;background:#F0ECE8;border-bottom-left-radius:6px;border-bottom-right-radius:20px}
+  .out{align-self:flex-start;background:var(--green-2);color:#fff;border-bottom-left-radius:6px}
+  .in{border-bottom-right-radius:6px;border-bottom-left-radius:20px}
+  .time{font-size:13px;color:#aaa;text-align:center}
+  .typing{align-self:flex-end;background:#F0ECE8;border-radius:20px;padding:14px 18px;display:flex;gap:6px}
+  .typing i{width:8px;height:8px;border-radius:50%;background:#B9B2AC;display:block}
+  .bar{margin:0 14px 16px;height:46px;border-radius:23px;border:1px solid #E6E0DA;display:flex;align-items:center;
+       padding:0 18px;font-size:16px;color:#aaa}
+
+  /* floating chips */
+  .chip{position:absolute;background:#fff;border-radius:18px;padding:14px 18px;display:flex;align-items:center;gap:12px;
+        box-shadow:0 18px 40px -14px rgba(21,63,58,.35);font-size:19px;font-weight:600;color:var(--ink)}
+  .chip .dot{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+  .chip svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .chip small{display:block;font-size:15px;font-weight:400;color:var(--muted)}
+  .c1{left:150px;top:448px;transform:rotate(3deg)}
+  .c1 .dot{background:var(--terra)}
+  .c2{left:40px;top:1030px;transform:rotate(-2deg)}
+  .c2 .dot{background:var(--green-2)}
+
+  /* bottom */
+  .bottom{position:absolute;left:0;right:0;bottom:0;height:190px;background:var(--green);color:#fff;
+          display:flex;align-items:center;justify-content:space-between;padding:0 80px}
+  .bottom .t{font-family:'Frank Ruhl Libre',serif;font-size:44px;font-weight:700;line-height:1.1}
+  .bottom .t em{font-style:normal;color:var(--terra-soft)}
+  .bottom .s{font-size:22px;color:rgba(255,255,255,.75);margin-top:10px}
+  .mail{direction:ltr;display:flex;align-items:center;gap:14px;background:var(--paper);color:var(--green);
+        border-radius:999px;padding:18px 30px;font-size:25px;font-weight:600}
+  .mail svg{width:26px;height:26px;fill:none;stroke:var(--terra);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .scribble{position:absolute;right:110px;bottom:206px;font-family:'Amatic SC',cursive;font-weight:700;font-size:40px;
+            color:var(--terra);transform:rotate(-4deg)}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="grain"></div>
+  <div class="ring"></div>
+  <div class="blob"></div>
+
+  <div class="head">
+    <div class="kicker">למותגים אונליין וחנויות באינסטגרם</div>
+    <h1>המותג שלך גדל.<br><span class="u">השוטף — עליי.<svg viewBox="0 0 300 26" preserveAspectRatio="none"><path d="M4 16 C 70 4, 150 24, 296 8" stroke="#C4744F" stroke-width="6" fill="none" stroke-linecap="round"/></svg></span></h1>
+    <p class="sub">פרילנסרית לניהול <b>לקוחות, משפיעניות ותפעול</b>,<br>כדי שאתם תוכלו להתמקד בצמיחה.</p>
+  </div>
+
+  <div class="list">
+    <div class="item"><div class="num">01</div><div><h3>שירות לקוחות</h3><p>מענה לפניות, שירות אישי וליווי עד הרכישה</p></div></div>
+    <div class="item"><div class="num">02</div><div><h3>קשרי משפיעניות</h3><p>איתור, פנייה, תיאום שת״פים ומעקב אחר התכנים</p></div></div>
+    <div class="item"><div class="num">03</div><div><h3>נוכחות דיגיטלית</h3><p>סיוע בניהול הרשתות ומשימות שיווק שוטפות</p></div></div>
+    <div class="item"><div class="num">04</div><div><h3>תפעול שוטף</h3><p>כל המשימות היומיומיות — בסדר ובדיוק</p></div></div>
+  </div>
+
+  <div class="phone"><div class="screen">
+    <div class="notch"></div>
+    <div class="chat-h"><div class="av"></div><div><b>noa.style</b><span>פעילה עכשיו</span></div></div>
+    <div class="msgs">
+      <div class="time">היום 10:24</div>
+      <div class="m in">היי! יש את השמלה הירוקה במידה M?</div>
+      <div class="m out">היי 🤍 כן! נשארו 2 אחרונות, שולחת לך קישור להזמנה</div>
+      <div class="m in">מושלם, הזמנתי! תודה על המענה המהיר</div>
+      <div class="m out">בכיף! המשלוח יוצא מחר ✨</div>
+          </div>
+    <div class="bar">כתיבת הודעה...</div>
+  </div></div>
+
+  <div class="chip c1"><div class="dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div>שת״פ חדש אושר<small>עם משפיענית · 48K עוקבות</small></div></div>
+  <div class="chip c2"><div class="dot"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></div><div>הזמנה חדשה התקבלה<small>הלקוחה קיבלה מענה תוך 3 דק׳</small></div></div>
+
+  <div class="scribble">עצמאית · מסודרת · שירותית</div>
+
+  <div class="bottom">
+    <div>
+      <div class="t">רוצים לחסוך זמן? <em>בואו נדבר.</em></div>
+      <div class="s">שלחו מייל ואחזור אליכם בהקדם</div>
+    </div>
+    <div class="mail"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>chelism212002@gmail.com</div>
+  </div>
+</div>
+</body>
+</html>
