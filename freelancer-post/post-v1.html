@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Freelancer Post</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --ink:#0F3B3C; --ink-2:#2E5354; --cream:#F7F2EA; --card:#FFFFFF;
+    --accent:#B7785A; --accent-soft:#EFE1D6; --line:#E4DACD; --muted:#6B7B7A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1350px;background:var(--cream);overflow:hidden}
+  .frame{position:relative;width:1080px;height:1350px;overflow:hidden}
+  body{font-family:'Heebo',sans-serif;color:var(--ink);position:relative;overflow:hidden}
+  .wrap{position:absolute;inset:0;padding:72px 76px 0;display:flex;flex-direction:column}
+
+  /* decorative arcs, subtle */
+  .arc{position:absolute;border-radius:50%;border:2px solid var(--line)}
+  .arc.a{width:560px;height:560px;top:-300px;left:-220px}
+  .arc.b{width:380px;height:380px;top:-200px;left:-130px;border-color:var(--accent-soft)}
+
+  .tag{display:inline-flex;align-items:center;gap:12px;align-self:flex-start;
+       font-size:22px;font-weight:500;letter-spacing:.5px;color:var(--accent)}
+  .tag::before{content:"";width:40px;height:2px;background:var(--accent)}
+
+  h1{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:78px;line-height:1.08;
+     margin-top:26px;letter-spacing:-.5px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lead{font-size:31px;font-weight:400;line-height:1.45;color:var(--ink-2);margin-top:24px;max-width:860px}
+  .lead b{font-weight:700;color:var(--ink)}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:56px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:34px 32px;
+        display:flex;flex-direction:column;gap:16px}
+  .hd{display:flex;align-items:center;gap:16px}
+  .ic{width:60px;height:60px;border-radius:16px;background:var(--accent-soft);
+      display:grid;place-items:center}
+  .ic svg{width:32px;height:32px;stroke:var(--ink);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .card h3{font-size:31px;font-weight:700;line-height:1.15}
+  .card p{font-size:25px;line-height:1.45;color:var(--muted)}
+
+  .traits{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:40px;
+          font-size:24px;font-weight:500;color:var(--ink-2)}
+  .traits i{width:6px;height:6px;border-radius:50%;background:var(--accent);display:block}
+
+  .fit{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:40px;flex-wrap:wrap}
+  .fit b{font-size:23px;font-weight:700;color:var(--ink);margin-left:6px}
+  .fit span{font-size:22px;font-weight:500;color:var(--ink);background:var(--accent-soft);padding:9px 20px;border-radius:999px}
+  .cta{position:absolute;left:0;right:0;bottom:0;height:218px;background:var(--ink);color:#fff;
+       padding:40px 76px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+  .cta h2{font-family:'Frank Ruhl Libre',serif;font-weight:700;font-size:44px;line-height:1}
+  .cta h2 span{color:#E2B596}
+  .contacts{display:flex;gap:44px;align-items:center;font-size:27px;font-weight:400;direction:ltr;justify-content:flex-end}
+  .contacts div{display:flex;align-items:center;gap:14px}
+  .contacts svg{width:28px;height:28px;stroke:#E2B596;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .sep{width:1px;height:30px;background:rgba(255,255,255,.3)}
+</style>
+</head>
+<body>
+<div class="frame">
+<div class="arc a"></div><div class="arc b"></div>
+<div class="wrap">
+  <div class="tag">פרילנסרית · ניהול שוטף למותגים אונליין</div>
+
+  <h1>יש לך מותג אונליין<br>או <em>חנות באינסטגרם?</em></h1>
+  <p class="lead">אני לוקחת על עצמי את <b>השוטף</b> — לקוחות, משפיעניות ותפעול —<br><b>ואתם מתפנים לצמוח.</b></p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="hd"><div class="ic"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></div><h3>שירות לקוחות</h3></div>
+      <p>מענה לפניות, שירות אישי וליווי הלקוחות בתהליך הרכישה</p>
+    </div>
+    <div class="card">
+      <div class="hd"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.5 3.5 5.2"/></svg></div><h3>עבודה מול משפיעניות</h3></div>
+      <p>איתור, פנייה, תיאום שיתופי פעולה ומעקב אחר ביצוע התכנים</p>
+    </div>
+    <div class="card">
+      <div class="hd"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 13l3-3 2.5 2.5L17 8"/></svg></div><h3>נוכחות דיגיטלית</h3></div>
+      <p>סיוע בניהול הרשתות וביצוע משימות שיווק שוטפות</p>
+    </div>
+    <div class="card">
+      <div class="hd"><div class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="18" rx="2"/><path d="M9 3.5h6v3H9z"/><path d="M8.5 12l1.5 1.5 3-3M8.5 17h7"/></svg></div><h3>תפעול שוטף</h3></div>
+      <p>ניהול המשימות היומיומיות של המותג, בסדר ובדיוק</p>
+    </div>
+  </div>
+
+  <div class="traits">
+    <span>עצמאית</span><i></i><span>מסודרת</span><i></i><span>שירותית</span><i></i><span>מענה מהיר ומדויק</span>
+  </div>
+  <div class="fit"><b>מתאים ל:</b><span>חנויות אונליין</span><span>מותגים באינסטגרם</span><span>עסקים קטנים</span></div>
+</div>
+
+<div class="cta">
+  <h2>רוצים לחסוך זמן? <span>בואו נדבר.</span></h2>
+  <div class="contacts">
+    <div><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>054-443-9262</div>
+    <div class="sep"></div>
+    <div><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>chelism212002@gmail.com</div>
+  </div>
+</div>
+</div>
+</body>
+</html>
