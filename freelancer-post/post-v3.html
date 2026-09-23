@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Freelancer Post</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root{
+    --bg:#EEE6F7; --plum:#2E1A47; --plum-2:#4A2C6E; --coral:#F2665A; --coral-soft:#FFC9C1;
+    --ink:#22142F; --muted:#665A74; --paper:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1350px;overflow:hidden;background:var(--bg)}
+  body{font-family:'Heebo',sans-serif;color:var(--ink)}
+  .frame{position:relative;width:1080px;height:1350px;overflow:hidden;
+         background:radial-gradient(900px 700px at 85% 10%,#F8EEF6 0%,rgba(248,238,246,0) 60%),var(--bg)}
+
+  /* background shapes */
+  .blob{position:absolute;left:-190px;top:440px;width:640px;height:640px;border-radius:50%;
+        background:linear-gradient(160deg,#4A2C6E 0%,#2E1A47 70%)}
+  .ring{position:absolute;left:-250px;top:385px;width:640px;height:640px;border-radius:50%;border:2px solid var(--coral)}
+  .spark{position:absolute;width:22px;height:22px;fill:var(--coral)}
+
+  /* header */
+  .head{position:absolute;right:80px;top:70px;left:80px}
+  .kicker{font-family:'Amatic SC',cursive;font-weight:700;font-size:54px;color:var(--coral);line-height:1}
+  h1{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:104px;line-height:.98;color:var(--plum);
+     margin-top:14px;letter-spacing:-1px}
+  h1 .u{position:relative;display:inline-block}
+  h1 .u svg{position:absolute;right:-6px;left:-6px;bottom:-14px;width:calc(100% + 12px);height:26px}
+  .sub{font-size:30px;line-height:1.45;color:var(--muted);margin-top:34px;max-width:620px}
+  .sub b{color:var(--ink);font-weight:700}
+
+  /* services list */
+  .list{position:absolute;right:80px;top:545px;width:520px}
+  .item{display:flex;gap:22px;padding:24px 0;border-top:1.5px solid rgba(46,26,71,.16)}
+  .item:last-child{border-bottom:1.5px solid rgba(46,26,71,.16)}
+  .num{font-family:'Frank Ruhl Libre',serif;font-weight:700;font-size:32px;color:var(--coral);line-height:1.15;min-width:44px}
+  .item h3{font-size:33px;font-weight:800;color:var(--plum);line-height:1.15}
+  .item p{font-size:23px;color:var(--muted);line-height:1.4;margin-top:6px}
+
+  /* ---------- realistic phone ---------- */
+  .phone{position:absolute;left:88px;top:505px;width:336px;height:615px;border-radius:54px;padding:11px;
+         background:linear-gradient(145deg,#3a3a3e,#111114 40%,#2b2b2f);
+         transform:rotate(-5deg);
+         box-shadow:0 50px 80px -24px rgba(30,10,50,.55),inset 0 0 0 2px #55555b,inset 0 0 0 4px #0b0b0d}
+  .btn{position:absolute;width:4px;border-radius:2px;background:#2a2a2e}
+  .s1{left:-3px;top:130px;height:34px}.s2{left:-3px;top:180px;height:58px}.s3{left:-3px;top:250px;height:58px}
+  .s4{right:-3px;top:200px;height:90px}
+  .screen{position:relative;width:100%;height:100%;border-radius:44px;background:#fff;overflow:hidden;
+          display:flex;flex-direction:column;font-family:'Heebo',sans-serif}
+  .island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:104px;height:30px;border-radius:20px;background:#000;z-index:3}
+  .status{direction:ltr;display:flex;justify-content:space-between;align-items:center;padding:14px 26px 0 30px;height:44px;
+          font-size:15px;font-weight:700;color:#000}
+  .status .r{display:flex;gap:5px;align-items:center}
+  .status svg{height:11px;fill:#000}
+  .batt{width:24px;height:11px;border:1.4px solid #000;border-radius:3px;padding:1.5px;position:relative;opacity:.9}
+  .batt::before{content:"";display:block;width:75%;height:100%;background:#000;border-radius:1px}
+  .batt::after{content:"";position:absolute;right:-4px;top:3px;width:2px;height:4px;background:#000;border-radius:0 1px 1px 0}
+
+  .chat-h{display:flex;align-items:center;gap:10px;padding:10px 14px 10px;border-bottom:1px solid #EFEFEF}
+  .chat-h .back{width:20px;height:20px;stroke:#000;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .av{width:36px;height:36px;border-radius:50%;padding:2px;background:conic-gradient(from 200deg,#FEDA75,#FA7E1E,#D62976,#962FBF,#4F5BD5,#FEDA75)}
+  .av div{width:100%;height:100%;border-radius:50%;border:2px solid #fff;
+          background:radial-gradient(circle at 50% 38%,#F4D2C4 0 28%,transparent 29%),radial-gradient(circle at 50% 100%,#C98B78 0 45%,transparent 46%),#EADCF2}
+  .who{flex:1;line-height:1.15}
+  .who b{font-size:15px;font-weight:700;display:flex;align-items:center;gap:4px;direction:ltr;justify-content:flex-end}
+  .who span{font-size:12px;color:#8e8e8e}
+  .tick{width:13px;height:13px}
+  .ic{display:flex;gap:14px}
+  .ic svg{width:21px;height:21px;stroke:#000;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+  .msgs{flex:1;min-height:0;overflow:hidden;padding:10px 12px 6px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+  .msgs>*{flex:none}
+  .time{font-size:11px;color:#8e8e8e;text-align:center;margin:4px 0 6px}
+  .row{display:flex;align-items:flex-end;gap:6px}
+  .row.them{justify-content:flex-start}          /* customer — right side (Hebrew UI) */
+  .row.me{justify-content:flex-end}              /* brand — left side */
+  .mini{width:22px;height:22px;border-radius:50%;flex:none;
+        background:radial-gradient(circle at 50% 38%,#F4D2C4 0 28%,transparent 29%),radial-gradient(circle at 50% 100%,#C98B78 0 45%,transparent 46%),#EADCF2}
+  .m{max-width:74%;font-size:15px;line-height:1.3;padding:8px 13px;border-radius:20px;position:relative}
+  .them .m{background:#EFEFEF;color:#000}
+  .me .m{color:#fff;background:linear-gradient(180deg,#8A3FFC,#5B51F5)}
+  .me .m.b2{background:linear-gradient(180deg,#5B51F5,#3E7BFA)}
+  .me .m.b3{background:linear-gradient(180deg,#3E7BFA,#2F8CF6)}
+  .gap{height:2px}
+  .react{position:absolute;bottom:-12px;right:10px;background:#fff;border-radius:12px;padding:1px 5px;font-size:12px;
+         box-shadow:0 1px 3px rgba(0,0,0,.18)}
+  .seen{font-size:11px;color:#8e8e8e;text-align:left;margin-top:4px;padding-left:4px}
+  .link{background:#EFEFEF;border-radius:18px;overflow:hidden;width:170px}
+  .link .img{height:58px;background:linear-gradient(135deg,#F7D6CF,#E7B8C8 55%,#C9A6DD)}
+  .link .img svg{display:block;margin:6px auto 0;width:36px;height:46px}
+  .link .t{padding:7px 10px;font-size:12px;color:#000;line-height:1.3}
+  .link .t span{color:#8e8e8e;display:block}
+
+  .bar{margin:4px 10px 18px;height:42px;border-radius:22px;background:#EFEFEF;display:flex;align-items:center;gap:8px;padding:0 5px 0 12px}
+  .cam{width:32px;height:32px;border-radius:50%;background:#3797F0;display:grid;place-items:center;flex:none}
+  .cam svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2}
+  .bar .ph{flex:1;font-size:14px;color:#8e8e8e}
+  .bar .tools{display:flex;gap:10px}
+  .bar .tools svg{width:19px;height:19px;stroke:#000;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .home{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:110px;height:4px;border-radius:3px;background:#000}
+
+  /* notifications (iOS-style) */
+  .chip{position:absolute;width:320px;background:rgba(255,255,255,.92);border-radius:22px;padding:12px 14px;display:flex;gap:11px;
+        box-shadow:0 20px 44px -16px rgba(46,26,71,.45);direction:rtl}
+  .chip .app{width:38px;height:38px;border-radius:10px;flex:none;display:grid;place-items:center}
+  .chip .app svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .chip .tx{flex:1;line-height:1.25}
+  .chip .top{display:flex;justify-content:space-between;font-size:14px;color:#8e8e8e}
+  .chip b{font-size:16px;font-weight:700;display:block;color:#000;margin-top:1px}
+  .chip p{font-size:14.5px;color:#222}
+  .c1{left:130px;top:430px;transform:rotate(3deg)}
+  .c1 .app{background:linear-gradient(135deg,#FEDA75,#D62976 50%,#4F5BD5)}
+  .c2{left:14px;top:1062px;transform:rotate(-2deg)}
+  .c2 .app{background:#F2665A}
+
+  /* bottom */
+  .bottom{position:absolute;left:0;right:0;bottom:0;height:190px;background:var(--plum);color:#fff;
+          display:flex;align-items:center;justify-content:space-between;padding:0 80px}
+  .bottom .t{font-family:'Frank Ruhl Libre',serif;font-size:44px;font-weight:700;line-height:1.1}
+  .bottom .t em{font-style:normal;color:var(--coral-soft)}
+  .bottom .s{font-size:22px;color:rgba(255,255,255,.72);margin-top:10px}
+  .mail{direction:ltr;display:flex;align-items:center;gap:14px;background:var(--paper);color:var(--plum);
+        border-radius:999px;padding:18px 30px;font-size:25px;font-weight:600}
+  .mail svg{width:26px;height:26px;fill:none;stroke:var(--coral);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .scribble{position:absolute;right:110px;bottom:206px;font-family:'Amatic SC',cursive;font-weight:700;font-size:40px;
+            color:var(--coral);transform:rotate(-4deg)}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="ring"></div>
+  <div class="blob"></div>
+  <svg class="spark" style="left:470px;top:470px" viewBox="0 0 24 24"><path d="M12 0c1 7 5 11 12 12-7 1-11 5-12 12-1-7-5-11-12-12 7-1 11-5 12-12z"/></svg>
+  <svg class="spark" style="left:60px;top:300px;width:14px;height:14px" viewBox="0 0 24 24"><path d="M12 0c1 7 5 11 12 12-7 1-11 5-12 12-1-7-5-11-12-12 7-1 11-5 12-12z"/></svg>
+
+  <div class="head">
+    <div class="kicker">למותגים אונליין וחנויות באינסטגרם</div>
+    <h1>המותג שלך גדל.<br><span class="u">השוטף — עליי.<svg viewBox="0 0 300 26" preserveAspectRatio="none"><path d="M4 16 C 70 4, 150 24, 296 8" stroke="#F2665A" stroke-width="6" fill="none" stroke-linecap="round"/></svg></span></h1>
+    <p class="sub">פרילנסרית לניהול <b>לקוחות, משפיעניות ותפעול</b>,<br>כדי שאתם תוכלו להתמקד בצמיחה.</p>
+  </div>
+
+  <div class="list">
+    <div class="item"><div class="num">01</div><div><h3>שירות לקוחות</h3><p>מענה לפניות, שירות אישי וליווי עד הרכישה</p></div></div>
+    <div class="item"><div class="num">02</div><div><h3>קשרי משפיעניות</h3><p>איתור, פנייה, תיאום שת״פים ומעקב אחר התכנים</p></div></div>
+    <div class="item"><div class="num">03</div><div><h3>נוכחות דיגיטלית</h3><p>סיוע בניהול הרשתות ומשימות שיווק שוטפות</p></div></div>
+    <div class="item"><div class="num">04</div><div><h3>תפעול שוטף</h3><p>כל המשימות היומיומיות — בסדר ובדיוק</p></div></div>
+  </div>
+
+  <div class="phone">
+    <div class="btn s1"></div><div class="btn s2"></div><div class="btn s3"></div><div class="btn s4"></div>
+    <div class="screen">
+      <div class="island"></div>
+      <div class="status"><span>10:26</span><div class="r">
+        <svg viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx=".7"/><rect x="5" y="5" width="3" height="6" rx=".7"/><rect x="10" y="2.5" width="3" height="8.5" rx=".7"/><rect x="15" y="0" width="3" height="11" rx=".7"/></svg>
+        <svg viewBox="0 0 16 11"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.3A10.4 10.4 0 0 0 8 .4 10.4 10.4 0 0 0 .8 3.3L2 4.6a8.6 8.6 0 0 1 6-2.4zm0 3.5c1.3 0 2.5.5 3.5 1.3l1.2-1.3A6.8 6.8 0 0 0 8 3.9a6.8 6.8 0 0 0-4.7 1.8L4.5 7c1-.8 2.2-1.3 3.5-1.3zm0 3.4c-.5 0-1 .2-1.3.5L8 11l1.3-1.4c-.3-.3-.8-.5-1.3-.5z"/></svg>
+        <div class="batt"></div></div></div>
+
+      <div class="chat-h">
+        <svg class="back" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        <div class="av"><div></div></div>
+        <div class="who"><b>maya.cohen</b><span>פעילה עכשיו</span></div>
+        <div class="ic">
+          <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+          <svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="M15.5 10.5l6-3.5v10l-6-3.5"/></svg>
+        </div>
+      </div>
+
+      <div class="msgs">
+                <div class="row them"><div class="mini"></div><div class="m">היי! יש את השמלה במידה M? 😍</div></div>
+        <div class="gap"></div>
+        <div class="row me"><div class="m">היי מאיה 🤍 כן! נשארו 2 אחרונות</div></div>
+        <div class="row me"><div class="link"><div class="img"><svg viewBox="0 0 56 66"><path d="M22 2h12l2 12 10 50H10L20 14z" fill="#fff" opacity=".85"/><path d="M22 2c2 4 10 4 12 0" stroke="#E7B8C8" stroke-width="2" fill="none"/></svg></div><div class="t">שמלת מידי סאטן<span>₪289 · noa-style.co.il</span></div></div></div>
+        <div class="row me"><div class="m b2">שולחת לך קישור ישיר להזמנה</div></div>
+        <div class="gap"></div>
+        <div class="row them"><div class="mini"></div><div class="m">הזמנתי! תודה על המענה המהיר<span class="react">❤️</span></div></div>
+        <div class="gap"></div>
+        <div class="row me"><div class="m b3">בכיף! המשלוח יוצא כבר מחר ✨</div></div>
+        <div class="seen">נראתה</div>
+      </div>
+
+      <div class="bar">
+        <div class="cam"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
+        <div class="ph">הודעה...</div>
+        <div class="tools">
+          <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 16l-5-5-9 10"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/></svg>
+        </div>
+      </div>
+      <div class="home"></div>
+    </div>
+  </div>
+
+  <div class="chip c1"><div class="app"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.6"/><path d="M16.8 7.2h.01"/></svg></div>
+    <div class="tx"><div class="top"><span>INSTAGRAM</span><span>עכשיו</span></div><b>שת״פ חדש אושר ✓</b><p>@shira.lifestyle אישרה סטורי לחמישי</p></div></div>
+  <div class="chip c2"><div class="app"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></div>
+    <div class="tx"><div class="top"><span>החנות</span><span>לפני 2 דק׳</span></div><b>הזמנה חדשה #1048</b><p>שמלת מידי סאטן · ₪289</p></div></div>
+
+  <div class="scribble">עצמאית · מסודרת · שירותית</div>
+
+  <div class="bottom">
+    <div>
+      <div class="t">רוצים לחסוך זמן? <em>בואו נדבר.</em></div>
+      <div class="s">שלחו מייל ואחזור אליכם בהקדם</div>
+    </div>
+    <div class="mail"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>chelism212002@gmail.com</div>
+  </div>
+</div>
+</body>
+</html>
