@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="he">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500&family=Assistant:wght@300;400;600&family=Cormorant+Garamond:wght@500;600&display=block" rel="stylesheet">
+<style>
+  /* 90x50mm trim + 3mm bleed each side = 96x56mm */
+  @page { size: 96mm 56mm; margin: 0; }
+  :root { --paper:#EEE7DA; --ink:#3E5446; --soft:#7C8C7E; --accent:#9DAE9C; }
+  body.blue { --paper:#E9EEEC; --ink:#2F4B57; --soft:#6F8790; --accent:#8FAE9F; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width:96mm; height:56mm; position:relative; overflow:hidden; page-break-after:always; }
+  /* content box = trim area minus 4.5mm safe margin */
+  .safe { position:absolute; top:7.5mm; bottom:7.5mm; left:8mm; right:8mm; }
+
+  /* FRONT — Hebrew */
+  .front { background:var(--paper); color:var(--ink); direction:rtl; }
+  .front .name { font-family:'Frank Ruhl Libre', serif; font-weight:500; font-size:17pt; letter-spacing:.2pt; line-height:1; }
+  .front .rule { width:11mm; height:.35pt; background:var(--ink); margin:3.2mm 0 2.6mm; }
+  .front .roles { font-family:'Assistant', sans-serif; font-weight:400; font-size:7.2pt; line-height:1.55; color:var(--ink); }
+  .front .roles span { color:var(--accent); padding:0 1.2mm; }
+  .front .edu { position:absolute; bottom:0; right:0; font-family:'Assistant', sans-serif; font-weight:300; font-size:6.2pt; color:var(--soft); letter-spacing:.15pt; }
+  .front .mono { position:absolute; bottom:-.6mm; left:0; font-family:'Cormorant Garamond', serif; font-weight:600; font-size:13pt; letter-spacing:1.5pt; color:var(--ink); opacity:.9; }
+  .front .mono i { font-style:normal; display:inline-block; width:.35pt; height:9pt; background:var(--accent); margin:0 1.6mm; vertical-align:-1pt; }
+
+  /* BACK — English */
+  .back { background:var(--ink); color:var(--paper); direction:ltr; }
+  .back .name { font-family:'Cormorant Garamond', serif; font-weight:600; font-size:15pt; letter-spacing:1.6pt; text-transform:uppercase; line-height:1; }
+  .back .title { font-family:'Assistant', sans-serif; font-weight:300; font-size:6.6pt; letter-spacing:.9pt; text-transform:uppercase; margin-top:2.6mm; opacity:.85; }
+  .back .contact { position:absolute; bottom:0; left:0; font-family:'Assistant', sans-serif; font-weight:400; font-size:7pt; line-height:1.7; letter-spacing:.2pt; }
+  .back .contact b { font-weight:600; display:inline-block; width:4.5mm; color:var(--accent); font-size:6pt; letter-spacing:.6pt; }
+  .back .brand { position:absolute; bottom:0; right:0; text-align:right; font-family:'Assistant', sans-serif; font-weight:300; font-size:6pt; line-height:1.6; letter-spacing:.4pt; opacity:.75; }
+</style>
+</head>
+<body>
+  <section class="page front"><div class="safe">
+    <div class="name">זיו שלום ביקר</div>
+    <div class="rule"></div>
+    <div class="roles">יזם ומייסד<span>|</span>מיישם מערכות AI<span>|</span>גמולוג יהלומים</div>
+    <div class="edu">יזמות וקיימות · אוניברסיטת רייכמן</div>
+    <div class="mono">Z<i></i>S</div>
+  </div></section>
+
+  <section class="page back"><div class="safe">
+    <div class="name">Ziv Shalom Bikar</div>
+    <div class="title">Founder · AI Systems · Diamond Grader</div>
+    <div class="contact">
+      <div><b>T</b>+972 5X-XXX-XXXX</div>
+      <div><b>E</b>your@email.com</div>
+      <div><b>in</b>linkedin.com/in/ziv-shalom-bikar</div>
+    </div>
+    <div class="brand">Founder, sole&amp;luna<br>Defense-tech startup</div>
+  </div></section>
+</body>
+</html>
