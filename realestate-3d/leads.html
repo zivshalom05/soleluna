@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>ניהול פניות | מגדל האופק</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { background: var(--paper); color: var(--paper-ink); }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 40px clamp(16px, 4vw, 40px); }
+    .wrap p { color: var(--paper-soft); }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 24px 0; }
+    .kpi { background: #fff; border-radius: 14px; padding: 16px; }
+    .kpi b { display: block; font-size: 1.8rem; font-weight: 900; }
+    .kpi span { font-size: 0.85rem; color: var(--paper-soft); }
+    .table-wrap { overflow-x: auto; background: #fff; border-radius: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { padding: 12px; text-align: start; border-bottom: 1px solid #eee6d8; white-space: nowrap; }
+    th { font-weight: 700; color: var(--paper-soft); font-size: 0.8rem; }
+    tr.done td { opacity: 0.5; }
+    td button { font: inherit; padding: 6px 12px; border-radius: 999px; border: 1px solid #cfc5b4; background: #fff; cursor: pointer; }
+    .empty { padding: 40px; text-align: center; color: var(--paper-soft); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .actions button { font: inherit; padding: 10px 18px; border-radius: 999px; border: 0; background: var(--navy); color: var(--ink); cursor: pointer; }
+    .actions button.ghost { background: transparent; color: var(--paper-ink); border: 1px solid #cfc5b4; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a href="index.html">→ חזרה לאתר</a>
+    <h1 style="font-size:2.2rem;margin-top:16px">ניהול פניות ומלאי</h1>
+    <p>בשלב הזה הפניות נשמרות רק בדפדפן הזה. כדי לקבל פניות מכל המבקרים צריך לחבר את הטופס לשרת או ל־CRM (ראו README).</p>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>תאריך</th><th>שם</th><th>טלפון</th><th>אימייל</th><th>דירה</th><th>מועד מועדף</th><th>הערות</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="actions">
+      <button type="button" id="export">ייצוא ל־CSV</button>
+      <button type="button" class="ghost" id="clear">מחיקת כל הפניות</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { UNITS, loadLeads, writeLeads } from "./data.js";
+
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+    function render() {
+      const leads = loadLeads();
+      const count = (st) => UNITS.filter((u) => u.status === st).length;
+      document.getElementById("kpis").innerHTML = [
+        [leads.length, "פניות"],
+        [leads.filter((l) => !l.done).length, "ממתינות לטיפול"],
+        [count("free"), "דירות פנויות"],
+        [count("hold"), "בשריון"],
+        [count("sold"), "נמכרו"],
+      ].map(([n, t]) => `<div class="kpi"><b>${n}</b><span>${t}</span></div>`).join("");
+
+      const rows = document.getElementById("rows");
+      rows.innerHTML = leads.length
+        ? leads.map((l, i) => `
+            <tr class="${l.done ? "done" : ""}">
+              <td>${new Date(l.at).toLocaleString("he-IL")}</td>
+              <td>${esc(l.name)}</td>
+              <td><a href="tel:${esc(l.phone)}">${esc(l.phone)}</a></td>
+              <td>${esc(l.email)}</td>
+              <td>${esc(l.unit) || "—"}</td>
+              <td>${esc(l.slot)}</td>
+              <td>${esc(l.notes)}</td>
+              <td><button type="button" data-i="${i}">${l.done ? "החזר" : "טופל ✓"}</button></td>
+            </tr>`).join("")
+        : `<tr><td colspan="8" class="empty">עוד אין פניות. מלאו את הטופס באתר כדי לראות אותן כאן.</td></tr>`;
+    }
+
+    document.getElementById("rows").addEventListener("click", (e) => {
+      const i = e.target.dataset.i;
+      if (i === undefined) return;
+      const leads = loadLeads();
+      leads[i].done = !leads[i].done;
+      writeLeads(leads);
+      render();
+    });
+
+    document.getElementById("export").addEventListener("click", () => {
+      const cols = ["at", "name", "phone", "email", "unit", "slot", "notes"];
+      const csv = [cols.join(","), ...loadLeads().map((l) => cols.map((c) => `"${String(l[c] ?? "").replace(/"/g, '""')}"`).join(","))].join("\n");
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
+      a.download = "leads.csv";
+      a.click();
+    });
+
+    document.getElementById("clear").addEventListener("click", () => {
+      if (confirm("למחוק את כל הפניות?")) { writeLeads([]); render(); }
+    });
+
+    render();
+  </script>
+</body>
+</html>

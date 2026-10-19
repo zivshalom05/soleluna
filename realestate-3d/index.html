@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מגדל האופק | מגורי יוקרה</title>
+  <meta name="description" content="מגדל האופק — סיור תלת מימדי בגלילה: מהבניין, דרך הלובי, אל תוך הדירה. בחירת דירה וקביעת פגישה." />
+  <meta name="theme-color" content="#1b2433" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- the 3D scene sits fixed behind the page; scrolling drives the camera -->
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div id="labels" aria-hidden="true"></div>
+  <div id="fade" aria-hidden="true"></div>
+  <div class="loader" id="loader" aria-hidden="true"><span>טוען את הסיור…</span></div>
+
+  <header class="topbar">
+    <a class="brand" href="#top">האופק<small>מגורי יוקרה</small></a>
+    <nav>
+      <a href="#journey">הסיור</a>
+      <a href="#apartments">בחירת דירה</a>
+      <a href="#contact" class="topbar__cta">קבעו פגישה</a>
+    </nav>
+    <div class="progress"><span id="progress-bar"></span></div>
+  </header>
+
+  <main id="top">
+    <!-- ===== the scroll journey: each .stage is one camera station ===== -->
+    <div id="journey">
+      <section class="stage stage--hero" data-stage="0">
+        <div class="card">
+          <p class="eyebrow">מגורי יוקרה · שכונת הפארק</p>
+          <h1>מגדל האופק</h1>
+          <p class="lead">גללו כדי להיכנס פנימה. מהבניין, דרך הלובי, אל תוך הדירה שלכם.</p>
+          <ul class="stats">
+            <li><b>12</b>קומות</li>
+            <li><b>48</b>דירות</li>
+            <li><b>2028</b>אכלוס</li>
+          </ul>
+          <span class="hint" aria-hidden="true">גללו למטה ↓</span>
+        </div>
+      </section>
+
+      <section class="stage stage--start" data-stage="1">
+        <div class="card">
+          <p class="eyebrow">01 · הבניין</p>
+          <h2>מגדל בוטיק מול הפארק</h2>
+          <p>חזית זכוכית ואבן, מרפסות מדורגות, ופנטהאוזים בקומה העליונה.</p>
+          <ul class="chips">
+            <li>חזית זכוכית ואבן</li>
+            <li>לובי בגובה כפול</li>
+            <li>2 קומות חניון</li>
+            <li>גינה פרטית 1.2 דונם</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage stage--end" data-stage="2">
+        <div class="card">
+          <p class="eyebrow">02 · הלובי</p>
+          <h2>כניסה של מלון</h2>
+          <p>לובי מעוצב בגובה 4.5 מטר, עם דלפק קבלה ופינת המתנה.</p>
+          <ul class="amenities">
+            <li><i>🛎️</i>קונסיירז׳ 24/7</li>
+            <li><i>🏋️</i>חדר כושר מאובזר</li>
+            <li><i>🛋️</i>מועדון דיירים</li>
+            <li><i>📦</i>מחסן לכל דירה</li>
+            <li><i>📱</i>מערכת בית חכם</li>
+            <li><i>🛗</i>3 מעליות מהירות</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage stage--hero" data-stage="3">
+        <div class="card card--elevator">
+          <p class="eyebrow">03 · המעלית</p>
+          <div class="floor-display"><span id="floor-num">1</span><small>קומה</small></div>
+          <h2>עולים לדירה</h2>
+          <p>דירת דגם A בקומה 9, עם נוף פתוח לפארק ולים.</p>
+        </div>
+      </section>
+
+      <section class="stage stage--start" data-stage="4">
+        <div class="card">
+          <p class="eyebrow">04 · הסלון</p>
+          <h2>דירת 5 חדרים · דגם A</h2>
+          <p>חלל ציבורי פתוח שבו הסלון, פינת האוכל והמטבח נפגשים מול חלון פנורמי.</p>
+          <dl class="specs">
+            <div><dt>שטח</dt><dd>132 מ״ר</dd></div>
+            <div><dt>מרפסת</dt><dd>14 מ״ר</dd></div>
+            <div><dt>גובה תקרה</dt><dd>2.9 מ׳</dd></div>
+            <div><dt>כיווני אוויר</dt><dd>3</dd></div>
+            <div><dt>חניות</dt><dd>2</dd></div>
+            <div><dt>מחסן</dt><dd>6 מ״ר</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="stage stage--end" data-stage="5">
+        <div class="card">
+          <p class="eyebrow">05 · המטבח</p>
+          <h2>מטבח שף עם אי</h2>
+          <ul class="checks">
+            <li>משטח קוורץ ואי מטבח באורך 2.4 מ׳</li>
+            <li>ארונות עד התקרה בגימור מרווה מט</li>
+            <li>הכנה למקרר דו־דלתי ומדיח כלים</li>
+            <li>ברזים וידיות בגימור שחור מט</li>
+          </ul>
+          <table class="spec-table">
+            <caption>מפרט טכני</caption>
+            <tr><th>ריצוף</th><td>פורצלן 120×60</td></tr>
+            <tr><th>מיזוג</th><td>VRF מרכזי לכל חדר</td></tr>
+            <tr><th>חלונות</th><td>אלומיניום, זיגוג כפול</td></tr>
+            <tr><th>תריסים</th><td>חשמליים בכל הדירה</td></tr>
+            <tr><th>חשמל</th><td>הכנה לטעינת רכב</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="stage stage--start" data-stage="6">
+        <div class="card">
+          <p class="eyebrow">06 · יחידת ההורים</p>
+          <h2>חדר שינה עם חדר ארונות</h2>
+          <p>חדר הורים עם חדר ארונות, מקלחת זוגית וממ״ד. כך נראית תוכנית הדירה:</p>
+          <svg class="plan" viewBox="0 0 200 110" role="img" aria-label="תוכנית דירה סכמטית">
+            <rect x="2" y="2" width="196" height="80" class="plan__wall" />
+            <rect x="2" y="82" width="196" height="26" class="plan__balcony" />
+            <line x1="132" y1="2" x2="132" y2="52" class="plan__wall" />
+            <line x1="62" y1="2" x2="62" y2="34" class="plan__wall" />
+            <text x="165" y="40">הורים</text>
+            <text x="165" y="52" class="plan__small">16 מ״ר</text>
+            <text x="97" y="22">מטבח</text>
+            <text x="32" y="45">סלון</text>
+            <text x="32" y="57" class="plan__small">38 מ״ר</text>
+            <text x="97" y="60">פינת אוכל</text>
+            <text x="100" y="99">מרפסת 14 מ״ר</text>
+          </svg>
+          <ul class="chips">
+            <li>ממ״ד</li><li>חדר ארונות</li><li>מקלחת זוגית</li><li>2 חדרי ילדים</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="stage stage--end" data-stage="7">
+        <div class="card">
+          <p class="eyebrow">07 · המרפסת</p>
+          <h2>הנוף שלכם</h2>
+          <p>מקומה 9 רואים את הפארק העירוני ואת קו הים. אלה הדירות שזמינות בפרויקט:</p>
+          <table class="price-table">
+            <thead><tr><th>דגם</th><th>שטח</th><th>החל מ־</th></tr></thead>
+            <tbody id="price-rows"></tbody>
+          </table>
+          <a class="btn" href="#apartments">לבחירת דירה ←</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== the "system": apartment picker + lead form ===== -->
+    <section class="sheet" id="apartments">
+      <div class="sheet__inner">
+        <p class="eyebrow">בחירת דירה</p>
+        <h2>48 דירות. איזו מהן שלכם?</h2>
+        <p class="sheet__lead">לחצו על דירה בבניין כדי לראות את הפרטים שלה. אפשר לסנן לפי מספר חדרים.</p>
+
+        <div class="filters" role="group" aria-label="סינון לפי חדרים">
+          <button type="button" class="filter is-active" data-rooms="all">הכול</button>
+          <button type="button" class="filter" data-rooms="3">3 חדרים</button>
+          <button type="button" class="filter" data-rooms="4">4 חדרים</button>
+          <button type="button" class="filter" data-rooms="5">5 חדרים</button>
+          <button type="button" class="filter" data-rooms="6">פנטהאוז</button>
+        </div>
+
+        <div class="picker">
+          <div class="tower" id="tower" aria-label="מפת הבניין"></div>
+          <aside class="unit" id="unit" aria-live="polite">
+            <p class="unit__empty">בחרו דירה מהמפה</p>
+          </aside>
+        </div>
+
+        <ul class="legend">
+          <li><span class="dot dot--free"></span>פנויה</li>
+          <li><span class="dot dot--hold"></span>בשריון</li>
+          <li><span class="dot dot--sold"></span>נמכרה</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sheet sheet--alt" id="contact">
+      <div class="sheet__inner sheet__inner--narrow">
+        <p class="eyebrow">קבעו פגישה</p>
+        <h2>בואו לראות את הדירה מקרוב</h2>
+        <p class="sheet__lead">השאירו פרטים ונציג המכירות יחזור אליכם לתיאום סיור במשרד המכירות.</p>
+
+        <form id="lead-form" novalidate>
+          <label>שם מלא
+            <input name="name" type="text" autocomplete="name" required />
+          </label>
+          <label>טלפון
+            <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="05X-XXXXXXX" />
+          </label>
+          <label>אימייל <small>(לא חובה)</small>
+            <input name="email" type="email" autocomplete="email" />
+          </label>
+          <label>דירה מבוקשת
+            <select name="unit" id="unit-select">
+              <option value="">עוד לא החלטתי</option>
+            </select>
+          </label>
+          <label>מתי נוח לכם?
+            <select name="slot">
+              <option>בוקר (9:00–12:00)</option>
+              <option>צהריים (12:00–16:00)</option>
+              <option>ערב (16:00–20:00)</option>
+            </select>
+          </label>
+          <label class="full">הערות
+            <textarea name="notes" rows="3"></textarea>
+          </label>
+          <p class="form-error full" id="form-error" role="alert"></p>
+          <button class="btn full" type="submit">שליחה</button>
+        </form>
+        <div class="form-done" id="form-done" hidden>
+          <h3>תודה! קיבלנו את הפנייה.</h3>
+          <p>נחזור אליכם בהקדם לתיאום הפגישה.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>מגדל האופק · פרויקט להמחשה. כל הנתונים, המחירים וההדמיות לדוגמה בלבד.</p>
+      <a href="leads.html">ניהול פניות</a>
+    </footer>
+  </main>
+
+  <script type="module" src="ui.js"></script>
+  <script type="module" src="scene.js"></script>
+</body>
+</html>
