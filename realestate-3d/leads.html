@@ -42,7 +42,8 @@
       </table>
     </div>
     <div class="actions">
-      <button type="button" id="export">ייצוא ל־CSV</button>
+      <button type="button" id="export">הורדת CSV</button>
+      <button type="button" class="ghost" id="copy">העתקת CSV</button>
       <button type="button" class="ghost" id="clear">מחיקת כל הפניות</button>
     </div>
   </div>
@@ -69,7 +70,7 @@
             <tr class="${l.done ? "done" : ""}">
               <td>${new Date(l.at).toLocaleString("he-IL")}</td>
               <td>${esc(l.name)}</td>
-              <td><a href="tel:${esc(l.phone)}">${esc(l.phone)}</a></td>
+              <td dir="ltr">${esc(l.phone)}</td>
               <td>${esc(l.email)}</td>
               <td>${esc(l.unit) || "—"}</td>
               <td>${esc(l.slot)}</td>
@@ -88,17 +89,42 @@
       render();
     });
 
-    document.getElementById("export").addEventListener("click", () => {
+    const toCsv = () => {
       const cols = ["at", "name", "phone", "email", "unit", "slot", "notes"];
-      const csv = [cols.join(","), ...loadLeads().map((l) => cols.map((c) => `"${String(l[c] ?? "").replace(/"/g, '""')}"`).join(","))].join("\n");
+      return [cols.join(","), ...loadLeads().map((l) => cols.map((c) => `"${String(l[c] ?? "").replace(/"/g, '""')}"`).join(","))].join("\n");
+    };
+    document.getElementById("copy").addEventListener("click", async (e) => {
+      try {
+        await navigator.clipboard.writeText(toCsv());
+        e.target.textContent = "הועתק ✓";
+      } catch {
+        e.target.textContent = "ההעתקה נחסמה בדפדפן";
+      }
+      setTimeout(() => (e.target.textContent = "העתקת CSV"), 2000);
+    });
+
+    document.getElementById("export").addEventListener("click", () => {
+      const csv = toCsv();
       const a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
       a.download = "leads.csv";
       a.click();
     });
 
-    document.getElementById("clear").addEventListener("click", () => {
-      if (confirm("למחוק את כל הפניות?")) { writeLeads([]); render(); }
+    // two-step delete, no confirm() dialog (blocked in some embeds)
+    const clearBtn = document.getElementById("clear");
+    let armed = false;
+    clearBtn.addEventListener("click", () => {
+      if (!armed) {
+        armed = true;
+        clearBtn.textContent = "לחצו שוב למחיקה";
+        setTimeout(() => ((armed = false), (clearBtn.textContent = "מחיקת כל הפניות")), 3000);
+        return;
+      }
+      writeLeads([]);
+      render();
+      armed = false;
+      clearBtn.textContent = "מחיקת כל הפניות";
     });
 
     render();
