@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>מגדל האופק | מגורי יוקרה</title>
   <meta name="description" content="מגדל האופק — סיור תלת מימדי בגלילה: מהבניין, דרך הלובי, אל תוך הדירה. בחירת דירה וקביעת פגישה." />
   <meta name="theme-color" content="#1b2433" />
@@ -35,11 +35,12 @@
     </nav>
     <div class="progress"><span id="progress-bar"></span></div>
   </header>
+  <nav class="chapters" id="chapters" aria-label="שלבי הסיור"></nav>
 
   <main id="top">
     <!-- ===== the scroll journey: each .stage is one camera station ===== -->
     <div id="journey">
-      <section class="stage stage--hero" data-stage="0">
+      <section class="stage stage--hero" data-stage="0" data-title="הפרויקט">
         <div class="card">
           <p class="eyebrow">מגורי יוקרה · שכונת הפארק</p>
           <h1>מגדל האופק</h1>
@@ -49,41 +50,71 @@
             <li><b>48</b>דירות</li>
             <li><b>2028</b>אכלוס</li>
           </ul>
-          <span class="hint" aria-hidden="true">גללו למטה ↓</span>
+          <div class="hero-actions">
+            <span class="hint" aria-hidden="true">גללו למטה ↓</span>
+            <a class="skip" href="#apartments">דלגו לבחירת דירה</a>
+          </div>
         </div>
       </section>
 
-      <section class="stage stage--start" data-stage="1">
+      <section class="stage stage--start" data-stage="1" data-title="הבניין">
         <div class="card">
           <p class="eyebrow">01 · הבניין</p>
           <h2>מגדל בוטיק מול הפארק</h2>
-          <p>חזית זכוכית ואבן, מרפסות מדורגות, ופנטהאוזים בקומה העליונה.</p>
+          <p>קיר מסך מזכוכית, סנפירי אלומיניום, מרפסות מדורגות ובריכה על הגג.</p>
           <ul class="chips">
-            <li>חזית זכוכית ואבן</li>
-            <li>לובי בגובה כפול</li>
-            <li>2 קומות חניון</li>
+            <li>בריכה על הגג</li>
+            <li>חזית זכוכית ואלומיניום</li>
             <li>גינה פרטית 1.2 דונם</li>
           </ul>
+          <details class="more">
+            <summary>עוד פרטים</summary>
+            <dl class="specs">
+              <div><dt>קומות</dt><dd>12 + גג</dd></div>
+              <div><dt>חניון</dt><dd>2 קומות</dd></div>
+              <div><dt>דירות לקומה</dt><dd>4</dd></div>
+              <div><dt>אנרגיה</dt><dd>מערך סולארי</dd></div>
+              <div><dt>תקן</dt><dd>בנייה ירוקה</dd></div>
+              <div><dt>עמדות טעינה</dt><dd>לכל חניה</dd></div>
+            </dl>
+            <ul class="checks">
+              <li>קנופי כניסה עם תקרת עץ ותאורת LED</li>
+              <li>בריכות נוי ושביל מואר בכניסה</li>
+              <li>מרפסות עם מעקה זכוכית ואדניות מובנות</li>
+            </ul>
+          </details>
         </div>
       </section>
 
-      <section class="stage stage--end" data-stage="2">
+      <section class="stage stage--end" data-stage="2" data-title="הלובי">
         <div class="card">
           <p class="eyebrow">02 · הלובי</p>
           <h2>כניסה של מלון</h2>
-          <p>לובי מעוצב בגובה 4.5 מטר, עם דלפק קבלה ופינת המתנה.</p>
+          <p>לובי בגובה 4.5 מטר: רצפת שיש, קיר עץ אקוסטי וגוף תאורה מעוצב.</p>
           <ul class="amenities">
             <li><i>🛎️</i>קונסיירז׳ 24/7</li>
-            <li><i>🏋️</i>חדר כושר מאובזר</li>
+            <li><i>🏋️</i>חדר כושר</li>
             <li><i>🛋️</i>מועדון דיירים</li>
-            <li><i>📦</i>מחסן לכל דירה</li>
-            <li><i>📱</i>מערכת בית חכם</li>
-            <li><i>🛗</i>3 מעליות מהירות</li>
+            <li><i>📦</i>חדר חבילות</li>
           </ul>
+          <details class="more">
+            <summary>עוד פרטים</summary>
+            <ul class="amenities">
+              <li><i>📱</i>אפליקציית בניין</li>
+              <li><i>🛗</i>3 מעליות מהירות</li>
+              <li><i>🔐</i>כניסה בזיהוי פנים</li>
+              <li><i>🚲</i>חדר אופניים</li>
+            </ul>
+            <ul class="checks">
+              <li>שילוט דיגיטלי ולוח דיירים</li>
+              <li>מחסן פרטי לכל דירה</li>
+              <li>גינון פנימי ועצי זית</li>
+            </ul>
+          </details>
         </div>
       </section>
 
-      <section class="stage stage--hero" data-stage="3">
+      <section class="stage stage--hero stage--elevator" data-stage="3" data-title="המעלית">
         <div class="card card--elevator">
           <p class="eyebrow">03 · המעלית</p>
           <div class="floor-display"><span id="floor-num">1</span><small>קומה</small></div>
@@ -92,72 +123,96 @@
         </div>
       </section>
 
-      <section class="stage stage--start" data-stage="4">
+      <section class="stage stage--start" data-stage="4" data-title="הסלון">
         <div class="card">
           <p class="eyebrow">04 · הסלון</p>
           <h2>דירת 5 חדרים · דגם A</h2>
-          <p>חלל ציבורי פתוח שבו הסלון, פינת האוכל והמטבח נפגשים מול חלון פנורמי.</p>
           <dl class="specs">
             <div><dt>שטח</dt><dd>132 מ״ר</dd></div>
             <div><dt>מרפסת</dt><dd>14 מ״ר</dd></div>
-            <div><dt>גובה תקרה</dt><dd>2.9 מ׳</dd></div>
-            <div><dt>כיווני אוויר</dt><dd>3</dd></div>
-            <div><dt>חניות</dt><dd>2</dd></div>
-            <div><dt>מחסן</dt><dd>6 מ״ר</dd></div>
+            <div><dt>תקרה</dt><dd>2.9 מ׳</dd></div>
           </dl>
+          <details class="more">
+            <summary>עוד פרטים</summary>
+            <p>סלון, פינת אוכל ומטבח בחלל אחד מול חלון פנורמי מהרצפה עד התקרה.</p>
+            <dl class="specs">
+              <div><dt>כיווני אוויר</dt><dd>3</dd></div>
+              <div><dt>חניות</dt><dd>2</dd></div>
+              <div><dt>מחסן</dt><dd>6 מ״ר</dd></div>
+            </dl>
+            <ul class="checks">
+              <li>פרקט אלון בהנחה רחבה</li>
+              <li>תאורה עקיפה בסופיט ותאורת מסילה</li>
+              <li>קיר טלוויזיה מחופה עץ</li>
+              <li>וילונות חשמליים בכל החזית</li>
+            </ul>
+          </details>
         </div>
       </section>
 
-      <section class="stage stage--end" data-stage="5">
+      <section class="stage stage--end" data-stage="5" data-title="המטבח">
         <div class="card">
           <p class="eyebrow">05 · המטבח</p>
           <h2>מטבח שף עם אי</h2>
           <ul class="checks">
-            <li>משטח קוורץ ואי מטבח באורך 2.4 מ׳</li>
-            <li>ארונות עד התקרה בגימור מרווה מט</li>
-            <li>הכנה למקרר דו־דלתי ומדיח כלים</li>
-            <li>ברזים וידיות בגימור שחור מט</li>
+            <li>אי קוורץ 2.4 מ׳ עם דפנות ״מפל״</li>
+            <li>חזיתות מרווה מט ללא ידיות</li>
+            <li>תנור ומיקרוגל בנויים בעמוד</li>
           </ul>
-          <table class="spec-table">
-            <caption>מפרט טכני</caption>
-            <tr><th>ריצוף</th><td>פורצלן 120×60</td></tr>
-            <tr><th>מיזוג</th><td>VRF מרכזי לכל חדר</td></tr>
-            <tr><th>חלונות</th><td>אלומיניום, זיגוג כפול</td></tr>
-            <tr><th>תריסים</th><td>חשמליים בכל הדירה</td></tr>
-            <tr><th>חשמל</th><td>הכנה לטעינת רכב</td></tr>
-          </table>
+          <details class="more">
+            <summary>מפרט טכני</summary>
+            <ul class="checks">
+              <li>חיפוי שיש עד התקרה ומדף צף עם LED</li>
+              <li>כיריים אינדוקציה וקולט אדים שקוע בתקרה</li>
+              <li>מקרר יין באי, ברז נשלף בגימור שחור</li>
+            </ul>
+            <table class="spec-table">
+              <tr><th>ריצוף</th><td>פורצלן 120×60</td></tr>
+              <tr><th>מיזוג</th><td>VRF מרכזי לכל חדר</td></tr>
+              <tr><th>חלונות</th><td>אלומיניום, זיגוג כפול</td></tr>
+              <tr><th>בית חכם</th><td>שליטה בתאורה, מיזוג ותריסים</td></tr>
+              <tr><th>חשמל</th><td>הכנה לטעינת רכב</td></tr>
+            </table>
+          </details>
         </div>
       </section>
 
-      <section class="stage stage--start" data-stage="6">
+      <section class="stage stage--start" data-stage="6" data-title="חדר ההורים">
         <div class="card">
           <p class="eyebrow">06 · יחידת ההורים</p>
           <h2>חדר שינה עם חדר ארונות</h2>
-          <p>חדר הורים עם חדר ארונות, מקלחת זוגית וממ״ד. כך נראית תוכנית הדירה:</p>
-          <svg class="plan" viewBox="0 0 200 110" role="img" aria-label="תוכנית דירה סכמטית">
-            <rect x="2" y="2" width="196" height="80" class="plan__wall" />
-            <rect x="2" y="82" width="196" height="26" class="plan__balcony" />
-            <line x1="132" y1="2" x2="132" y2="52" class="plan__wall" />
-            <line x1="62" y1="2" x2="62" y2="34" class="plan__wall" />
-            <text x="165" y="40">הורים</text>
-            <text x="165" y="52" class="plan__small">16 מ״ר</text>
-            <text x="97" y="22">מטבח</text>
-            <text x="32" y="45">סלון</text>
-            <text x="32" y="57" class="plan__small">38 מ״ר</text>
-            <text x="97" y="60">פינת אוכל</text>
-            <text x="100" y="99">מרפסת 14 מ״ר</text>
-          </svg>
           <ul class="chips">
-            <li>ממ״ד</li><li>חדר ארונות</li><li>מקלחת זוגית</li><li>2 חדרי ילדים</li>
+            <li>חדר ארונות</li><li>מקלחת זוגית</li><li>ממ״ד</li><li>פינת איפור</li>
           </ul>
+          <details class="more">
+            <summary>תוכנית הדירה</summary>
+            <svg class="plan" viewBox="0 0 200 110" role="img" aria-label="תוכנית דירה סכמטית">
+              <rect x="2" y="2" width="196" height="80" class="plan__wall" />
+              <rect x="2" y="82" width="196" height="26" class="plan__balcony" />
+              <line x1="132" y1="2" x2="132" y2="52" class="plan__wall" />
+              <line x1="62" y1="2" x2="62" y2="34" class="plan__wall" />
+              <text x="165" y="40">הורים</text>
+              <text x="165" y="52" class="plan__small">16 מ״ר</text>
+              <text x="97" y="22">מטבח</text>
+              <text x="32" y="45">סלון</text>
+              <text x="32" y="57" class="plan__small">38 מ״ר</text>
+              <text x="97" y="60">פינת אוכל</text>
+              <text x="100" y="99">מרפסת 14 מ״ר</text>
+            </svg>
+            <ul class="checks">
+              <li>קיר ראש מרופד לכל הרוחב עם מדף ותאורה</li>
+              <li>ארון הליכה עם דלתות זכוכית מעושנת ותאורה פנימית</li>
+              <li>2 חדרי ילדים וחדר רחצה נוסף</li>
+            </ul>
+          </details>
         </div>
       </section>
 
-      <section class="stage stage--end" data-stage="7">
+      <section class="stage stage--end" data-stage="7" data-title="המרפסת">
         <div class="card">
           <p class="eyebrow">07 · המרפסת</p>
           <h2>הנוף שלכם</h2>
-          <p>מקומה 9 רואים את הפארק העירוני ואת קו הים. אלה הדירות שזמינות בפרויקט:</p>
+          <p>מקומה 9 רואים את הפארק העירוני ואת קו הים.</p>
           <table class="price-table">
             <thead><tr><th>דגם</th><th>שטח</th><th>החל מ־</th></tr></thead>
             <tbody id="price-rows"></tbody>

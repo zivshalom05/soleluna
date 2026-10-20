@@ -114,6 +114,9 @@ body.no-webgl #journey {
   padding: 14px clamp(16px, 4vw, 48px);
   background: linear-gradient(180deg, rgba(20, 27, 40, 0.55), rgba(20, 27, 40, 0));
 }
+.topbar { transition: background 0.3s ease; }
+.topbar.is-solid { background: var(--navy); }
+.sheet { scroll-margin-top: 60px; }
 .brand {
   color: var(--ink);
   text-decoration: none;
@@ -420,18 +423,152 @@ p { margin: 0; font-size: 1rem; line-height: 1.7; color: var(--ink-soft); font-w
 .footer p { color: inherit; font-size: inherit; }
 .footer a { color: var(--gold); }
 
+/* ---------- chapter dots ---------- */
+.chapters {
+  position: fixed;
+  inset-inline-start: clamp(10px, 1.6vw, 24px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: opacity 0.4s ease;
+}
+.chapters.is-hidden { opacity: 0; pointer-events: none; }
+.chapters button {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  background: rgba(20, 27, 40, 0.3);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.chapters button span {
+  position: absolute;
+  inset-inline-start: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(20, 27, 40, 0.7);
+  color: var(--ink);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.chapters button:hover span, .chapters button.is-active span { opacity: 1; }
+.chapters button.is-active { background: var(--gold); border-color: var(--gold); transform: scale(1.25); }
+.chapters button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* ---------- collapsible extra details on the cards ---------- */
+.more { margin-top: 14px; }
+.more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.more summary::-webkit-details-marker { display: none; }
+.more summary::after { content: "+"; font-size: 1.1rem; line-height: 1; }
+.more[open] summary::after { content: "−"; }
+@media (min-width: 761px) { .more summary { display: none; } }
+.more > :not(summary) { animation: reveal 0.35s ease; }
+@keyframes reveal { from { opacity: 0; transform: translateY(-4px); } }
+
+.hero-actions { display: flex; justify-content: center; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 22px; }
+.hero-actions .hint { margin-top: 0; }
+.skip { color: var(--ink); font-size: 0.9rem; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--gold); }
+
 /* ---------- mobile ---------- */
 @media (max-width: 760px) {
+  .topbar { padding: calc(10px + env(safe-area-inset-top)) 16px 10px; }
+  .brand { font-size: 1.15rem; }
+  .brand small { display: none; }
   .topbar nav a:not(.topbar__cta) { display: none; }
-  .stage { justify-content: center; align-items: flex-end; padding-bottom: 28px; }
-  .stage--hero { align-items: center; }
-  .card { max-width: 100%; }
-  .amenities { grid-template-columns: 1fr 1fr; }
-  .specs { grid-template-columns: repeat(2, 1fr); }
-  .picker { grid-template-columns: 1fr; }
-  .unit { position: static; }
+  .topbar__cta { padding: 7px 14px; font-size: 0.85rem; }
+
+  /* chapters become a slim row of ticks under the header */
+  .chapters {
+    top: calc(52px + env(safe-area-inset-top));
+    inset-inline: 16px;
+    transform: none;
+    flex-direction: row;
+    gap: 4px;
+  }
+  .chapters button { flex: 1; height: 3px; width: auto; border: 0; border-radius: 2px; background: rgba(255, 255, 255, 0.35); }
+  .chapters button.is-active { transform: none; }
+  .chapters button span { display: none; }
+
+  /* cards sit in the bottom of the screen like a sheet; the 3D scene owns the top */
+  .stage {
+    min-height: 100svh;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 0 12px calc(14px + env(safe-area-inset-bottom));
+  }
+  .stage[data-stage="0"] { min-height: 100svh; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+  .stage--elevator { align-items: center; }
+  .card {
+    width: 100%;
+    max-width: 520px;
+    padding: 18px 18px 16px;
+    border-radius: 20px;
+    background: rgba(20, 27, 40, 0.86);
+    backdrop-filter: none; /* blur over a live WebGL canvas is expensive on phones */
+    -webkit-backdrop-filter: none;
+    text-align: start;
+  }
+  .stage--hero .card { text-align: center; }
+  h1 { font-size: 2.6rem; margin-bottom: 8px; }
+  h2 { font-size: 1.45rem; margin-bottom: 8px; }
+  p { font-size: 0.93rem; line-height: 1.6; }
+  .lead { font-size: 1rem; }
+  .eyebrow { font-size: 0.75rem; margin-bottom: 6px; }
+  .stats { margin-top: 14px; }
+  .stats b { font-size: 1.5rem; }
+  .hero-actions { margin-top: 14px; }
+  .chips { margin-top: 10px; gap: 6px; }
+  .chips li { font-size: 0.78rem; padding: 5px 10px; }
+  .amenities { gap: 6px; margin-top: 10px; }
+  .amenities li { padding: 8px; font-size: 0.82rem; }
+  .specs { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+  .specs div { padding: 8px; }
+  .specs dd { font-size: 0.95rem; }
+  .checks li { font-size: 0.88rem; padding: 3px 0; }
+  .spec-table, .price-table { font-size: 0.82rem; margin-top: 10px; }
+  .price-table th, .price-table td { padding: 6px 2px; }
+  .btn { margin-top: 14px; padding: 12px 22px; }
+  .floor-display { margin: 4px 0 10px; }
+  .floor-display span { font-size: 2.4rem; }
+  .more[open] { max-height: 34svh; overflow-y: auto; overscroll-behavior: contain; }
+
+  .label { font-size: 0.7rem; padding: 5px 10px 5px 8px; }
+
+  .sheet { padding: 56px 16px; }
+  .sheet__lead { margin-bottom: 18px; }
+  .filters { gap: 6px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding-inline: 16px; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter { flex: none; padding: 8px 14px; }
+  .picker { grid-template-columns: 1fr; gap: 16px; }
+  .tower { padding: 10px; gap: 5px; }
+  .floor { grid-template-columns: 24px repeat(4, 1fr); gap: 5px; }
+  .cell { height: 34px; }
+  .unit { position: static; min-height: 0; padding: 18px; scroll-margin-bottom: 16px; }
+  .unit__empty { min-height: 80px; }
   #lead-form { grid-template-columns: 1fr; }
-  .label { font-size: 0.72rem; }
+  #lead-form input, #lead-form select, #lead-form textarea { font-size: 16px; } /* no iOS zoom */
+  #lead-form .btn { width: 100%; justify-self: stretch; }
+  .footer { padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
 }
 
 @media (prefers-reduced-motion: reduce) {

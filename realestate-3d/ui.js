@@ -13,16 +13,50 @@ const io = new IntersectionObserver(
 );
 $$(".card").forEach((c) => io.observe(c));
 
+/* ---------- extra details: open on desktop, tap-to-open on phones ---------- */
+const wide = matchMedia("(min-width: 761px)");
+const syncDetails = () => $$(".stage details.more").forEach((d) => (d.open = wide.matches));
+syncDetails();
+wide.addEventListener("change", syncDetails);
+
+/* ---------- chapter dots: jump to any stage of the tour ---------- */
+const chapters = $("#chapters");
+const stages = $$(".stage");
+stages.forEach((st, i) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.innerHTML = `<span>${st.dataset.title}</span>`;
+  b.setAttribute("aria-label", st.dataset.title);
+  b.addEventListener("click", () => {
+    const y = i === 0 ? 0 : st.offsetTop + st.offsetHeight / 2 - innerHeight / 2;
+    scrollTo({ top: y, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  });
+  chapters.append(b);
+});
+
 /* ---------- progress bar + elevator floor counter ---------- */
 const journey = $("#journey");
 const bar = $("#progress-bar");
 const elevatorStage = $('.stage[data-stage="3"]');
 const floorNum = $("#floor-num");
+const topbar = $(".topbar");
 
 function onScroll() {
   const vh = innerHeight;
   const total = journey.offsetHeight - vh;
   bar.style.transform = `scaleX(${clamp01(scrollY / total)})`;
+
+  // highlight the chapter whose card is nearest the middle of the screen
+  let active = -1, best = Infinity;
+  stages.forEach((st, i) => {
+    const r = st.getBoundingClientRect();
+    const d = Math.abs(r.top + r.height / 2 - vh / 2);
+    if (d < best && r.bottom > 0 && r.top < vh) (best = d), (active = i);
+  });
+  [...chapters.children].forEach((b, i) => b.classList.toggle("is-active", i === active));
+  const pastTour = journey.getBoundingClientRect().bottom < vh * 0.5;
+  chapters.classList.toggle("is-hidden", pastTour);
+  topbar.classList.toggle("is-solid", journey.getBoundingClientRect().bottom < 70);
 
   // count floors 1 → 9 while the elevator stage passes the middle of the screen
   const r = elevatorStage.getBoundingClientRect();
@@ -93,6 +127,7 @@ function showUnit(id) {
     <p class="price">${u.status === "sold" ? "נמכרה" : formatPrice(u.price)}</p>
     ${u.status === "sold" ? "" : '<a class="btn" href="#contact" id="book-unit">קבעו פגישה לדירה זו</a>'}
   `;
+  if (!wide.matches) unitCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
   const book = $("#book-unit", unitCard);
   if (book) book.addEventListener("click", () => (unitSelect.value = id));
 }
