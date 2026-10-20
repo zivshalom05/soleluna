@@ -165,6 +165,10 @@ main { position: relative; z-index: 3; }
 .stage--start { justify-content: flex-start; }
 .stage--end { justify-content: flex-end; }
 .stage[data-stage="0"] { min-height: 110vh; }
+/* the walk from the street into the lobby gets more scroll distance (slower),
+   and its cards stay on screen for the whole walk */
+.stage--tall { min-height: 175vh; align-items: flex-start; }
+.stage--tall .card { position: sticky; top: max(96px, calc(50vh - 240px)); }
 
 .card {
   max-width: 440px;
@@ -518,6 +522,8 @@ p { margin: 0; font-size: 1rem; line-height: 1.7; color: var(--ink-soft); font-w
   }
   .stage[data-stage="0"] { min-height: 100svh; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
   .stage--elevator { align-items: center; }
+  .stage--tall { min-height: 165svh; align-items: flex-end; }
+  .stage--tall .card { top: auto; bottom: calc(14px + env(safe-area-inset-bottom)); }
   .card {
     width: 100%;
     max-width: 520px;
